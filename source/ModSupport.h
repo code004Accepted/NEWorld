@@ -5,10 +5,10 @@
 #include "Frustum.h"
 #include "Command.h"
 #include "Chunk.h"
-typedef unsigned char ubyte;
+typedef unsigned char uint8_t;
 typedef unsigned int onlineid;
 typedef unsigned short item;
-typedef unsigned short block;
+typedef unsigned short Block;
 
 struct ModInfo {
 	char name[128];
@@ -21,7 +21,7 @@ struct PlayerData {
 	Hitbox::AABB playerbox;
 	//std::vector<Hitbox::AABB> Hitboxes;
 	double xa, ya, za, xd, yd, zd;
-	double health, healthMax, healSpeed, dropDamage;
+	double health, healthmax, healSpeed, dropDamage;
 	onlineid onlineID;
 	//std::string name;
 	Frustum ViewFrustum;
@@ -42,16 +42,16 @@ struct PlayerData {
 	float height;
 	float heightExt;
 	item BlockInHand;
-	ubyte indexInHand;
+	uint8_t indexInHand;
 	item* inventory;
 	short* inventoryAmount;
 	double glidingEnergy, glidingSpeed;
 };
 
 struct APIPackage {
-	std::function<World::chunk*(int cx, int cy, int cz)> getChunk;
-	std::function<block(int cx, int cy, int cz)> getBlock;
-	std::function<void(int x, int y, int z, block Block)> setBlock;
+	std::function<World::Chunk*(int cx, int cy, int cz)> getChunk;
+	std::function<Block(int cx, int cy, int cz)> getBlock;
+	std::function<void(int x, int y, int z, Block Block)> setBlock;
 	std::function<Command*(string commandName)> getCommand;
 	std::function<bool(Command command)> registerCommand;
 	std::function<void*(std::string key)> getSharedData;

@@ -1,15 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Netycat">
-      <UniqueIdentifier>{19ae8c3a-70c1-4ddb-8bbd-237232e9e9e2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Source\Network">
-      <UniqueIdentifier>{b6623145-3e33-48a1-be11-1cf4ad2065bc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\GUI">
       <UniqueIdentifier>{92f24a42-2d77-4317-9cd7-04a69e43c2fa}</UniqueIdentifier>
@@ -28,9 +22,6 @@
     </Filter>
     <Filter Include="Source\Common">
       <UniqueIdentifier>{2942a024-6889-447e-9918-2cd547c7a601}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Common\OpenGL">
-      <UniqueIdentifier>{f6aa1cb9-6009-404f-b1cc-68775a8f0ece}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\Game">
       <UniqueIdentifier>{ef7833db-0c84-4c19-a567-6c4833d0e663}</UniqueIdentifier>
@@ -53,9 +44,6 @@
     <Filter Include="Source\Game\Hitbox">
       <UniqueIdentifier>{e671892d-d7a8-41a7-81ad-57abd5613c9c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\DataStorage">
-      <UniqueIdentifier>{949e684e-b65c-4015-82ab-e4bb1972035c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Mod">
       <UniqueIdentifier>{f2eb1263-1080-487c-afb0-6d937680ea10}</UniqueIdentifier>
     </Filter>
@@ -63,17 +51,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source\Common\BaseEngine">
-      <UniqueIdentifier>{514ad253-19e5-49bd-910a-f07db8e67836}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Common\OpenAL">
       <UniqueIdentifier>{756831cf-7167-4c1f-9d20-e33d38861d08}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\Renderer\Shader">
       <UniqueIdentifier>{033d1b67-aa91-4782-ac09-87d8bffaafd4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Common\NVIDIA OptiX">
-      <UniqueIdentifier>{468e6c59-5d34-42c4-b586-a8d60615028c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\Renderer\RTRTR">
       <UniqueIdentifier>{e6556745-c575-4503-9736-25026f9aca3b}</UniqueIdentifier>
@@ -113,38 +95,8 @@
     <ClInclude Include="source\Mob.h">
       <Filter>Source\Game\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="source\Network.h">
-      <Filter>Source\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="source\PlayerPacket.h">
-      <Filter>Source\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="source\ChunkPacket.h">
-      <Filter>Source\Network</Filter>
-    </ClInclude>
     <ClInclude Include="source\Particles.h">
       <Filter>Source\Game\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Netycat\include\Netycat\Core\Buffer.h">
-      <Filter>Netycat</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Netycat\include\Netycat\Core\BufferCondition.h">
-      <Filter>Netycat</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Netycat\include\Netycat\Core\Core.h">
-      <Filter>Netycat</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Netycat\include\Netycat\Core\Exception.h">
-      <Filter>Netycat</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Netycat\include\Netycat\Core\InetAddress.h">
-      <Filter>Netycat</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Netycat\include\Netycat\Core\Socket.h">
-      <Filter>Netycat</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Netycat\include\Netycat\Netycat.h">
-      <Filter>Netycat</Filter>
     </ClInclude>
     <ClInclude Include="source\GUI.h">
       <Filter>源代码\GUI</Filter>
@@ -157,9 +109,6 @@
     </ClInclude>
     <ClInclude Include="source\ChunkRenderer.h">
       <Filter>Source\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="source\OnlinePlayer.h">
-      <Filter>Source\Network</Filter>
     </ClInclude>
     <ClInclude Include="source\Command.h">
       <Filter>Source\Game</Filter>
@@ -200,9 +149,6 @@
     <ClInclude Include="source\Blocks.h">
       <Filter>源代码\Game</Filter>
     </ClInclude>
-    <ClInclude Include="source\GLProc.h">
-      <Filter>Source\Common\OpenGL</Filter>
-    </ClInclude>
     <ClInclude Include="source\ModLoader.h">
       <Filter>Source\Mod</Filter>
     </ClInclude>
@@ -214,12 +160,6 @@
     </ClInclude>
     <ClInclude Include="source\ModSupport.h">
       <Filter>Source\Mod</Filter>
-    </ClInclude>
-    <ClInclude Include="source\NNN.h">
-      <Filter>Source\DataStorage</Filter>
-    </ClInclude>
-    <ClInclude Include="source\ByteOrder.h">
-      <Filter>Source\DataStorage</Filter>
     </ClInclude>
     <ClInclude Include="source\Setup.h">
       <Filter>Source\Common</Filter>
@@ -276,42 +216,6 @@
     <ClInclude Include="source\AudioSystem.h">
       <Filter>Source\Game</Filter>
     </ClInclude>
-    <ClInclude Include="include\OptiX\optix.h">
-      <Filter>Source\Common\NVIDIA OptiX</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OptiX\optix_cuda.h">
-      <Filter>Source\Common\NVIDIA OptiX</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OptiX\optix_cuda_interop.h">
-      <Filter>Source\Common\NVIDIA OptiX</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OptiX\optix_d3d9_interop.h">
-      <Filter>Source\Common\NVIDIA OptiX</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OptiX\optix_d3d10_interop.h">
-      <Filter>Source\Common\NVIDIA OptiX</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OptiX\optix_d3d11_interop.h">
-      <Filter>Source\Common\NVIDIA OptiX</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OptiX\optix_device.h">
-      <Filter>Source\Common\NVIDIA OptiX</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OptiX\optix_gl_interop.h">
-      <Filter>Source\Common\NVIDIA OptiX</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OptiX\optix_host.h">
-      <Filter>Source\Common\NVIDIA OptiX</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OptiX\optix_math.h">
-      <Filter>Source\Common\NVIDIA OptiX</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OptiX\optix_sizet.h">
-      <Filter>Source\Common\NVIDIA OptiX</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OptiX\optix_world.h">
-      <Filter>Source\Common\NVIDIA OptiX</Filter>
-    </ClInclude>
     <ClInclude Include="source\RTDevice.h">
       <Filter>Source\Renderer\RTRTR</Filter>
     </ClInclude>
@@ -347,24 +251,6 @@
     <ClCompile Include="source\Particles.cpp">
       <Filter>Source\Game\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="include\Netycat\src\Netycat\Core\Buffer.cpp">
-      <Filter>Netycat</Filter>
-    </ClCompile>
-    <ClCompile Include="include\Netycat\src\Netycat\Core\BufferCondition.cpp">
-      <Filter>Netycat</Filter>
-    </ClCompile>
-    <ClCompile Include="include\Netycat\src\Netycat\Core\Core.cpp">
-      <Filter>Netycat</Filter>
-    </ClCompile>
-    <ClCompile Include="include\Netycat\src\Netycat\Core\Exception.cpp">
-      <Filter>Netycat</Filter>
-    </ClCompile>
-    <ClCompile Include="include\Netycat\src\Netycat\Core\InetAddress.cpp">
-      <Filter>Netycat</Filter>
-    </ClCompile>
-    <ClCompile Include="include\Netycat\src\Netycat\Core\Socket.cpp">
-      <Filter>Netycat</Filter>
-    </ClCompile>
     <ClCompile Include="source\GUI.cpp">
       <Filter>源代码\GUI</Filter>
     </ClCompile>
@@ -388,12 +274,6 @@
     </ClCompile>
     <ClCompile Include="source\ChunkRenderer.cpp">
       <Filter>Source\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="source\OnlinePlayer.cpp">
-      <Filter>Source\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Network.cpp">
-      <Filter>Source\Network</Filter>
     </ClCompile>
     <ClCompile Include="source\GameMenu.cpp">
       <Filter>Source\GUI\Menus</Filter>
@@ -437,17 +317,11 @@
     <ClCompile Include="source\Hitbox.cpp">
       <Filter>源代码\Game\Hitbox</Filter>
     </ClCompile>
-    <ClCompile Include="source\GLProc.cpp">
-      <Filter>Source\Common\OpenGL</Filter>
-    </ClCompile>
     <ClCompile Include="source\ModLoader.cpp">
       <Filter>Source\Mod</Filter>
     </ClCompile>
     <ClCompile Include="source\API.cpp">
       <Filter>Source\Mod</Filter>
-    </ClCompile>
-    <ClCompile Include="source\NNN.cpp">
-      <Filter>Source\DataStorage</Filter>
     </ClCompile>
     <ClCompile Include="source\Setup.cpp">
       <Filter>Source\Common</Filter>

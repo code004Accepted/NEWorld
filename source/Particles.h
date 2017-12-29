@@ -3,7 +3,7 @@
 #include "Hitbox.h"
 
 namespace Particles {
-	const int PARTICALE_MAX = 4096;
+	const int PARTICALE_max = 4096;
 	struct Particle{
 		bool exist = false;
 		double xpos, ypos, zpos;
@@ -17,6 +17,6 @@ namespace Particles {
 	void updateall();
 	void render(Particle &ptc);
 	void renderall(double xpos, double ypos, double zpos);
-	void throwParticle(block pt, float x, float y, float z, float xs, float ys, float zs, float psz, int last);
+	void throwParticle(Block pt, float x, float y, float z, float xs, float ys, float zs, float psz, int last);
 
 }

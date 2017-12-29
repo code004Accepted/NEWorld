@@ -19,7 +19,7 @@ namespace ShadowMaps {
 		glLoadIdentity();
 		glRotated(Renderer::sunlightXrot, 1.0, 0.0, 0.0);
 		glRotated(Renderer::sunlightYrot, 0.0, 1.0, 0.0);
-
+        
 		WorldRenderer::ListRenderChunks(cx, cy, cz, Renderer::shadowdist + 1, curtime, false);
 		MutexUnlock(Mutex);
 		WorldRenderer::RenderChunks(xpos, ypos, zpos, 3);

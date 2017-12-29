@@ -3,7 +3,7 @@
 #include "Blocks.h"
 #include "Textures.h"
 
-namespace World { class chunk; }
+namespace World { class Chunk; }
 
 namespace ChunkRenderer {
 	const int delta[6][3] = { { 1,0,0 },{ -1,0,0 },{ 0,1,0 },{ 0,-1,0 },{ 0,0,1 },{ 0,0,-1 } };
@@ -32,8 +32,8 @@ namespace ChunkRenderer {
 	};
 	void RenderPrimitive(QuadPrimitive& p);
 	void RenderPrimitive_Depth(QuadPrimitive_Depth& p);
-	void RenderChunk(World::chunk* c);
-	void MergeFaceRender(World::chunk* c);
-	void RenderDepthModel(World::chunk* c);
+	void RenderChunk(World::Chunk* c);
+	void MergeFaceRender(World::Chunk* c);
+	void RenderDepthModel(World::Chunk* c);
 
 }

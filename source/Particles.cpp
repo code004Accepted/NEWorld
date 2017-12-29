@@ -26,15 +26,15 @@ namespace Particles {
 		vector<Hitbox::AABB> Hitboxes = World::getHitboxes(Hitbox::Expand(ptc.hb, dx, dy, dz));
 		int hitnum = Hitboxes.size();
 		for (int i = 0; i < hitnum; i++){
-			dy = Hitbox::MaxMoveOnYclip(ptc.hb, Hitboxes[i], dy);
+			dy = Hitbox::maxMoveOnYclip(ptc.hb, Hitboxes[i], dy);
 		}
 		Hitbox::Move(ptc.hb, 0.0, dy, 0.0);
 		for (int i = 0; i < hitnum; i++){
-			dx = Hitbox::MaxMoveOnXclip(ptc.hb, Hitboxes[i], dx);
+			dx = Hitbox::maxMoveOnXclip(ptc.hb, Hitboxes[i], dx);
 		}
 		Hitbox::Move(ptc.hb, dx, 0.0, 0.0);
 		for (int i = 0; i < hitnum; i++){
-			dz = Hitbox::MaxMoveOnZclip(ptc.hb, Hitboxes[i], dz);
+			dz = Hitbox::maxMoveOnZclip(ptc.hb, Hitboxes[i], dz);
 		}
 		Hitbox::Move(ptc.hb, 0.0, 0.0, dz);
 
@@ -67,7 +67,7 @@ namespace Particles {
 		//if (!Frustum::aabbInFrustum(ptc.hb)) return;
 		ptcsrendered++;
 		float size = (float)BLOCKTEXTURE_UNITSIZE / BLOCKTEXTURE_SIZE * (ptc.psize <= 1.0f ? ptc.psize : 1.0f);
-		float col = World::getbrightness(RoundInt(ptc.xpos), RoundInt(ptc.ypos), RoundInt(ptc.zpos)) / (float)World::BRIGHTNESSMAX;
+		float col = World::getbrightness(RoundInt(ptc.xpos), RoundInt(ptc.ypos), RoundInt(ptc.zpos)) / (float)World::BrightnessMax;
 		float col1 = col * 0.5f;
 		float col2 = col * 0.7f;
 		float tcx = ptc.tcX;
@@ -150,7 +150,7 @@ namespace Particles {
 		}
 	}
 
-	void throwParticle(block pt, float x, float y, float z, float xs, float ys, float zs, float psz, int last){
+	void throwParticle(Block pt, float x, float y, float z, float xs, float ys, float zs, float psz, int last){
 		float tcX1 = (float)Textures::getTexcoordX(pt, 2);
 		float tcY1 = (float)Textures::getTexcoordY(pt, 2);
 		Particle ptc;

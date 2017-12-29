@@ -4,7 +4,6 @@
 #include "Definitions.h"
 #include "Blocks.h"
 #include "Textures.h"
-#include "GLProc.h"
 #include "Renderer.h"
 #include "TextRenderer.h"
 #include "Player.h"
@@ -17,14 +16,13 @@
 #include "GUI.h"
 #include "Menus.h"
 #include "Frustum.h"
-#include "Network.h"
 #include "Effect.h"
 #include "Items.h"
 #include "Globalization.h"
 #include "Command.h"
 #include "ModLoader.h"
 #include "Setup.h"
-#include"AudioSystem.h"
+#include "AudioSystem.h"
 void loadOptions();
 void saveOptions();
 
@@ -129,7 +127,7 @@ void loadOptions() {
 	loadoption(options, "MultiSample", Multisample);
 	loadoption(options, "AdvancedRender", Renderer::AdvancedRender);
 	loadoption(options, "ShadowMapRes", Renderer::ShadowRes);
-	loadoption(options, "ShadowDistance", Renderer::MaxShadowDist);
+	loadoption(options, "ShadowDistance", Renderer::maxShadowDist);
 	loadoption(options, "VerticalSync", vsync);
 	loadoption(options, "GUIBackgroundBlur", GUIScreenBlur);
 	loadoption(options, "ppistretch", ppistretch);
@@ -158,7 +156,7 @@ void saveOptions() {
 	saveoption(fileout, "MultiSample", Multisample);
 	saveoption(fileout, "AdvancedRender", Renderer::AdvancedRender);
 	saveoption(fileout, "ShadowMapRes", Renderer::ShadowRes);
-	saveoption(fileout, "ShadowDistance", Renderer::MaxShadowDist);
+	saveoption(fileout, "ShadowDistance", Renderer::maxShadowDist);
 	saveoption(fileout, "VerticalSync", vsync);
 	saveoption(fileout, "GUIBackgroundBlur", GUIScreenBlur);
 	saveoption(fileout, "ppistretch", ppistretch);

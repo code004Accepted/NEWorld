@@ -1,9 +1,9 @@
 #pragma once
 #include "Definitions.h"
 
-class ItemInfo {
+class Iteminfo {
 public:
-	ItemInfo(item itemid, TextureID itemtexture=0) :id(itemid), texture(itemtexture) {}
+	Iteminfo(item itemid, TextureID itemtexture=0) :id(itemid), texture(itemtexture) {}
 	item id;
 	TextureID texture;
 };
@@ -12,7 +12,7 @@ enum BuiltInItems {
 	STICK = 30000, APPLE
 };
 
-extern ItemInfo itemsinfo[];
+extern Iteminfo itemsinfo[];
 const item theFirstItem = STICK;
 
 void loadItemsTextures();

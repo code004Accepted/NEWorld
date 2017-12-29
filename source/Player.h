@@ -20,7 +20,7 @@ public:
 	static bool load(string worldn);
 
 	static bool addItem(item itemname, short amount = 1);
-	static bool putBlock(int x, int y, int z, block blockname);
+	static bool putBlock(int x, int y, int z, Block blockname);
 
 	//修改游戏模式
 	static void changeGameMode(int gamemode);
@@ -29,7 +29,7 @@ public:
 	static Hitbox::AABB playerbox;
 	static vector<Hitbox::AABB> Hitboxes;
 	static double xa, ya, za, xd, yd, zd;
-	static double health, healthMax, healSpeed, dropDamage;
+	static double health, healthmax, healSpeed, dropDamage;
 	static onlineid onlineID;
 	static string name;
 	static Frustum ViewFrustum;
@@ -58,7 +58,7 @@ public:
 	static float heightExt;
 
 	static item BlockInHand;
-	static ubyte indexInHand;
+	static uint8_t indexInHand;
 	static item inventory[4][10];
 	static short inventoryAmount[4][10];
 

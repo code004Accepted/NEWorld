@@ -1,7 +1,6 @@
 #include "GameView.h"
 #include "Blocks.h"
 #include "Textures.h"
-#include "GLProc.h"
 #include "Renderer.h"
 #include "TextRenderer.h"
 #include "Player.h"
@@ -14,14 +13,13 @@
 #include "GUI.h"
 #include "Menus.h"
 #include "Frustum.h"
-#include "Network.h"
 #include "Effect.h"
 #include "Items.h"
 #include "Globalization.h"
 #include "Command.h"
 #include "ModLoader.h"
 #include "Setup.h"
-#include"AudioSystem.h"
+#include "AudioSystem.h"
 
 
 ThreadFunc updateThreadFunc(void*);
@@ -50,8 +48,8 @@ private:
 	int selx, sely, selz, oldselx, oldsely, oldselz, selface;
 	bool sel;
 	float selt, seldes;
-	block selb;
-	brightness selbr;
+	Block selb;
+	Brightness selbr;
 	bool selce;
 	int selbx, selby, selbz, selcx, selcy, selcz;
 
@@ -154,15 +152,15 @@ public:
 		//生命值相关
 		if (Player::health > 0 || Player::gamemode == Player::Creative) {
 			if (Player::ypos < -100) Player::health -= ((-100) - Player::ypos) / 100;
-			if (Player::health < Player::healthMax) Player::health += Player::healSpeed;
-			if (Player::health > Player::healthMax) Player::health = Player::healthMax;
+			if (Player::health < Player::healthmax) Player::health += Player::healSpeed;
+			if (Player::health > Player::healthmax) Player::health = Player::healthmax;
 		}
 		else Player::spawn();
 
 		//时间
 		gametime++;
 		if (glfwGetKey(MainWindow, GLFW_KEY_F8)) gametime += 30;
-		if (gametime > gameTimeMax) gametime = 0;
+		if (gametime > gameTimemax) gametime = 0;
 
 		//World::unloadedChunks=0
 		World::rebuiltChunks = 0;
@@ -182,28 +180,28 @@ public:
 
 			//卸载区块(Unload chunks)
 			int sumUnload;
-			sumUnload = World::chunkUnloads > World::MaxChunkUnloads ? World::MaxChunkUnloads : World::chunkUnloads;
+			sumUnload = World::chunkUnloads > World::maxChunkUnloads ? World::maxChunkUnloads : World::chunkUnloads;
 			for (int i = 0; i < sumUnload; i++) {
-				World::chunk* cp = World::chunkUnloadList[i].first;
+				World::Chunk* cp = World::chunkUnloadList[i].first;
 #ifdef NEWORLD_DEBUG
 				if (cp == nullptr || cp == World::EmptyChunkPtr) DebugError("Unload error!");
 #endif
 				int cx = cp->cx, cy = cp->cy, cz = cp->cz;
-				cp->Unload();
+				cp->unload();
 				World::DeleteChunk(cx, cy, cz);
 			}
 
 			//加载区块(Load chunks)
 			int sumLoad;
-			sumLoad = World::chunkLoads > World::MaxChunkLoads ? World::MaxChunkLoads : World::chunkLoads;
+			sumLoad = World::chunkLoads > World::maxChunkLoads ? World::maxChunkLoads : World::chunkLoads;
 			for (int i = 0; i < sumLoad; i++) {
 				int cx = World::chunkLoadList[i][1];
 				int cy = World::chunkLoadList[i][2];
 				int cz = World::chunkLoadList[i][3];
-				World::chunk* c = World::AddChunk(cx, cy, cz);
-				c->Load(false);
-				if (c->Empty) {
-					c->Unload(); World::DeleteChunk(cx, cy, cz);
+				World::Chunk* c = World::AddChunk(cx, cy, cz);
+				c->load(false);
+				if (c->mIsEmpty) {
+					c->unload(); World::DeleteChunk(cx, cy, cz);
 					World::cpArray.setChunkPtr(cx, cy, cz, World::EmptyChunkPtr);
 				}
 			}
@@ -212,7 +210,7 @@ public:
 
 		//加载动画
 		for (int i = 0; i < World::loadedChunks; i++) {
-			World::chunk* cp = World::chunks[i];
+			World::Chunk* cp = World::chunks[i];
 			if (cp->loadAnim <= 0.3f) cp->loadAnim = 0.0f;
 			else cp->loadAnim *= 0.6f;
 		}
@@ -284,7 +282,7 @@ public:
 					selbx = getblockpos(x); selby = getblockpos(y); selbz = getblockpos(z);
 
 					if (World::chunkOutOfBound(selcx, selcy, selcz) == false) {
-						World::chunk* cp = World::getChunkPtr(selcx, selcy, selcz);
+						World::Chunk* cp = World::getChunkPtr(selcx, selcy, selcz);
 						if (cp == nullptr || cp == World::EmptyChunkPtr) continue;
 						selb = cp->getblock(selbx, selby, selbz);
 					}
@@ -337,7 +335,7 @@ public:
 							if (Player::inventory[3][Player::indexInHand] == APPLE) {
 								Player::inventoryAmount[3][Player::indexInHand]--;
 								if (Player::inventoryAmount[3][Player::indexInHand] == 0) Player::inventory[3][Player::indexInHand] = Blocks::AIR;
-								Player::health = Player::healthMax;
+								Player::health = Player::healthmax;
 							}
 						}
 					}
@@ -453,7 +451,7 @@ public:
 				//起跳！
 				if (isPressed(GLFW_KEY_SPACE)) {
 					if (!Player::inWater) {
-						if ((Player::OnGround || Player::AirJumps < MaxAirJumps) && Player::Flying == false && Player::CrossWall == false) {
+						if ((Player::OnGround || Player::AirJumps < maxAirJumps) && Player::Flying == false && Player::CrossWall == false) {
 							if (Player::OnGround == false) {
 								Player::jump = 0.3;
 								Player::AirJumps++;
@@ -596,7 +594,7 @@ public:
 			}
 			else {
 				Player::jump = 0.0;
-				Player::AirJumps = MaxAirJumps;
+				Player::AirJumps = maxAirJumps;
 				isPressed(GLFW_KEY_SPACE, true);
 				if (Player::ya <= 0.001 && !Player::Flying && !Player::CrossWall) {
 					Player::ya = -0.001;
@@ -758,7 +756,7 @@ public:
 
 		//更新区块VBO
 		World::sortChunkBuildRenderList(RoundInt(Player::xpos), RoundInt(Player::ypos), RoundInt(Player::zpos));
-		int brl = World::chunkBuildRenders > World::MaxChunkRenders ? World::MaxChunkRenders : World::chunkBuildRenders;
+		int brl = World::chunkBuildRenders > World::maxChunkRenders ? World::maxChunkRenders : World::chunkBuildRenders;
 		for (int i = 0; i < brl; i++) {
 			int ci = World::chunkBuildRenderList[i][1];
 			World::chunks[ci]->buildRender();
@@ -779,7 +777,7 @@ public:
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 
-		//daylight = clamp((1.0 - cos((double)gametime / gameTimeMax * 2.0 * M_PI) * 2.0) / 2.0, 0.05, 1.0);
+		//daylight = clamp((1.0 - cos((double)gametime / gameTimemax * 2.0 * M_PI) * 2.0) / 2.0, 0.05, 1.0);
 		//Renderer::sunlightXrot = 90 * daylight;
 		if (Renderer::AdvancedRender) {
 			//Build shadow map
@@ -1158,7 +1156,7 @@ public:
 			UIVertex(10, 30);
 			glEnd();
 
-			double healthPercent = (double)Player::health / Player::healthMax;
+			double healthPercent = (double)Player::health / Player::healthmax;
 			glColor4d(1.0, 0.0, 0.0, 0.5);
 			glBegin(GL_QUADS);
 			UIVertex(20, 15);
@@ -1235,19 +1233,12 @@ public:
 				<< (h < 10 ? "0" : "") << h << ":"
 				<< (m < 10 ? "0" : "") << m << ":"
 				<< (s < 10 ? "0" : "") << s
-				<< " (" << gametime << "/" << gameTimeMax << ")";
+				<< " (" << gametime << "/" << gameTimemax << ")";
 			debugText(ss.str(), false); ss.str("");
 
 			ss << "load:" << World::loadedChunks << " unload:" << World::unloadedChunks 
 				<< " render:"  << WorldRenderer::RenderChunkList.size() << " update:" <<World::updatedChunks ;
 			debugText(ss.str(), false); ss.str("");
-
-			if (multiplayer) {
-				MutexLock(Network::mutex);
-				ss << Network::getRequestCount() << "/" << networkRequestMax << " network requests";
-				debugText(ss.str(), false); ss.str("");
-				MutexUnlock(Network::mutex);
-			}
 
 #ifdef NEWORLD_DEBUG_PERFORMANCE_REC
 			ss << c_getChunkPtrFromCPA << " CPA requests";
@@ -1403,7 +1394,7 @@ public:
 		int leftp = (windowwidth / stretch - 392) / 2;
 		int upp = windowheight / stretch - 152 - 16;
 		static int mousew, mouseb, mousebl;
-		static block indexselected = Blocks::AIR;
+		static Block indexselected = Blocks::AIR;
 		static short Amountselected = 0;
 		double curtime = timer();
 		double TimeDelta = curtime - bagAnimTimer;
@@ -1556,7 +1547,7 @@ public:
 		while (bufh % 4 != 0) { bufh += 1; }
 		scrBuffer.sizeX = bufw;
 		scrBuffer.sizeY = bufh;
-		scrBuffer.buffer = unique_ptr<ubyte[]>(new ubyte[bufw*bufh * 3]);
+		scrBuffer.buffer = unique_ptr<uint8_t[]>(new uint8_t[bufw*bufh * 3]);
 		glReadPixels(x, y, bufw, bufh, GL_RGB, GL_UNSIGNED_BYTE, scrBuffer.buffer.get());
 		Textures::SaveRGBImage(filename, scrBuffer);
 	}
@@ -1596,7 +1587,7 @@ public:
 			int x; conv(command[1], x);
 			int y; conv(command[2], y);
 			int z; conv(command[3], z);
-			block b; conv(command[4], b);
+			Block b; conv(command[4], b);
 			World::setblock(x, y, z, b);
 			return true;
 		}));
@@ -1648,7 +1639,7 @@ public:
 		commands.push_back(Command("/time", [](const vector<string>& command) {
 			if (command.size() != 2) return false;
 			int time; conv(command[1], time);
-			if (time<0 || time>gameTimeMax) return false;
+			if (time<0 || time>gameTimemax) return false;
 			gametime = time;
 			return true;
 		}));
@@ -1678,8 +1669,8 @@ public:
 		if (multiplayer) {
 			fastSrand((unsigned int)time(NULL));
 			Player::name = "";
-			Player::onlineID = rand();
-			Network::init(serverip, port);
+			Player::onlineID = rand();/*
+			Network::init(serverip, port);*/
 		}
 		//初始化游戏状态
 		printf("[Console][Game]Init player...\n");
@@ -1745,8 +1736,8 @@ public:
 		if (World::vbuffersShouldDelete.size() > 0) {
 			glDeleteBuffersARB(World::vbuffersShouldDelete.size(), World::vbuffersShouldDelete.data());
 			World::vbuffersShouldDelete.clear();
-		}
-		if (multiplayer) Network::cleanUp();
+		}/*
+		if (multiplayer) Network::cleanUp();*/
 		commands.clear();
 		chatMessages.clear();
 		GUI::BackToMain();

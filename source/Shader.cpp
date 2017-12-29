@@ -1,6 +1,6 @@
 #include "Shader.h"
 #include "FunctionsKit.h"
-#include "GLProc.h"
+
 Shader::Shader(string vshPath, string fshPath, bool bindLocation, std::set<string> defines) {
 	shaderVertex = loadShader(vshPath, GL_VERTEX_SHADER_ARB, defines);
 	shaderFragment = loadShader(fshPath, GL_FRAGMENT_SHADER_ARB, defines);
@@ -56,7 +56,7 @@ bool Shader::setUniform(const char* uniform, float * value) {
 GLhandleARB Shader::loadShader(string filename, unsigned int mode, std::set<string> defines) {
 	std::stringstream ss;
 	GLhandleARB res;
-	string cur, var, macro;
+	string cur, var, maxro;
 	int lines = 0, curlen;
 	char* curline;
 	std::vector<char*> source;
@@ -68,10 +68,10 @@ GLhandleARB Shader::loadShader(string filename, unsigned int mode, std::set<stri
 		if (cur.empty()) continue;
 		if (beginWith(cur, "#")) { //处理NEWorld预处理器标志
 			ss.str(cur);
-			ss >> macro;
-			if (macro == "##NEWORLD_SHADER_DEFINES") {
-				ss >> var >> macro;
-				if (defines.find(var) != defines.end()) cur = "#define " + macro;
+			ss >> maxro;
+			if (maxro == "##NEWORLD_SHADER_DEFINES") {
+				ss >> var >> maxro;
+				if (defines.find(var) != defines.end()) cur = "#define " + maxro;
 				else continue;
 			}
 		}

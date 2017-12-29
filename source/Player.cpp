@@ -1,6 +1,5 @@
 #include "Player.h"
 #include "World.h"
-#include "OnlinePlayer.h"
 
 int Player::gamemode = GameMode::Survival;
 bool Player::Glide;
@@ -16,13 +15,13 @@ bool Player::NearWall = false;
 bool Player::inWater = false;
 bool Player::glidingNow = false;
 item Player::BlockInHand = Blocks::AIR;
-ubyte Player::indexInHand = 0;
+uint8_t Player::indexInHand = 0;
 
 Hitbox::AABB Player::playerbox;
 vector<Hitbox::AABB> Player::Hitboxes;
 
 double Player::xa, Player::ya, Player::za, Player::xd, Player::yd, Player::zd;
-double Player::health = 20, Player::healthMax = 20, Player::healSpeed = 0.01, Player::dropDamage = 5.0;
+double Player::health = 20, Player::healthmax = 20, Player::healSpeed = 0.01, Player::dropDamage = 5.0;
 onlineid Player::onlineID;
 string Player::name;
 Frustum Player::ViewFrustum;
@@ -84,7 +83,7 @@ void Player::spawn() {
 	InitHitbox(Player::playerbox);
 	InitPosition();
 	updateHitbox();
-	health = healthMax;
+	health = healthmax;
 	memset(inventory, 0, sizeof(inventory));
 	memset(inventoryAmount, 0, sizeof(inventoryAmount));
 	
@@ -125,15 +124,15 @@ void Player::updatePosition() {
 		int num = Hitboxes.size();
 		if (num > 0) {
 			for (int i = 0; i < num; i++) {
-				ya = Hitbox::MaxMoveOnYclip(playerbox, Hitboxes[i], ya);
+				ya = Hitbox::maxMoveOnYclip(playerbox, Hitboxes[i], ya);
 			}
 			Hitbox::Move(playerbox, 0.0, ya, 0.0);
 			for (int i = 0; i < num; i++) {
-				xa = Hitbox::MaxMoveOnXclip(playerbox, Hitboxes[i], xa);
+				xa = Hitbox::maxMoveOnXclip(playerbox, Hitboxes[i], xa);
 			}
 			Hitbox::Move(playerbox, xa, 0.0, 0.0);
 			for (int i = 0; i < num; i++) {
-				za = Hitbox::MaxMoveOnZclip(playerbox, Hitboxes[i], za);
+				za = Hitbox::maxMoveOnZclip(playerbox, Hitboxes[i], za);
 			}
 			Hitbox::Move(playerbox, 0.0, 0.0, za);
 		}
@@ -168,7 +167,7 @@ void Player::updatePosition() {
 	cxt = getchunkpos((int)xpos); cyt = getchunkpos((int)ypos); czt = getchunkpos((int)zpos);
 }
 
-bool Player::putBlock(int x, int y, int z, block blockname) {
+bool Player::putBlock(int x, int y, int z, Block blockname) {
 	Hitbox::AABB blockbox;
 	bool success = false;
 	blockbox.xmin = x - 0.5; blockbox.ymin = y - 0.5; blockbox.zmin = z - 0.5;
@@ -183,7 +182,7 @@ bool Player::putBlock(int x, int y, int z, block blockname) {
 }
 
 bool Player::save(string worldn) {
-	uint32 curversion = VERSION;
+	uint32_t curversion = VERSION;
 	std::stringstream ss;
 	ss << "Worlds/" << worldn << "/player.NEWorldPlayer";
 	std::ofstream isave(ss.str().c_str(), std::ios::binary | std::ios::out);
@@ -211,7 +210,7 @@ bool Player::save(string worldn) {
 }
 
 bool Player::load(string worldn) {
-	uint32 targetVersion;
+	uint32_t targetVersion;
 	std::stringstream ss;
 	ss << "Worlds/" << worldn << "/player.NEWorldPlayer";
 	std::ifstream iload(ss.str().c_str(), std::ios::binary | std::ios::in);
@@ -241,18 +240,18 @@ bool Player::load(string worldn) {
 
 bool Player::addItem(item itemname, short amount) {
 	//向背包里加入物品
-	const int InvMaxStack = 255;
+	const int InvmaxStack = 255;
 	for (int i = 3; i >= 0; i--) {
 		for (int j = 0; j != 10; j++) {
-			if (inventory[i][j] == itemname && inventoryAmount[i][j] < InvMaxStack) {
+			if (inventory[i][j] == itemname && inventoryAmount[i][j] < InvmaxStack) {
 				//找到一个同类格子
-				if (amount + inventoryAmount[i][j] <= InvMaxStack) {
+				if (amount + inventoryAmount[i][j] <= InvmaxStack) {
 					inventoryAmount[i][j] += amount;
 					return true;
 				}
 				else {
-					amount -= InvMaxStack - inventoryAmount[i][j];
-					inventoryAmount[i][j] = InvMaxStack;
+					amount -= InvmaxStack - inventoryAmount[i][j];
+					inventoryAmount[i][j] = InvmaxStack;
 				}
 			}
 		}
@@ -262,13 +261,13 @@ bool Player::addItem(item itemname, short amount) {
 			if (inventory[i][j] == Blocks::AIR) {
 				//找到一个空白格子
 				inventory[i][j] = itemname;
-				if (amount <= InvMaxStack) {
+				if (amount <= InvmaxStack) {
 					inventoryAmount[i][j] = amount;
 					return true;
 				}
 				else {
-					inventoryAmount[i][j] = InvMaxStack;
-					amount -= InvMaxStack;
+					inventoryAmount[i][j] = InvmaxStack;
+					amount -= InvmaxStack;
 				}
 			}
 		}
@@ -290,23 +289,5 @@ void Player::changeGameMode(int _gamemode){
 		Player::jump = 0.0;
 		break;
 	}
-}
-
-PlayerPacket Player::convertToPlayerPacket()
-{
-	PlayerPacket p;
-	p.x = xpos;
-	p.y = ypos + height + heightExt;
-	p.z = zpos;
-	p.heading = heading;
-	p.lookupdown = lookupdown;
-	p.onlineID = onlineID;
-	p.skinID = 0;
-#ifdef NEWORLD_COMPILE_DISABLE_SECURE
-	strcpy(p.name, name.c_str());
-#else
-	strcpy_s(p.name, name.c_str());
-#endif
-	return p;
 }
 

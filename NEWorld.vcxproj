@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -7,14 +7,6 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Profile|Win32">
-      <Configuration>Profile</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Profile|x64">
-      <Configuration>Profile</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
@@ -35,40 +27,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -85,12 +63,6 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -113,14 +85,6 @@
     <LibraryPath>$(ProjectDir)lib64;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)x64</TargetName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
-    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)libraries;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
-    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)libraries;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
@@ -134,7 +98,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glfw3dll.lib;ws2_32.lib;freetype2.lib;OpenAL32.lib;EFX-Util.lib</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;OpenAL32.lib;EFX-Util.lib</AdditionalDependencies>
       <Profile>true</Profile>
       <SubSystem>Console</SubSystem>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
@@ -150,7 +114,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glfw3dll_x64.lib;ws2_32.lib</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;OpenAL32.lib;EFX-Util.lib</AdditionalDependencies>
       <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
@@ -184,7 +148,7 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glfw3dll.lib;ws2_32.lib;freetype2.lib;OpenAL32.lib;EFX-Util.lib</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;OpenAL32.lib;EFX-Util.lib</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
@@ -217,68 +181,11 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glfw3dll_x64.lib;ws2_32.lib;freetype2.lib;OpenAL32.lib;EFX-Util.lib</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;OpenAL32.lib;EFX-Util.lib</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <LargeAddressAware>true</LargeAddressAware>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <DelayLoadDLLs>glfw3.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
-    <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
-      <Optimization>Full</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <FloatingPointModel>Fast</FloatingPointModel>
-      <OmitFramePointers>true</OmitFramePointers>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>
-      </PrecompiledHeaderFile>
-      <PreprocessorDefinitions>NEWORLD_GAME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <CallingConvention>Cdecl</CallingConvention>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>Debug</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glfw3dll.lib;ws2_32.lib;freetype2.lib;EFX-Util.lib;OpenAL32.lib</AdditionalDependencies>
-      <SubSystem>NotSet</SubSystem>
-      <AssemblyDebug>true</AssemblyDebug>
-      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
-    <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
-      <Optimization>Full</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <FloatingPointModel>Fast</FloatingPointModel>
-      <OmitFramePointers>false</OmitFramePointers>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>
-      </PrecompiledHeaderFile>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>Debug</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glfw3dll_x64.lib;ws2_32.lib</AdditionalDependencies>
-      <SubSystem>Console</SubSystem>
-      <AssemblyDebug>true</AssemblyDebug>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -294,38 +201,16 @@
     <ClInclude Include="include\AL\Framework.h" />
     <ClInclude Include="include\AL\LoadOAL.h" />
     <ClInclude Include="include\AL\xram.h" />
-    <ClInclude Include="include\Netycat\include\Netycat\Core\Buffer.h" />
-    <ClInclude Include="include\Netycat\include\Netycat\Core\BufferCondition.h" />
-    <ClInclude Include="include\Netycat\include\Netycat\Core\Core.h" />
-    <ClInclude Include="include\Netycat\include\Netycat\Core\Exception.h" />
-    <ClInclude Include="include\Netycat\include\Netycat\Core\InetAddress.h" />
-    <ClInclude Include="include\Netycat\include\Netycat\Core\Socket.h" />
-    <ClInclude Include="include\Netycat\include\Netycat\Netycat.h" />
-    <ClInclude Include="include\OptiX\optix.h" />
-    <ClInclude Include="include\OptiX\optix_cuda.h" />
-    <ClInclude Include="include\OptiX\optix_cuda_interop.h" />
-    <ClInclude Include="include\OptiX\optix_d3d10_interop.h" />
-    <ClInclude Include="include\OptiX\optix_d3d11_interop.h" />
-    <ClInclude Include="include\OptiX\optix_d3d9_interop.h" />
-    <ClInclude Include="include\OptiX\optix_device.h" />
-    <ClInclude Include="include\OptiX\optix_gl_interop.h" />
-    <ClInclude Include="include\OptiX\optix_host.h" />
-    <ClInclude Include="include\OptiX\optix_math.h" />
-    <ClInclude Include="include\OptiX\optix_sizet.h" />
-    <ClInclude Include="include\OptiX\optix_world.h" />
     <ClInclude Include="source\API.h" />
     <ClInclude Include="source\AudioSystem.h" />
     <ClInclude Include="source\Blocks.h" />
-    <ClInclude Include="source\ByteOrder.h" />
     <ClInclude Include="source\Chunk.h" />
-    <ClInclude Include="source\ChunkPacket.h" />
     <ClInclude Include="source\ChunkPtrArray.h" />
     <ClInclude Include="source\Command.h" />
     <ClInclude Include="source\Effect.h" />
     <ClInclude Include="source\ChunkRenderer.h" />
     <ClInclude Include="source\FunctionsKit.h" />
     <ClInclude Include="source\GameView.h" />
-    <ClInclude Include="source\GLProc.h" />
     <ClInclude Include="source\HeightMap.h" />
     <ClInclude Include="source\Definitions.h" />
     <ClInclude Include="source\Frustum.h" />
@@ -337,13 +222,9 @@
     <ClInclude Include="source\Mob.h" />
     <ClInclude Include="source\ModSupport.h" />
     <ClInclude Include="source\ModLoader.h" />
-    <ClInclude Include="source\Network.h" />
-    <ClInclude Include="source\NNN.h" />
     <ClInclude Include="source\Object.h" />
-    <ClInclude Include="source\OnlinePlayer.h" />
     <ClInclude Include="source\Particles.h" />
     <ClInclude Include="source\Player.h" />
-    <ClInclude Include="source\PlayerPacket.h" />
     <ClInclude Include="source\Renderer.h" />
     <ClInclude Include="source\resource.h" />
     <ClInclude Include="source\RTDevice.h" />
@@ -365,12 +246,6 @@
     <ClCompile Include="include\AL\CWaves.cpp" />
     <ClCompile Include="include\AL\Framework.cpp" />
     <ClCompile Include="include\AL\LoadOAL.cpp" />
-    <ClCompile Include="include\Netycat\src\Netycat\Core\Buffer.cpp" />
-    <ClCompile Include="include\Netycat\src\Netycat\Core\BufferCondition.cpp" />
-    <ClCompile Include="include\Netycat\src\Netycat\Core\Core.cpp" />
-    <ClCompile Include="include\Netycat\src\Netycat\Core\Exception.cpp" />
-    <ClCompile Include="include\Netycat\src\Netycat\Core\InetAddress.cpp" />
-    <ClCompile Include="include\Netycat\src\Netycat\Core\Socket.cpp" />
     <ClCompile Include="source\API.cpp" />
     <ClCompile Include="source\AudioSystem.cpp" />
     <ClCompile Include="source\Chunk.cpp" />
@@ -381,7 +256,6 @@
     <ClCompile Include="source\FunctionsKit.cpp" />
     <ClCompile Include="source\GameMenu.cpp" />
     <ClCompile Include="source\GameView.cpp" />
-    <ClCompile Include="source\GLProc.cpp" />
     <ClCompile Include="source\GUIOptionsMenu.cpp" />
     <ClCompile Include="source\HeightMap.cpp" />
     <ClCompile Include="source\Definitions.cpp" />
@@ -395,10 +269,7 @@
     <ClCompile Include="source\MainMenu.cpp" />
     <ClCompile Include="source\ModLoader.cpp" />
     <ClCompile Include="source\MultiplayerGame.cpp" />
-    <ClCompile Include="source\Network.cpp" />
     <ClCompile Include="source\NEWorld.cpp" />
-    <ClCompile Include="source\NNN.cpp" />
-    <ClCompile Include="source\OnlinePlayer.cpp" />
     <ClCompile Include="source\OptionsMenu.cpp" />
     <ClCompile Include="source\Particles.cpp" />
     <ClCompile Include="source\Player.cpp" />

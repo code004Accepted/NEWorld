@@ -1,7 +1,7 @@
 #include "Items.h"
 #include "Textures.h"
 
-ItemInfo itemsinfo[] = { STICK, APPLE };
+Iteminfo itemsinfo[] = { STICK, APPLE };
 
 void loadItemsTextures()
 {

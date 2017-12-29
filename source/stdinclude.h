@@ -8,6 +8,7 @@
 	using std::thread;
 	using std::mutex;
 	#endif
+#define NOMINMAX
 	#include <WinSock2.h>
 	#include <Windows.h>
 #else
@@ -41,16 +42,13 @@ using std::unique_ptr;
 using std::map;
 using std::cout;
 using std::endl;
-using std::max;
-using std::min;
 
 #ifdef NEWORLD_GAME
 
 //GLFW
 #define GLFW_DLL
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
-//GLEXT
-#include <GL/glext.h>
 //FREETYPE
 #include <ft2build.h>
 #include FT_FREETYPE_H

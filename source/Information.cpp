@@ -4,7 +4,7 @@
 #include "Setup.h"
 
 string Str[] = {
-"NEWorld Main Version:" + MAJOR_VERSION + MINOR_VERSION + EXT_VERSION ,
+"NEWorld Main Version:" + MAJOR_VERSION + minOR_VERSION + EXT_VERSION ,
 "CopyLeft 2016 Infinideastudio, No Rights Reserved" ,
 "Welcome to develope with us!",
 "Contributers:" ,

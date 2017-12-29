@@ -1,7 +1,7 @@
 #include "GUI.h"
 #include "TextRenderer.h"
 #include "Frustum.h"
-#include"AudioSystem.h"
+#include "AudioSystem.h"
 
 extern string inputstr;
 
@@ -39,7 +39,7 @@ namespace GUI {
 	void screenBlur() {
 		static int szl = 0, rl = 0;
 		static float* mat = nullptr;
-		static ubyte *scr; //ÆÁÄ»ÏñËØ»º´æ
+		static uint8_t *scr; //ÆÁÄ»ÏñËØ»º´æ
 
 		int w = windowwidth; //Width
 		int h = windowheight; //Height
@@ -52,7 +52,7 @@ namespace GUI {
 		if (sz != szl) {
 			szl = sz;
 			delete[] scr;
-			scr = new ubyte[sz * sz * 3];
+			scr = new uint8_t[sz * sz * 3];
 		}
 
 		if (rl != r) {

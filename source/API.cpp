@@ -50,7 +50,7 @@ APIPackage Mod::getPackage() {
 		player.heading = Player::heading;
 		player.healSpeed = Player::healSpeed;
 		player.health = Player::health;
-		player.healthMax = Player::healthMax;
+		player.healthmax = Player::healthmax;
 		player.height = Player::height;
 		player.heightExt = Player::heightExt;
 		//player.Hitboxes = Player::Hitboxes;

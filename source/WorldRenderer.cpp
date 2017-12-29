@@ -7,7 +7,7 @@ namespace WorldRenderer {
 		int renderedChunks = 0;
 		RenderChunkList.clear();
 		for (int i = 0; i < World::loadedChunks; i++) {
-			if (!World::chunks[i]->renderBuilt || World::chunks[i]->Empty) continue;
+			if (!World::chunks[i]->mIsRenderBuilt || World::chunks[i]->mIsEmpty) continue;
 			if (World::chunkInRange(World::chunks[i]->cx, World::chunks[i]->cy, World::chunks[i]->cz,
 				cx, cy, cz, renderdistance)) {
 				if (!frustest || World::chunks[i]->visible) {

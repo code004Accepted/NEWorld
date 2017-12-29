@@ -46,7 +46,7 @@ namespace Renderer {
 	//unsigned int Buffers[3];
 	bool AdvancedRender;
 	int ShadowRes = 4096;
-	int MaxShadowDist = 4;
+	int maxShadowDist = 4;
 	int shadowdist;
 	float sunlightXrot, sunlightYrot;
 	vector<Shader> shaders;
@@ -148,7 +148,7 @@ namespace Renderer {
 
 		sunlightXrot = 30.0f;
 		sunlightYrot = 60.0f;
-		shadowdist = min(MaxShadowDist, viewdistance);
+		shadowdist = std::min(maxShadowDist, viewdistance);
 		shaders.reserve(4);
 		shaders.push_back(Shader("Shaders/Main.vsh", "Shaders/Main.fsh", true));
 		shaders.push_back(Shader("Shaders/Main.vsh", "Shaders/Main.fsh", true, defines));
@@ -195,7 +195,7 @@ namespace Renderer {
 	}
 
 	void EnableShaders() {
-		shadowdist = min(MaxShadowDist, viewdistance);
+		shadowdist = std::min(maxShadowDist, viewdistance);
 
 		//Enable shader
 		Shader& shader = shaders[MergeFace ? MergeFaceShader : MainShader];

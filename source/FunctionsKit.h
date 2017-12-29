@@ -76,21 +76,6 @@ template<class T> inline T clamp(T x, T min, T max) {
 }
 
 #ifdef NEWORLD_USE_WINAPI
-inline Mutex_t MutexCreate() { return CreateMutex(NULL, FALSE, ""); }
-inline void MutexDestroy(Mutex_t _hMutex) { CloseHandle(_hMutex); }
-inline void MutexLock(Mutex_t _hMutex) { WaitForSingleObject(_hMutex, INFINITE); }
-inline void MutexUnlock(Mutex_t _hMutex) { ReleaseMutex(_hMutex); }
-inline Thread_t ThreadCreate(ThreadFunc_t func, void* param) { return CreateThread(NULL, 0, func, param, 0, NULL); }
-inline void ThreadWait(Thread_t _hThread) { WaitForSingleObject(_hThread, INFINITE); }
-inline void ThreadDestroy(Thread_t _hThread) { CloseHandle(_hThread); }
-inline unsigned int MByteToWChar(wchar_t* dst, const char* src, unsigned int n) {
-	int res = MultiByteToWideChar(CP_ACP, 0, src, n, dst, n);
-	return res;
-}
-inline unsigned int WCharToMByte(char* dst, const wchar_t* src, unsigned int n) {
-	return WideCharToMultiByte(CP_ACP, 0, src, n, dst, n * 2, NULL, NULL);
-}
-inline unsigned int wstrlen(const wchar_t* wstr) { return lstrlenW(wstr); }
 inline double timer() {
 	static LARGE_INTEGER counterFreq;
 	if (counterFreq.QuadPart == 0) QueryPerformanceFrequency(&counterFreq);
@@ -98,7 +83,18 @@ inline double timer() {
 	QueryPerformanceCounter(&now);
 	return (double)now.QuadPart / counterFreq.QuadPart;
 }
+inline unsigned int MByteToWChar(wchar_t* dst, const char* src, unsigned int n) {
+    int res = MultiByteToWideChar(CP_ACP, 0, src, n, dst, n);
+    return res;
+}
+inline unsigned int WCharToMByte(char* dst, const wchar_t* src, unsigned int n) {
+    return WideCharToMultiByte(CP_ACP, 0, src, n, dst, n * 2, NULL, NULL);
+}
 #else
+inline unsigned int MByteToWChar(wchar_t* dst, const char* src, unsigned int n) { size_t res; mbstowcs_s(&res, dst, n, src, _TRUNCATE); return res; }
+inline unsigned int WCharToMByte(char* dst, const wchar_t* src, unsigned int n) { size_t res; wcstombs_s(&res, dst, n, src, _TRUNCATE); return res; }
+inline double timer() { return (double)clock() / CLOCKS_PER_SEC; }
+#endif
 inline Mutex_t MutexCreate() { return new std::mutex; }
 inline void MutexDestroy(Mutex_t _hMutex) { delete _hMutex; }
 inline void MutexLock(Mutex_t _hMutex) { _hMutex->lock(); }
@@ -106,12 +102,7 @@ inline void MutexUnlock(Mutex_t _hMutex) { _hMutex->unlock(); }
 inline Thread_t ThreadCreate(ThreadFunc_t func, void* param) { return new std::thread(func, param); }
 inline void ThreadWait(Thread_t _hThread) { _hThread->join(); }
 inline void ThreadDestroy(Thread_t _hThread) { delete _hThread; }
-inline unsigned int MByteToWChar(wchar_t* dst, const char* src, unsigned int n) { size_t res; mbstowcs_s(&res, dst, n, src, _TRUNCATE); return res; }
-inline unsigned int WCharToMByte(char* dst, const wchar_t* src, unsigned int n) { size_t res; wcstombs_s(&res, dst, n, src, _TRUNCATE); return res; }
 inline unsigned int wstrlen(const wchar_t* wstr) { return wcslen(wstr); }
-inline void Sleep(unsigned int ms) { unsigned int fr = clock(); while (clock() - fr <= ms); }
-inline double timer() { return (double)clock() / CLOCKS_PER_SEC; }
-#endif
 inline int Distancen(int ix, int iy, int iz, int x, int y, int z)//计算距离的平方
 {
 	return (ix - x)*(ix - x) + (iy - y)*(iy - y) + (iz - z)*(iz - z);

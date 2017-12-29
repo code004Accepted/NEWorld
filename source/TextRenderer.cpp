@@ -72,7 +72,7 @@ namespace TextRenderer {
 	void loadchar(unsigned int uc) {
 		FT_Bitmap* bitmap;
 		unsigned int index;
-		ubyte *Tex, *Texsrc;
+		uint8_t *Tex, *Texsrc;
 		int wid = (int)pow(2, ceil(log2(32 * stretch)));
 
 		index = FT_Get_Char_Index(fontface, uc);
@@ -80,8 +80,8 @@ namespace TextRenderer {
 		FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL);
 		bitmap = &(slot->bitmap);
 		Texsrc = bitmap->buffer;
-		Tex = new ubyte[wid * wid * 4];
-		memset(Tex, 0, wid * wid * 4 * sizeof(ubyte));
+		Tex = new uint8_t[wid * wid * 4];
+		memset(Tex, 0, wid * wid * 4 * sizeof(uint8_t));
 		for (unsigned int i = 0; i < bitmap->rows; i++) {
 			for (unsigned int j = 0; j < bitmap->width; j++) {
 				Tex[(i * wid + j) * 4 + 0] = Tex[(i * wid + j) * 4 + 1] = Tex[(i * wid + j) * 4 + 2] = 255U;

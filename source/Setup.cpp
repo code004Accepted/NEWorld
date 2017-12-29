@@ -32,7 +32,7 @@ void splashScreen() {
 void createWindow() {
 	glfwSetErrorCallback([](int, const char* desc) { cout << desc << endl; });
 	std::stringstream title;
-	title << "NEWorld " << MAJOR_VERSION << MINOR_VERSION << EXT_VERSION;
+	title << "NEWorld " << MAJOR_VERSION << minOR_VERSION << EXT_VERSION;
 	if (Multisample != 0) glfwWindowHint(GLFW_SAMPLES, Multisample);
 	MainWindow = glfwCreateWindow(windowwidth, windowheight, title.str().c_str(), NULL, NULL);
 	MouseCursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
@@ -53,7 +53,7 @@ void setupScreen() {
 	GLVersionMinor = glfwGetWindowAttrib(MainWindow, GLFW_CONTEXT_VERSION_MINOR);
 	GLVersionRev = glfwGetWindowAttrib(MainWindow, GLFW_CONTEXT_REVISION);
 	//获取OpenGL函数地址
-	InitGLProc();
+    glewInit();
 
 	//渲染参数设置
 	glViewport(0, 0, windowwidth, windowheight);

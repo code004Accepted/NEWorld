@@ -8,7 +8,7 @@ namespace Blocks {
 		GLASS, WATER, LAVA, GLOWSTONE, SAND, CEMENT, ICE, COAL, IRON,
 		TNT, BLOCK_DEF_END
 	};
-	const block NONEMPTY = 1;
+	const Block NONEMPTY = 1;
 
 	class SingleBlock {
 	private:

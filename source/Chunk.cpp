@@ -4,9 +4,9 @@
 #include "Blocks.h"
 
 namespace ChunkRenderer {
-	void RenderChunk(World::chunk* c);
-	void MergeFaceRender(World::chunk* c);
-	void RenderDepthModel(World::chunk* c);
+	void RenderChunk(World::Chunk* c);
+	void MergeFaceRender(World::Chunk* c);
+	void RenderDepthModel(World::Chunk* c);
 }
 
 namespace Renderer {
@@ -64,13 +64,13 @@ namespace World {
 		if (HeightMap[_].count == 0) HeightMap.erase(_);
 	}*/
 
-	double chunk::relBaseX, chunk::relBaseY, chunk::relBaseZ;
-	Frustum chunk::TestFrustum;
+	double Chunk::relBaseX, Chunk::relBaseY, Chunk::relBaseZ;
+	Frustum Chunk::TestFrustum;
 
-	void chunk::create() {
+	void Chunk::create() {
 		aabb = getBaseAABB();
-		pblocks = new block[4096];
-		pbrightness = new brightness[4096];
+		pblocks = new Block[4096];
+		pbrightness = new Brightness[4096];
 		//memset(pblocks, 0, sizeof(pblocks));
 		//memset(pbrightness, 0, sizeof(pbrightness));
 #ifdef NEWORLD_DEBUG_CONSOLE_OUTPUT
@@ -80,19 +80,19 @@ namespace World {
 #endif
 	}
 
-	void chunk::destroy() {
+	void Chunk::destroy() {
 		//HMapExclude(cx, cz);
 		delete[] pblocks;
 		delete[] pbrightness;
 		pblocks = nullptr;
 		pbrightness = nullptr;
-		updated = false;
+		mIsUpdated = false;
 		unloadedChunks++;
 	}
 
-	void chunk::buildTerrain(bool initIfEmpty) {
+	void Chunk::buildTerrain(bool initIfEmpty) {
 		//Éú³ÉµØÐÎ
-		//assert(Empty == false);
+		//assert(mIsEmpty == false);
 
 #ifdef NEWORLD_DEBUG_CONSOLE_OUTPUT
 		if (pblocks == nullptr || pbrightness == nullptr) {
@@ -104,45 +104,45 @@ namespace World {
 		//Fast generate parts
 		//Part1 out of the terrain bound
 		if (cy > 4) {
-			Empty = true;
+			mIsEmpty = true;
 			if (!initIfEmpty) return;
-			memset(pblocks, 0, 4096 * sizeof(block));
+			memset(pblocks, 0, 4096 * sizeof(Block));
 			for (int i = 0; i < 4096; i++) pbrightness[i] = skylight;
 			return;
 		}
 		if (cy < 0) {
-			Empty = true;
+			mIsEmpty = true;
 			if (!initIfEmpty) return;
-			memset(pblocks, 0, 4096 * sizeof(block));
-			for (int i = 0; i < 4096; i++) pbrightness[i] = BRIGHTNESSMIN;
+			memset(pblocks, 0, 4096 * sizeof(Block));
+			for (int i = 0; i < 4096; i++) pbrightness[i] = BrightnessMin;
 			return;
 		}
 
 		//Part2 out of geomentry area
 		HMapManager cur = HMapManager(cx, cz);
 		if (cy > cur.high) {
-			Empty = true;
+			mIsEmpty = true;
 			if (!initIfEmpty) return;
-			memset(pblocks, 0, 4096 * sizeof(block));
+			memset(pblocks, 0, 4096 * sizeof(Block));
 			for (int i = 0; i < 4096; i++) pbrightness[i] = skylight;
 			return;
 		}
 		if (cy < cur.low) {
 			for (int i = 0; i < 4096; i++) pblocks[i] = Blocks::ROCK;
-			memset(pbrightness, 0, 4096 * sizeof(brightness));
+			memset(pbrightness, 0, 4096 * sizeof(Brightness));
 			if (cy == 0) for (int x = 0; x < 16; x++) for (int z = 0; z < 16; z++) pblocks[x * 256 + z] = Blocks::BEDROCK;
-			Empty = false; return;
+			mIsEmpty = false; return;
 		}
 
 		//Normal Calc
 		//Init
-		memset(pblocks, 0, 4096 * sizeof(block)); //Empty the chunk
-		memset(pbrightness, 0, 4096 * sizeof(brightness)); //Set All Brightness to 0
+		memset(pblocks, 0, 4096 * sizeof(Block)); //mIsEmpty the chunk
+		memset(pbrightness, 0, 4096 * sizeof(Brightness)); //Set All Brightness to 0
 
 		int x, z, h = 0, sh = 0, wh = 0;
 		int minh, maxh, cur_br;
 
-		Empty = true;
+		mIsEmpty = true;
 		sh = WorldGen::WaterLevel + 2 - (cy << 4);
 		wh = WorldGen::WaterLevel - (cy << 4);
 
@@ -150,33 +150,33 @@ namespace World {
 			for (z = 0; z < 16; ++z) {
 				int base = (x << 8) + z;
 				h = cur.H[x][z] - (cy << 4);
-				if (h >= 0 || wh >= 0) Empty = false;
+				if (h >= 0 || wh >= 0) mIsEmpty = false;
 				if (h > sh && h > wh + 1) {
 					//Grass layer
 					if (h >= 0 && h < 16) pblocks[(h << 4) + base] = Blocks::GRASS;
 					//Dirt layer
-					maxh = min(max(0, h), 16);
-					for (int y = min(max(0, h - 5), 16); y < maxh; ++y) pblocks[(y << 4) + base] = Blocks::DIRT;
+					maxh = std::min(std::max(0, h), 16);
+					for (int y = std::min(std::max(0, h - 5), 16); y < maxh; ++y) pblocks[(y << 4) + base] = Blocks::DIRT;
 				}
 				else {
 					//Sand layer
-					maxh = min(max(0, h + 1), 16);
-					for (int y = min(max(0, h - 5), 16); y < maxh; ++y) pblocks[(y << 4) + base] = Blocks::SAND;
+					maxh = std::min(std::max(0, h + 1), 16);
+					for (int y = std::min(std::max(0, h - 5), 16); y < maxh; ++y) pblocks[(y << 4) + base] = Blocks::SAND;
 					//Water layer
-					minh = min(max(0, h + 1), 16); maxh = min(max(0, wh + 1), 16);
-					cur_br = BRIGHTNESSMAX - (WorldGen::WaterLevel - (maxh - 1 + (cy << 4))) * 2;
-					if (cur_br < BRIGHTNESSMIN) cur_br = BRIGHTNESSMIN;
+					minh = std::min(std::max(0, h + 1), 16); maxh = std::min(std::max(0, wh + 1), 16);
+					cur_br = BrightnessMax - (WorldGen::WaterLevel - (maxh - 1 + (cy << 4))) * 2;
+					if (cur_br < BrightnessMin) cur_br = BrightnessMin;
 					for (int y = maxh - 1; y >= minh; --y) {
 						pblocks[(y << 4) + base] = Blocks::WATER;
-						pbrightness[(y << 4) + base] = (brightness)cur_br;
-						cur_br -= 2; if (cur_br < BRIGHTNESSMIN) cur_br = BRIGHTNESSMIN;
+						pbrightness[(y << 4) + base] = (Brightness)cur_br;
+						cur_br -= 2; if (cur_br < BrightnessMin) cur_br = BrightnessMin;
 					}
 				}
 				//Rock layer
-				maxh = min(max(0, h - 5), 16);
+				maxh = std::min(std::max(0, h - 5), 16);
 				for (int y = 0; y < maxh; ++y) pblocks[(y << 4) + base] = Blocks::ROCK;
 				//Air layer
-				for (int y = min(max(0, max(h + 1, wh + 1)), 16); y < 16; ++y) {
+				for (int y = std::min(std::max(0, std::max(h + 1, wh + 1)), 16); y < 16; ++y) {
 					pblocks[(y << 4) + base] = Blocks::AIR;
 					pbrightness[(y << 4) + base] = skylight;
 				}
@@ -186,7 +186,7 @@ namespace World {
 		}
 	}
 
-	void chunk::buildDetail() {
+	void Chunk::buildDetail() {
 		int index = 0;
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
@@ -201,13 +201,15 @@ namespace World {
 		}
 	}
 
-	void chunk::build(bool initIfEmpty) {
+	void Chunk::build(bool initIfEmpty) {
 		buildTerrain(initIfEmpty);
-		if (!Empty) buildDetail();
+		if (!mIsEmpty) 
+            buildDetail();
+        mIsModified = false;
 	}
 
-	void chunk::Load(bool initIfEmpty) {
-		//assert(Empty == false);
+	void Chunk::load(bool initIfEmpty) {
+		//assert(mIsEmpty == false);
 
 		create();
 #ifndef NEWORLD_DEBUG_NO_FILEIO
@@ -215,10 +217,10 @@ namespace World {
 #else
 		build(initIfEmpty);
 #endif
-		if (!Empty) updated = true;
+		if (!mIsEmpty) mIsUpdated = true;
 	}
 
-	void chunk::Unload() {
+	void Chunk::unload() {
 		unloadedChunksCount++;
 #ifndef NEWORLD_DEBUG_NO_FILEIO
 		SaveToFile();
@@ -227,12 +229,12 @@ namespace World {
 		destroy();
 	}
 
-	bool chunk::LoadFromFile() {
+	bool Chunk::LoadFromFile() {
 		std::ifstream file(getChunkPath(), std::ios::in | std::ios::binary);
 		bool openChunkFile = file.is_open();
-		file.read((char*)pblocks, 4096 * sizeof(block));
-		file.read((char*)pbrightness, 4096 * sizeof(brightness));
-		file.read((char*)&DetailGenerated, sizeof(bool));
+		file.read((char*)pblocks, 4096 * sizeof(Block));
+		file.read((char*)pbrightness, 4096 * sizeof(Brightness));
+		file.read((char*)&mIsDetailGenerated, sizeof(bool));
 		file.close();
 
 		//file.open(getObjectsPath(), std::ios::in | std::ios::binary);
@@ -240,12 +242,12 @@ namespace World {
 		return openChunkFile;
 	}
 
-	void chunk::SaveToFile(){
-		if (!Empty&&Modified) {
+	void Chunk::SaveToFile(){
+		if (!mIsEmpty&&mIsModified) {
 			std::ofstream file(getChunkPath(), std::ios::out | std::ios::binary);
-			file.write((char*)pblocks, 4096 * sizeof(block));
-			file.write((char*)pbrightness, 4096 * sizeof(brightness));
-			file.write((char*)&DetailGenerated, sizeof(bool));
+			file.write((char*)pblocks, 4096 * sizeof(Block));
+			file.write((char*)pbrightness, 4096 * sizeof(Brightness));
+			file.write((char*)&mIsDetailGenerated, sizeof(bool));
 			file.close();
 		}
 		if (objects.size() != 0) {
@@ -253,8 +255,8 @@ namespace World {
 		}
 	}
 
-	void chunk::buildRender() {
-		//assert(Empty == false);
+	void Chunk::buildRender() {
+		//assert(mIsEmpty == false);
 
 #ifdef NEWORLD_DEBUG_CONSOLE_OUTPUT
 		if (pblocks == nullptr || pbrightness == nullptr){
@@ -277,8 +279,8 @@ namespace World {
 		rebuiltChunks++;
 		updatedChunks++;
 
-		if (renderBuilt == false){
-			renderBuilt = true;
+		if (mIsRenderBuilt == false){
+			mIsRenderBuilt = true;
 			loadAnim = cy * 16.0f + 16.0f;
 		}
 		
@@ -286,21 +288,21 @@ namespace World {
 		else ChunkRenderer::RenderChunk(this);
 		if (Renderer::AdvancedRender) ChunkRenderer::RenderDepthModel(this);
 
-		updated = false;
+		mIsUpdated = false;
 
 	}
 
-	void chunk::destroyRender() {
-		if (!renderBuilt) return;
+	void Chunk::destroyRender() {
+		if (!mIsRenderBuilt) return;
 		if (vbuffer[0] != 0) vbuffersShouldDelete.push_back(vbuffer[0]);
 		if (vbuffer[1] != 0) vbuffersShouldDelete.push_back(vbuffer[1]);
 		if (vbuffer[2] != 0) vbuffersShouldDelete.push_back(vbuffer[2]);
 		if (vbuffer[3] != 0) vbuffersShouldDelete.push_back(vbuffer[3]);
 		vbuffer[0] = vbuffer[1] = vbuffer[2] = vbuffer[3] = 0;
-		renderBuilt = false;
+		mIsRenderBuilt = false;
 	}
 
-	Hitbox::AABB chunk::getBaseAABB(){
+	Hitbox::AABB Chunk::getBaseAABB(){
 		Hitbox::AABB ret;
 		ret.xmin = cx * 16 - 0.5;
 		ret.ymin = cy * 16 - 0.5;
@@ -311,7 +313,7 @@ namespace World {
 		return ret;
 	}
 
-	Frustum::ChunkBox chunk::getRelativeAABB() {
+	Frustum::ChunkBox Chunk::getRelativeAABB() {
 		Frustum::ChunkBox ret;
 		ret.xmin = (float)(aabb.xmin - relBaseX);
 		ret.xmax = (float)(aabb.xmax - relBaseX);

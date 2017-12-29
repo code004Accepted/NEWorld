@@ -59,10 +59,12 @@ namespace AudioSystem {
 		//下水
 		if (!Device.load("Audio\\DownWater.wav", &DownWater))DownWater = -1;
 	    //播放BGM
-		int size = GetTickCount64() % BGMNum;
-		ALfloat Pos[] = { 0.0,0.0,0.0 };
-		ALfloat Vel[] = { 0.0,0.0,0.0 };
-		SBGM = Device.Play(BGM[size], false, BGMGain, Pos, Vel);
+        if (BGMNum) {
+            int size = GetTickCount64() % BGMNum;
+            ALfloat Pos[] = { 0.0,0.0,0.0 };
+            ALfloat Vel[] = { 0.0,0.0,0.0 };
+            SBGM = Device.Play(BGM[size], false, BGMGain, Pos, Vel);
+        }
 	}
 	void Update(ALfloat PlayerPos[3],bool BFall, bool BBlockClick, ALfloat BlockPos[3], int BRun,bool BDownWater) {
 		//设置全局常量

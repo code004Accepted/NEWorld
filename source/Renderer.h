@@ -1,6 +1,5 @@
 #pragma once
 #include "Definitions.h"
-#include "GLProc.h"
 #include "Frustum.h"
 #include "Shader.h"
 
@@ -18,7 +17,7 @@ namespace Renderer{
 	extern int Vertexes;
 	extern bool AdvancedRender;
 	extern int ShadowRes;
-	extern int MaxShadowDist;
+	extern int maxShadowDist;
 	extern int shadowdist;
 	extern float sunlightXrot, sunlightYrot;
 	extern unsigned int DepthTexture;

@@ -1,6 +1,5 @@
 #pragma once
 #include "Definitions.h"
-#include "GLProc.h"
 
 extern int BLOCKTEXTURE_SIZE, BLOCKTEXTURE_UNITSIZE, filter;
 const short BITMAP_ID = 0x4D42;
@@ -12,13 +11,13 @@ namespace Textures{
 	struct TEXTURE_RGB {
 		unsigned int sizeX;
 		unsigned int sizeY;
-		unique_ptr<ubyte[]> buffer;
+		unique_ptr<uint8_t[]> buffer;
 	};
 
 	struct TEXTURE_RGBA {
 		unsigned int sizeX;
 		unsigned int sizeY;
-		unique_ptr<ubyte[]> buffer;
+		unique_ptr<uint8_t[]> buffer;
 	};
 
 	struct BITMAPINFOHEADER {
@@ -42,9 +41,9 @@ namespace Textures{
 	const int NULLBLOCK = 63;
 
 	void Init();
-	ubyte getTextureIndex(block blockname, ubyte side);
-	double getTexcoordX(item item, ubyte side);
-	double getTexcoordY(item item, ubyte side);
+	uint8_t getTextureIndex(Block blockname, uint8_t side);
+	double getTexcoordX(item item, uint8_t side);
+	double getTexcoordY(item item, uint8_t side);
 	void LoadRGBImage(TEXTURE_RGB& tex, string Filename);
 	void LoadRGBAImage(TEXTURE_RGBA& tex, string Filename, string MkFilename);
 
@@ -55,6 +54,6 @@ namespace Textures{
 
 	void SaveRGBImage(string filename, TEXTURE_RGB& image);
 
-	void Build2DMipmaps(GLenum format, int w, int h, int level, const ubyte* src);
+	void Build2DMipmaps(GLenum format, int w, int h, int level, const uint8_t* src);
 
 }

@@ -17,20 +17,20 @@ namespace World {
 	extern string worldname;
 	const int worldsize = 134217728;
 	const int worldheight = 128;
-	extern brightness skylight;         //Sky light level
-	extern brightness BRIGHTNESSMAX;    //Maximum brightness
-	extern brightness BRIGHTNESSMIN;    //Mimimum brightness
-	extern brightness BRIGHTNESSDEC;    //Brightness decree
-	extern chunk* EmptyChunkPtr;
+	extern Brightness skylight;         //Sky light level
+	extern Brightness BrightnessMax;    //maximum brightness
+	extern Brightness BrightnessMin;    //Mimimum brightness
+	extern Brightness BRIGHTNESSDEC;    //Brightness decree
+	extern Chunk* EmptyChunkPtr;
 	extern unsigned int EmptyBuffer;
-	extern int MaxChunkLoads;
-	extern int MaxChunkUnloads;
-	extern int MaxChunkRenders;
+	extern int maxChunkLoads;
+	extern int maxChunkUnloads;
+	extern int maxChunkRenders;
 
-	extern chunk** chunks;
+	extern Chunk** chunks;
 	extern int loadedChunks, chunkArraySize;
-	extern chunk* cpCachePtr;
-	extern chunkid cpCacheID;
+	extern Chunk* cpCachePtr;
+	extern ChunkID cpCacheID;
 	extern HeightMap HMap;
 	extern chunkPtrArray cpArray;
 
@@ -40,22 +40,22 @@ namespace World {
 	extern int unloadedChunks, unloadedChunksCount;
 	extern int chunkBuildRenderList[256][2];
 	extern int chunkLoadList[256][4];
-	extern pair<chunk*, int> chunkUnloadList[256];
+	extern pair<Chunk*, int> chunkUnloadList[256];
 	extern vector<unsigned int> vbuffersShouldDelete;
 	extern int chunkBuildRenders, chunkLoads, chunkUnloads;
 
 	void Init();
 
-	chunk* AddChunk(int x, int y, int z);
+	Chunk* AddChunk(int x, int y, int z);
 	void DeleteChunk(int x, int y, int z);
-	inline chunkid getChunkID(int x, int y, int z) {
+	inline ChunkID getChunkID(int x, int y, int z) {
 		if (y == -128) y = 0; if (y <= 0) y = abs(y) + (1LL << 7);
 		if (x == -134217728) x = 0; if (x <= 0) x = abs(x) + (1LL << 27);
 		if (z == -134217728) z = 0; if (z <= 0) z = abs(z) + (1LL << 27);
-		return (chunkid(y) << 56) + (chunkid(x) << 28) + z;
+		return (ChunkID(y) << 56) + (ChunkID(x) << 28) + z;
 	}
 	int getChunkPtrIndex(int x, int y, int z);
-	chunk* getChunkPtr(int x, int y, int z);
+	Chunk* getChunkPtr(int x, int y, int z);
 	void ExpandChunkArray(int cc);
 	void ReduceChunkArray(int cc);
 
@@ -74,13 +74,13 @@ namespace World {
 	vector<Hitbox::AABB> getHitboxes(const Hitbox::AABB& box);
 	bool inWater(const Hitbox::AABB& box);
 
-	void renderblock(int x, int y, int z, chunk* chunkptr);
+	void renderblock(int x, int y, int z, Chunk* chunkptr);
 	void updateblock(int x, int y, int z, bool blockchanged, int depth = 0);
-	block getblock(int x, int y, int z, block mask = Blocks::AIR, chunk* cptr = nullptr);
-	brightness getbrightness(int x, int y, int z, chunk* cptr = nullptr);
-	void setblock(int x, int y, int z, block Block, chunk* cptr = nullptr);
-	void setbrightness(int x, int y, int z, brightness Brightness, chunk* cptr = nullptr);
-	inline void putblock(int x, int y, int z, block Block) { setblock(x, y, z, Block); }
+	Block getblock(int x, int y, int z, Block mask = Blocks::AIR, Chunk* cptr = nullptr);
+	Brightness getbrightness(int x, int y, int z, Chunk* cptr = nullptr);
+	void setblock(int x, int y, int z, Block Block, Chunk* cptr = nullptr);
+	void setbrightness(int x, int y, int z, Brightness Brightness, Chunk* cptr = nullptr);
+	inline void putblock(int x, int y, int z, Block Block) { setblock(x, y, z, Block); }
 	inline void pickleaf(){
 		if (rnd() < 0.2) {
 			if (rnd() < 0.5)Player::addItem(APPLE);
@@ -141,5 +141,5 @@ namespace World {
 	void destroyAllChunks();
 
 	void buildtree(int x, int y, int z);
-	void explode(int x, int y, int z, int r, chunk* c = nullptr);
+	void explode(int x, int y, int z, int r, Chunk* c = nullptr);
 }
