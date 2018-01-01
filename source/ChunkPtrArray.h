@@ -1,22 +1,30 @@
 #pragma once
-#include "Definitions.h"
+
+#include <memory>
 
 namespace World {
 	class Chunk;
-	struct chunkPtrArray{
-		Chunk** array = nullptr;
-		int originX, originY, originZ, size, size2, size3;
-		void setSize(int s);
-		bool create();
-		void destroy();
-		void move(int xd, int yd, int zd);
-		void moveTo(int x, int y, int z);
-		void AddChunk(Chunk* cptr, int cx, int cy, int cz);
-		void DeleteChunk(int cx, int cy, int cz);
-		inline bool elementExists(int x, int y, int z){
-			return x >= 0 && x < size && z >= 0 && z < size && y >= 0 && y < size;
-		}
-		Chunk* getChunkPtr(int x, int y, int z);
-		void setChunkPtr(int x, int y, int z, Chunk* c);
-	};
+	class CPARegionalCache{
+    public:
+        void create(int s);
+        void move(int xd, int yd, int zd);
+        void moveTo(int x, int y, int z) { move(x - mOriX, y - mOriY, z - mOriZ); }
+        Chunk* get(int x, int y, int z) const noexcept {
+            x -= mOriX; y -= mOriY; z -= mOriZ;
+            return elementExists(x, y, z)? mCache[x * mSize2 + y * mSize1 + z] : nullptr;
+        }
+        void set(int x, int y, int z, Chunk* c) noexcept {
+            x -= mOriX; y -= mOriY; z -= mOriZ;
+            if (elementExists(x, y, z)) { mCache[x * mSize2 + y * mSize1 + z] = c;
 }
+        }
+        void AddChunk(Chunk* cptr, int cx, int cy, int cz) noexcept { set(cx, cy, cz, cptr); }
+        void DeleteChunk(int cx, int cy, int cz) noexcept { set(cx, cy, cz, nullptr); }
+    private:
+        bool elementExists(int x, int y, int z) const noexcept {
+            return x >= 0 && x < mSize1 && z >= 0 && z < mSize1 && y >= 0 && y < mSize1;
+        }
+        std::unique_ptr<Chunk*[]> mCache { nullptr };
+        int mOriX, mOriY, mOriZ, mSize1, mSize2, mSize3;
+	};
+}  // namespace World
