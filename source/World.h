@@ -32,7 +32,7 @@ namespace World {
 	extern Chunk* cpCachePtr;
 	extern ChunkID cpCacheID;
 	extern HeightMap HMap;
-	extern chunkPtrArray cpArray;
+	extern CPARegionalCache cpArray;
 
 	extern int cloud[128][128];
 	extern int rebuiltChunks, rebuiltChunksCount;

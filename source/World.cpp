@@ -21,7 +21,7 @@ namespace World {
 	int loadedChunks, chunkArraySize;
 	Chunk* cpCachePtr = nullptr;
 	ChunkID cpCacheID = 0;
-	chunkPtrArray cpArray;
+	CPARegionalCache cpArray;
 	HeightMap HMap;
 	int cloud[128][128];
 	int rebuiltChunks, rebuiltChunksCount;
@@ -51,10 +51,7 @@ namespace World {
 		cpCachePtr = nullptr;
 		cpCacheID = 0;
 
-		cpArray.setSize((viewdistance + 2) * 2);
-		if (!cpArray.create()) {
-			DebugError("Chunk Pointer Array not avaliable because it couldn't be created.");
-		}
+		cpArray.create((viewdistance + 2) * 2);
 
 		HMap.setSize((viewdistance + 2) * 2 * 16);
 		HMap.create();
@@ -127,7 +124,7 @@ namespace World {
 		ChunkID cid = getChunkID(x, y, z);
 		if (cpCacheID == cid && cpCachePtr != nullptr) return cpCachePtr;
 		else {
-			Chunk* ret = cpArray.getChunkPtr(x, y, z);
+			Chunk* ret = cpArray.get(x, y, z);
 			if (ret != nullptr) {
 				cpCacheID = cid;
 				cpCachePtr = ret;
@@ -142,9 +139,7 @@ namespace World {
 					ret = chunks[pos.second];
 					cpCacheID = cid;
 					cpCachePtr = ret;
-					if (cpArray.elementExists(x - cpArray.originX, y - cpArray.originY, z - cpArray.originZ)){
-						cpArray.array[(x - cpArray.originX)*cpArray.size2 + (y - cpArray.originY)*cpArray.size + (z - cpArray.originZ)] = chunks[pos.second];
-					}
+                    cpArray.set(x, y, z, chunks[pos.second]);
 					return ret;
 				}
 			}
@@ -766,7 +761,7 @@ namespace World {
 			for (cy = cyp - viewdistance - 1; cy <= cyp + viewdistance; cy++) {
 				for (cz = czp - viewdistance - 1; cz <= czp + viewdistance; cz++) {
 					if (chunkOutOfBound(cx, cy, cz)) continue;
-					if (cpArray.getChunkPtr(cx, cy, cz) == nullptr) {
+					if (cpArray.get(cx, cy, cz) == nullptr) {
 						xd = cx * 16 + 7 - xpos;
 						yd = cy * 16 + 7 - ypos;
 						zd = cz * 16 + 7 - zpos;
@@ -825,7 +820,6 @@ namespace World {
 		chunks = nullptr;
 		loadedChunks = 0;
 		chunkArraySize = 0;
-		cpArray.destroy();
 		HMap.destroy();
 
 		rebuiltChunks = 0;

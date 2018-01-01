@@ -1,26 +1,10 @@
 #include "GameView.h"
-#include "Blocks.h"
 #include "Textures.h"
-#include "Renderer.h"
 #include "TextRenderer.h"
-#include "Player.h"
-#include "WorldGen.h"
-#include "World.h"
-#include "WorldRenderer.h"
 #include "ShadowMaps.h"
-#include "Particles.h"
-#include "Hitbox.h"
-#include "GUI.h"
 #include "Menus.h"
-#include "Frustum.h"
-#include "Effect.h"
-#include "Items.h"
-#include "Globalization.h"
 #include "Command.h"
-#include "ModLoader.h"
 #include "Setup.h"
-#include "AudioSystem.h"
-
 
 ThreadFunc updateThreadFunc(void*);
 
@@ -167,9 +151,8 @@ public:
 		World::updatedChunks = 0;
 
 		//cpArray move
-		if (World::cpArray.originX != Player::cxt - viewdistance - 2 || World::cpArray.originY != Player::cyt - viewdistance - 2 || World::cpArray.originZ != Player::czt - viewdistance - 2) {
-			World::cpArray.moveTo(Player::cxt - viewdistance - 2, Player::cyt - viewdistance - 2, Player::czt - viewdistance - 2);
-		}
+		World::cpArray.moveTo(Player::cxt - viewdistance - 2, Player::cyt - viewdistance - 2, Player::czt - viewdistance - 2);
+		
 		//HeightMap move
 		if (World::HMap.originX != (Player::cxt - viewdistance - 2) * 16 || World::HMap.originZ != (Player::czt - viewdistance - 2) * 16) {
 			World::HMap.moveTo((Player::cxt - viewdistance - 2) * 16, (Player::czt - viewdistance - 2) * 16);
@@ -202,7 +185,7 @@ public:
 				c->load(false);
 				if (c->mIsEmpty) {
 					c->unload(); World::DeleteChunk(cx, cy, cz);
-					World::cpArray.setChunkPtr(cx, cy, cz, World::EmptyChunkPtr);
+					World::cpArray.set(cx, cy, cz, World::EmptyChunkPtr);
 				}
 			}
 

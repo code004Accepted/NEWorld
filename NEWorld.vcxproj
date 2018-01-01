@@ -73,7 +73,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)libraries;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)lib64;$(LibraryPath)</LibraryPath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -95,6 +95,8 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
       <PreprocessorDefinitions>NEWORLD_GAME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OpenMPSupport>false</OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -111,6 +113,8 @@
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>false</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <OpenMPSupport>false</OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -141,8 +145,9 @@
       <ControlFlowGuard>Guard</ControlFlowGuard>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <FloatingPointExceptions>true</FloatingPointExceptions>
-      <OpenMPSupport>true</OpenMPSupport>
+      <OpenMPSupport>false</OpenMPSupport>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -175,7 +180,8 @@
       <PreprocessorDefinitions>NEWORLD_GAME;NEWORLD_X64;NEWORLD_RTRTR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <FloatingPointExceptions>true</FloatingPointExceptions>
-      <OpenMPSupport>true</OpenMPSupport>
+      <OpenMPSupport>false</OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -209,15 +215,18 @@
     <ClInclude Include="source\Command.h" />
     <ClInclude Include="source\Effect.h" />
     <ClInclude Include="source\ChunkRenderer.h" />
+    <ClInclude Include="source\FileSystem.h" />
     <ClInclude Include="source\FunctionsKit.h" />
     <ClInclude Include="source\GameView.h" />
     <ClInclude Include="source\HeightMap.h" />
     <ClInclude Include="source\Definitions.h" />
     <ClInclude Include="source\Frustum.h" />
     <ClInclude Include="source\GUI.h" />
-    <ClInclude Include="source\Hitbox.h" />
     <ClInclude Include="source\Globalization.h" />
+    <ClInclude Include="source\Hitbox.h" />
     <ClInclude Include="source\Items.h" />
+    <ClInclude Include="source\Math\Matrix.h" />
+    <ClInclude Include="source\Math\Vector.h" />
     <ClInclude Include="source\Menus.h" />
     <ClInclude Include="source\Mob.h" />
     <ClInclude Include="source\ModSupport.h" />
@@ -261,8 +270,8 @@
     <ClCompile Include="source\Definitions.cpp" />
     <ClCompile Include="source\Frustum.cpp" />
     <ClCompile Include="source\GUI.cpp" />
-    <ClCompile Include="source\Hitbox.cpp" />
     <ClCompile Include="source\Globalization.cpp" />
+    <ClCompile Include="source\Hitbox.cpp" />
     <ClCompile Include="source\Information.cpp" />
     <ClCompile Include="source\Items.cpp" />
     <ClCompile Include="source\LanguageMenu.cpp" />

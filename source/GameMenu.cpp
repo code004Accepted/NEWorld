@@ -1,6 +1,4 @@
 #include "Menus.h"
-#include "TextRenderer.h"
-#include "World.h"
 #include "Setup.h"
 
 namespace Menus {

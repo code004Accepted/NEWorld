@@ -1,7 +1,4 @@
 #include "Menus.h"
-#include "TextRenderer.h"
-#include "Renderer.h"
-#include <sstream>
 
 namespace Menus {
 	class RenderOptionsMenu :public GUI::Form {

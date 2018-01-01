@@ -38,7 +38,7 @@ ALDeviceList::ALDeviceList()
 	const char *defaultDeviceName;
 	const char *actualDeviceName;
 
-	// DeviceInfo vector stores, for each enumerated device, it's device name, selection status, spec version #, and extension support
+	// DeviceInfo std::vector stores, for each enumerated device, it's device name, selection status, spec version #, and extension support
 	vDeviceInfo.empty();
 	vDeviceInfo.reserve(10);
 
@@ -75,7 +75,7 @@ ALDeviceList::ALDeviceList()
 							ALFunction.alcGetIntegerv(device, ALC_MAJOR_VERSION, sizeof(int), &ALDeviceInfo.iMajorVersion);
 							ALFunction.alcGetIntegerv(device, ALC_MINOR_VERSION, sizeof(int), &ALDeviceInfo.iMinorVersion);
 
-							ALDeviceInfo.pvstrExtensions = new vector<string>;
+							ALDeviceInfo.pvstrExtensions = new std::vector<std::string>;
 
 							// Check for ALC Extensions
 							if (ALFunction.alcIsExtensionPresent(device, "ALC_EXT_CAPTURE") == AL_TRUE)

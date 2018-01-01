@@ -154,7 +154,7 @@ typedef void ALCvoid;
 
 
 /**
- * The Specifier string for default device
+ * The Specifier stringfor default device
  */
 #define ALC_DEFAULT_DEVICE_SPECIFIER             0x1004
 #define ALC_DEVICE_SPECIFIER                     0x1005

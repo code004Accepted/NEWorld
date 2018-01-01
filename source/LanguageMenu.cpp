@@ -1,5 +1,4 @@
 #include "Menus.h"
-#include <deque>
 struct Langinfo {
 	string Symbol, EngSymbol, Name;
 	GUI::button * Button;

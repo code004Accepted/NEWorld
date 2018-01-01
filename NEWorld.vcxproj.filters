@@ -41,9 +41,6 @@
     <Filter Include="Source\Game\Textures">
       <UniqueIdentifier>{1302ac14-18ec-431c-a891-8bbfe96b9099}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Game\Hitbox">
-      <UniqueIdentifier>{e671892d-d7a8-41a7-81ad-57abd5613c9c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Mod">
       <UniqueIdentifier>{f2eb1263-1080-487c-afb0-6d937680ea10}</UniqueIdentifier>
     </Filter>
@@ -59,6 +56,15 @@
     </Filter>
     <Filter Include="Source\Renderer\RTRTR">
       <UniqueIdentifier>{e6556745-c575-4503-9736-25026f9aca3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Game\VoxCore">
+      <UniqueIdentifier>{e4c311b1-d209-4daa-91e9-700d793179f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Common\Math">
+      <UniqueIdentifier>{3f038ac5-1de4-4658-97f1-47ae925b0dda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Game\VoxCore\HitBox">
+      <UniqueIdentifier>{06238c00-6028-4e11-8493-38396bf91c4c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -143,9 +149,6 @@
     <ClInclude Include="source\WorldRenderer.h">
       <Filter>Source\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="source\Hitbox.h">
-      <Filter>Source\Game\Hitbox</Filter>
-    </ClInclude>
     <ClInclude Include="source\Blocks.h">
       <Filter>源代码\Game</Filter>
     </ClInclude>
@@ -154,9 +157,6 @@
     </ClInclude>
     <ClInclude Include="source\API.h">
       <Filter>Source\Mod</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Hitbox.h">
-      <Filter>源代码\Game\Hitbox</Filter>
     </ClInclude>
     <ClInclude Include="source\ModSupport.h">
       <Filter>Source\Mod</Filter>
@@ -219,6 +219,19 @@
     <ClInclude Include="source\RTDevice.h">
       <Filter>Source\Renderer\RTRTR</Filter>
     </ClInclude>
+    <ClInclude Include="source\Math\Vector.h">
+      <Filter>Source\Common\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Math\Matrix.h">
+      <Filter>Source\Common\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Hitbox.h">
+      <Filter>Source\Game\VoxCore\HitBox</Filter>
+    </ClInclude>
+    <ClInclude Include="source\FileSystem.h">
+      <Filter>Source\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Hitbox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\NEWorld.cpp">
@@ -311,12 +324,6 @@
     <ClCompile Include="source\WorldRenderer.cpp">
       <Filter>Source\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="source\Hitbox.cpp">
-      <Filter>Source\Game\Hitbox</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Hitbox.cpp">
-      <Filter>源代码\Game\Hitbox</Filter>
-    </ClCompile>
     <ClCompile Include="source\ModLoader.cpp">
       <Filter>Source\Mod</Filter>
     </ClCompile>
@@ -367,6 +374,12 @@
     </ClCompile>
     <ClCompile Include="source\RTDevice.cpp">
       <Filter>Source\Renderer\RTRTR</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Hitbox.cpp">
+      <Filter>Source\Game\VoxCore\HitBox</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Hitbox.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

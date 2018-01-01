@@ -1,7 +1,4 @@
 #include "Menus.h"
-#include "TextRenderer.h"
-#include "Renderer.h"
-#include"AudioSystem.h"
 
 namespace Menus {
 	class SoundMenu :public GUI::Form {

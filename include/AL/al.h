@@ -326,7 +326,7 @@ typedef void ALvoid;
 #define AL_OUT_OF_MEMORY                          0xA005
 
 
-/** Context strings: Vendor Name. */
+/** Context std::strings: Vendor Name. */
 #define AL_VENDOR                                 0xB001
 #define AL_VERSION                                0xB002
 #define AL_RENDERER                               0xB003
@@ -428,7 +428,7 @@ AL_API ALenum AL_APIENTRY alGetEnumValue( const ALchar* ename );
  * Gain         AL_GAIN         ALfloat
  * Position     AL_POSITION     ALfloat[3]
  * Velocity     AL_VELOCITY     ALfloat[3]
- * Orientation  AL_ORIENTATION  ALfloat[6] (Forward then Up vectors)
+ * Orientation  AL_ORIENTATION  ALfloat[6] (Forward then Up std::vectors)
 */
 
 /*
@@ -536,7 +536,7 @@ AL_API void AL_APIENTRY alGetSourceiv( ALuint sid,  ALenum param, ALint* values 
 
 
 /*
- * Source vector based playback calls
+ * Source std::vector based playback calls
  */
 
 /* Play, replay, or resume (if paused) a list of Sources */
