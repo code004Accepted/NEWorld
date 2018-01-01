@@ -1183,10 +1183,10 @@ public:
 			ss << "Fps:" << fps << "|" << "Ups:" << ups;
 			debugText(ss.str(), false); ss.str("");
 			
-			ss << "Debug Mode:" << boolstr(DebugMode);
+			ss << "Debug Mode:" << std::boolalpha << DebugMode;
 			debugText(ss.str(), false); ss.str("");
 			if (Renderer::AdvancedRender) {
-				ss << "Shadow View:" << boolstr(DebugShadow);
+				ss << "Shadow View:" << std::boolalpha << DebugShadow;
 				debugText(ss.str(), false); ss.str("");
 			}
 			ss << "X:" << Player::xpos << " Y:" << Player::ypos << " Z:" << Player::zpos;

@@ -2,27 +2,12 @@
 //==============================初始化(包括闪屏)================================//
 
 #include "Definitions.h"
-#include "Blocks.h"
-#include "Textures.h"
 #include "Renderer.h"
 #include "TextRenderer.h"
-#include "Player.h"
-#include "WorldGen.h"
 #include "World.h"
-#include "WorldRenderer.h"
-#include "ShadowMaps.h"
-#include "Particles.h"
-#include "Hitbox.h"
-#include "GUI.h"
 #include "Menus.h"
-#include "Frustum.h"
-#include "Effect.h"
-#include "Items.h"
-#include "Globalization.h"
-#include "Command.h"
 #include "ModLoader.h"
 #include "Setup.h"
-#include "AudioSystem.h"
 void loadOptions();
 void saveOptions();
 

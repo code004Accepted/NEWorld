@@ -27,7 +27,6 @@ inline int fastRand() {
 }
 inline void fastSrand(int seed) { g_seed = seed; }
 vector<string> split(string str, string pattern);
-inline string boolstr(bool b) { return b ? "True" : "False"; }
 inline double rnd() { return (double)fastRand() / (RAND_MAX + 1); }
 inline int RoundInt(double d) { return int(floor(d + 0.5)); }
 
