@@ -11,7 +11,7 @@ inline std::string BoolEnabled(bool b) {
 	return b ? Globalization::GetStrbyKey("NEWorld.enabled") : Globalization::GetStrbyKey("NEWorld.disabled");
 }
 template<typename T>
-inline std::string strWithVar(std::string str, T var) {
+inline std::string strWithVar(const std::string& str, T var) {
 	std::stringstream ss; ss << str << var; return ss.str();
 }
 template<typename T>
@@ -68,7 +68,7 @@ namespace GUI {
         std::string text;
 		bool mouseon, focused;
 		label() : mouseon(false), focused(false) {};
-		label(std::string t,
+		label(const std::string& t,
 			int xi_r, int xa_r, int yi_r, int ya_r, double xi_b, double xa_b, double yi_b, double ya_b);
 		void update();
 		void render();
@@ -80,7 +80,7 @@ namespace GUI {
         std::string text;
 		bool mouseon, focused, pressed, clicked, enabled;
 		button() : mouseon(false), focused(false), pressed(false), clicked(false), enabled(false) {};
-		button(std::string t,
+		button(const std::string& t,
 			int xi_r, int xa_r, int yi_r, int ya_r, double xi_b, double xa_b, double yi_b, double ya_b);
 		void update();
 		void render();
@@ -94,7 +94,7 @@ namespace GUI {
 		int barpos;
 		bool mouseon, focused, pressed, enabled;
 		trackbar() : mouseon(false), focused(false), pressed(false), enabled(false) {};
-		trackbar(std::string t, int w, int s,
+		trackbar(const std::string& t, int w, int s,
 			int xi_r, int xa_r, int yi_r, int ya_r, double xi_b, double xa_b, double yi_b, double ya_b);
 		void update();
 		void render();
@@ -106,7 +106,7 @@ namespace GUI {
         std::string text;
 		bool mouseon, focused, pressed, enabled;
 		textbox() : mouseon(false), focused(false), pressed(false), enabled(false) {};
-		textbox(std::string t,
+		textbox(const std::string& t,
 			int xi_r, int xa_r, int yi_r, int ya_r, double xi_b, double xa_b, double yi_b, double ya_b);
 		void update();
 		void render();

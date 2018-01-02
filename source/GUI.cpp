@@ -867,20 +867,20 @@ namespace GUI {
 		lastdisplaylist = displaylist;
 	}
 
-	label::label(std::string t, int xi_r, int xa_r, int yi_r, int ya_r, double xi_b, double xa_b, double yi_b, double ya_b)
+	label::label(const std::string& t, int xi_r, int xa_r, int yi_r, int ya_r, double xi_b, double xa_b, double yi_b, double ya_b)
 		: label() {
 		text = t;
 		resize(xi_r, xa_r, yi_r, ya_r, xi_b, xa_b, yi_b, ya_b);
 	}
 
-	button::button(std::string t, int xi_r, int xa_r, int yi_r, int ya_r, double xi_b, double xa_b, double yi_b, double ya_b)
+	button::button(const std::string& t, int xi_r, int xa_r, int yi_r, int ya_r, double xi_b, double xa_b, double yi_b, double ya_b)
 		: button() {
 		text = t;
 		enabled = true;
 		resize(xi_r, xa_r, yi_r, ya_r, xi_b, xa_b, yi_b, ya_b);
 	}
 
-	trackbar::trackbar(std::string t, int w, int s, int xi_r, int xa_r, int yi_r, int ya_r, double xi_b, double xa_b, double yi_b, double ya_b)
+	trackbar::trackbar(const std::string& t, int w, int s, int xi_r, int xa_r, int yi_r, int ya_r, double xi_b, double xa_b, double yi_b, double ya_b)
 		: trackbar() {
 		text = t;
 		enabled = true;
@@ -889,7 +889,7 @@ namespace GUI {
 		resize(xi_r, xa_r, yi_r, ya_r, xi_b, xa_b, yi_b, ya_b);
 	}
 
-	textbox::textbox(std::string t, int xi_r, int xa_r, int yi_r, int ya_r, double xi_b, double xa_b, double yi_b, double ya_b)
+	textbox::textbox(const std::string& t, int xi_r, int xa_r, int yi_r, int ya_r, double xi_b, double xa_b, double yi_b, double ya_b)
 		: textbox() {
 		text = t;
 		enabled = true;

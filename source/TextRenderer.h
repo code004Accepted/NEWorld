@@ -34,7 +34,7 @@ namespace TextRenderer {
 	void resize();
 	void setFontColor(float r, float g, float b, float a);
 	void loadchar(unsigned int uc);
-	int getStrWidth(std::string s);
-	void renderString(int x, int y, std::string glstring);
-	void renderASCIIString(int x, int y, std::string glstring);
+	int getStrWidth(const std::string& s);
+	void renderString(int x, int y, const std::string& glstring);
+	void renderASCIIString(int x, int y, const std::string& glstring);
 }

@@ -44,15 +44,15 @@ namespace Textures{
 	uint8_t getTextureIndex(Block blockname, uint8_t side);
 	double getTexcoordX(item item, uint8_t side);
 	double getTexcoordY(item item, uint8_t side);
-	void LoadRGBImage(TEXTURE_RGB& tex, std::string Filename);
-	void LoadRGBAImage(TEXTURE_RGBA& tex, std::string Filename, std::string MkFilename);
+	void LoadRGBImage(TEXTURE_RGB& tex, const std::string& Filename);
+	void LoadRGBAImage(TEXTURE_RGBA& tex, const std::string& Filename, const std::string& MkFilename);
 
-	TextureID LoadRGBTexture(std::string Filename);
-	TextureID LoadFontTexture(std::string Filename);
-	TextureID LoadRGBATexture(std::string Filename, std::string MkFilename);
-	TextureID LoadBlock3DTexture(std::string Filename, std::string MkFilename);
+	TextureID LoadRGBTexture(const std::string& Filename);
+	TextureID LoadFontTexture(const std::string& Filename);
+	TextureID LoadRGBATexture(const std::string& Filename, const std::string& MkFilename);
+	TextureID LoadBlock3DTexture(const std::string& Filename, const std::string& MkFilename);
 
-	void SaveRGBImage(std::string filename, TEXTURE_RGB& image);
+	void SaveRGBImage(const std::string& filename, TEXTURE_RGB& image);
 
 	void Build2DMipmaps(GLenum format, int w, int h, int level, const uint8_t* src);
 

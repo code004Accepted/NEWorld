@@ -11,7 +11,7 @@ APIPackage Mod::getPackage() {
 	api.getChunk = World::getChunkPtr;
 	api.getBlock = std::bind(World::getblock, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, 0, nullptr);
 	api.setBlock = std::bind(World::setblock, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, nullptr);
-	api.getCommand = [](std::string s) -> Command* {
+	api.getCommand = [](const std::string& s) -> Command* {
 		for (size_t i = 0; i < commands.size(); i++)
 			if (commands[i].identifier == s) return &commands[i];
 		return nullptr;
@@ -22,12 +22,12 @@ APIPackage Mod::getPackage() {
 		commands.push_back(c);
 		return true;
 	};
-	api.getSharedData = [](std::string key) -> void* {
+	api.getSharedData = [](const std::string& key) -> void* {
 		std::map<std::string, void*>::iterator iter = sharedData.find(key);
 		if (iter == sharedData.end()) return nullptr;
 		return iter->second;
 	};
-	api.setSharedData = [](std::string key, void* value) {
+	api.setSharedData = [](const std::string& key, void* value) {
 		sharedData[key] = value;
 	};
 	api.getPlayerData = []()->PlayerData {

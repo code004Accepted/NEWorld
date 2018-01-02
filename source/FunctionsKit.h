@@ -5,7 +5,7 @@
 extern double stretch;
 
 //³£ÓÃº¯Êı
-std::vector<std::string> split(std::string str, std::string pattern);
+std::vector<std::string> split(const std::string& str, const std::string& pattern);
 
 inline void UITrans(double x, double y) {
 	glTranslated(x*stretch, y*stretch, 0);
@@ -26,7 +26,7 @@ inline int fastRand() {
 	return (g_seed >> 16) & 0x7FFF;
 }
 inline void fastSrand(int seed) { g_seed = seed; }
-std::vector<std::string> split(std::string str, std::string pattern);
+std::vector<std::string> split(const std::string& str, const std::string& pattern);
 inline double rnd() { return (double)fastRand() / (RAND_MAX + 1); }
 inline int RoundInt(double d) { return int(floor(d + 0.5)); }
 
@@ -36,21 +36,21 @@ inline std::string itos(int i) {
 	return ss.str();
 }
 
-inline bool beginWith(std::string str, std::string begin) {
+inline bool beginWith(const std::string& str, const std::string& begin) {
 	if (str.size() < begin.size()) return false;
 	return str.substr(0, begin.size()) == begin;
 }
 
-inline void DebugWarning(std::string msg) {
+inline void DebugWarning(const std::string& msg) {
 	printf("[Debug][Warning]%s\n", msg.c_str());
 }
 
-inline void DebugError(std::string msg) {
+inline void DebugError(const std::string& msg) {
 	printf("[Debug][Error]%s\n", msg.c_str());
 }
 
 template<class T> 
-inline void conv(std::string str, T& ret) {
+inline void conv(const std::string& str, T& ret) {
 	std::stringstream s(str);
 	s >> ret;
 }

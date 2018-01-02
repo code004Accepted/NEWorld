@@ -14,12 +14,12 @@ namespace Mod {
 
 	private:
 		enum ModLoadStatus { Success, MissDependence, InitFailed };
-		static ModLoadStatus loadSingleMod(std::string modPath);
+		static ModLoadStatus loadSingleMod(const std::string& modPath);
 
 		typedef void* ModCall;
 		typedef FARPROC FuncPtr;
-		static ModCall loadMod(std::string filename);
-		static FuncPtr getFunction(ModCall call, std::string functionName);
+		static ModCall loadMod(const std::string& filename);
+		static FuncPtr getFunction(ModCall call, const std::string& functionName);
 		static void unloadMod(ModCall call);
 	};
 

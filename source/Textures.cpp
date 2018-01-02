@@ -84,7 +84,7 @@ namespace Textures {
 			return NULLBLOCK;
 	}
 
-	void LoadRGBImage(TEXTURE_RGB& tex, std::string Filename) {
+	void LoadRGBImage(TEXTURE_RGB& tex, const std::string& Filename) {
 		unsigned int ind = 0;
 		TEXTURE_RGB& bitmap = tex; //返回位图
 		bitmap.buffer = nullptr; bitmap.sizeX = bitmap.sizeY = 0;
@@ -114,7 +114,7 @@ namespace Textures {
 		}
 	}
 
-	void LoadRGBAImage(TEXTURE_RGBA& tex, std::string Filename, std::string MkFilename) {
+	void LoadRGBAImage(TEXTURE_RGBA& tex, const std::string& Filename, const std::string& MkFilename) {
 		unsigned char *rgb = nullptr, *a = nullptr;
 		unsigned int ind = 0;
 		bool noMaskFile = (MkFilename == "");
@@ -165,7 +165,7 @@ namespace Textures {
 		}
 	}
 
-	TextureID LoadRGBTexture(std::string Filename) {
+	TextureID LoadRGBTexture(const std::string& Filename) {
 		TEXTURE_RGB image;
 		TextureID ret;
 		LoadRGBImage(image, Filename);
@@ -177,7 +177,7 @@ namespace Textures {
 		return ret;
 	}
 	
-	TextureID LoadFontTexture(std::string Filename) {
+	TextureID LoadFontTexture(const std::string& Filename) {
 		TEXTURE_RGBA Texture;
 		TEXTURE_RGB image;
 		uint8_t *ip, *tp;
@@ -206,7 +206,7 @@ namespace Textures {
 		return ret;
 	}
 
-	TextureID LoadRGBATexture(std::string Filename, std::string MkFilename) {
+	TextureID LoadRGBATexture(const std::string& Filename, const std::string& MkFilename) {
 		TextureID ret;
 		TEXTURE_RGBA image;
 		LoadRGBAImage(image, Filename, MkFilename);
@@ -218,7 +218,7 @@ namespace Textures {
 		return ret;
 	}
 
-	TextureID LoadBlock3DTexture(std::string Filename, std::string MkFilename) {
+	TextureID LoadBlock3DTexture(const std::string& Filename, const std::string& MkFilename) {
 		int sz = BLOCKTEXTURE_UNITSIZE, cnt = BLOCKTEXTURE_UNITS*BLOCKTEXTURE_UNITS;
 		//int mipmapLevel = (int)log2(BLOCKTEXTURE_UNITSIZE), sum = 0, cursize = 0, scale = 1;
 		uint8_t *src, *cur;
@@ -265,7 +265,7 @@ namespace Textures {
 		return ret;
 	}
 
-	void SaveRGBImage(std::string filename, TEXTURE_RGB& image) {
+	void SaveRGBImage(const std::string& filename, TEXTURE_RGB& image) {
 		BITMAPFILEHEADER bitmapfileheader;
 		BITMAPINFOHEADER bitmapinfoheader;
 		bitmapfileheader.bfSize = image.sizeX*image.sizeY * 3 + 54;

@@ -6,9 +6,9 @@
 
 class Shader {
 public:
-	Shader(std::string vshPath, std::string fshPath, bool bindLocation = false) :
+	Shader(const std::string& vshPath, const std::string& fshPath, bool bindLocation = false) :
         Shader(vshPath, fshPath, bindLocation, std::set<std::string>()) {}
-	Shader(std::string vshPath, std::string fshPath, bool bindLocation, std::set<std::string> defines);
+	Shader(const std::string& vshPath, const std::string& fshPath, bool bindLocation, std::set<std::string> defines);
 
 	inline void bind() { glUseProgramObjectARB(shaderProgram); }
 	static inline void unbind() { glUseProgramObjectARB(0); }
@@ -20,8 +20,8 @@ public:
 	bool setUniform(const char* uniform, float* value);
 
 private:
-	GLhandleARB loadShader(std::string filename, unsigned int mode, std::set<std::string> defines);
-	void checkErrors(GLhandleARB res, int status, std::string errorMessage);
+	GLhandleARB loadShader(const std::string& filename, unsigned int mode, std::set<std::string> defines);
+	void checkErrors(GLhandleARB res, int status, const std::string& errorMessage);
 
 	GLhandleARB shaderFragment;
 	GLhandleARB shaderVertex;

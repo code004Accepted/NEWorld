@@ -53,9 +53,9 @@ void InitPosition() {
 	Player::xposold = Player::xpos;
 	Player::yposold = Player::ypos;
 	Player::zposold = Player::zpos;
-	Player::cxt = getchunkpos((int)Player::xpos); Player::cxtl = Player::cxt;
-	Player::cyt = getchunkpos((int)Player::ypos); Player::cytl = Player::cyt;
-	Player::czt = getchunkpos((int)Player::zpos); Player::cztl = Player::czt;
+	Player::cxt = World::getChunkPos((int)Player::xpos); Player::cxtl = Player::cxt;
+	Player::cyt = World::getChunkPos((int)Player::ypos); Player::cytl = Player::cyt;
+	Player::czt = World::getChunkPos((int)Player::zpos); Player::cztl = Player::czt;
 }
 
 void MoveHitbox(double x, double y, double z) {
@@ -164,7 +164,7 @@ void Player::updatePosition() {
 	updateHitbox();
 	
 	cxtl = cxt; cytl = cyt; cztl = czt;
-	cxt = getchunkpos((int)xpos); cyt = getchunkpos((int)ypos); czt = getchunkpos((int)zpos);
+	cxt = World::getChunkPos((int)xpos); cyt = World::getChunkPos((int)ypos); czt = World::getChunkPos((int)zpos);
 }
 
 bool Player::putBlock(int x, int y, int z, Block blockname) {
@@ -172,7 +172,7 @@ bool Player::putBlock(int x, int y, int z, Block blockname) {
 	bool success = false;
 	blockbox.xmin = x - 0.5; blockbox.ymin = y - 0.5; blockbox.zmin = z - 0.5;
 	blockbox.xmax = x + 0.5; blockbox.ymax = y + 0.5; blockbox.zmax = z + 0.5;
-	int cx = getchunkpos(x), cy = getchunkpos(y), cz = getchunkpos(z);
+	int cx = World::getChunkPos(x), cy = World::getChunkPos(y), cz = World::getChunkPos(z);
 	if (!World::chunkOutOfBound(cx, cy, cz) && (((Hitbox::Hit(playerbox, blockbox) == false) || CrossWall ||
 		BlockInfo(blockname).isSolid() == false) && BlockInfo(World::getblock(x, y, z)).isSolid() == false)) {
 		World::putblock(x, y, z, blockname);
@@ -181,7 +181,7 @@ bool Player::putBlock(int x, int y, int z, Block blockname) {
 	return success;
 }
 
-bool Player::save(std::string worldn) {
+bool Player::save(const std::string& worldn) {
 	uint32_t curversion = VERSION;
 	std::stringstream ss;
 	ss << "Worlds/" << worldn << "/player.NEWorldPlayer";
@@ -209,7 +209,7 @@ bool Player::save(std::string worldn) {
 	return true;
 }
 
-bool Player::load(std::string worldn) {
+bool Player::load(const std::string& worldn) {
 	uint32_t targetVersion;
 	std::stringstream ss;
 	ss << "Worlds/" << worldn << "/player.NEWorldPlayer";

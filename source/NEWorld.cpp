@@ -29,7 +29,7 @@ void ApplicationBeforeLaunch() {
 	if (postexe.is_open()) {
 		postexe.close();
 		WinExec("Post.exe", SW_SHOWDEFAULT);
-		Sleep(3000);
+		std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 	}
 	else postexe.close();
 #endif
@@ -81,7 +81,6 @@ int main() {
 
 void AppCleanUp()
 {
-	World::saveAllChunks();
 	World::destroyAllChunks();
 	Mod::ModLoader::unloadMods();
 }

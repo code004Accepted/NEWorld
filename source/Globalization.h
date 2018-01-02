@@ -14,8 +14,8 @@ namespace Globalization {
 	extern std::map<std::string, int> keys;
 	extern std::string Cur_Lang;
 	
-	bool LoadLang(std::string lang);
+	bool LoadLang(const std::string& lang);
 	bool Load();
     std::string GetStrbyid(int id);
-    std::string GetStrbyKey(std::string key);
+    std::string GetStrbyKey(const std::string& key);
 }

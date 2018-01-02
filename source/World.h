@@ -56,10 +56,10 @@ namespace World {
 	extern std::string worldname;
 	const int worldsize = 134217728;
 	const int worldheight = 128;
-	extern Brightness skylight;         //Sky light level
-	extern Brightness BrightnessMax;    //maximum brightness
-	extern Brightness BrightnessMin;    //Mimimum brightness
-	extern Brightness BRIGHTNESSDEC;    //Brightness decree
+    constexpr Brightness BrightnessMax = 15;    //maximum brightness
+    constexpr Brightness BrightnessMin = 2;     //Mimimum brightness
+    constexpr Brightness BrightnessDec = 1;     //Brightness decrease
+    extern Brightness skylight;         //Sky light level
 	extern Chunk* EmptyChunkPtr;
 	extern unsigned int EmptyBuffer;
 	extern int maxChunkLoads;
@@ -94,9 +94,8 @@ namespace World {
 		return (ChunkID(y) << 56) + (ChunkID(x) << 28) + z;
 	}
 	Chunk* getChunkPtr(int x, int y, int z);
-
-	#define getchunkpos(n) ((n)>>4)
-	#define getblockpos(n) ((n)&15)
+    template <class T> constexpr auto getChunkPos(T n) noexcept { return n >> 4; }
+    template <class T> constexpr auto getBlockPos(T n) noexcept { return n & 0b1111; }
 	inline bool chunkOutOfBound(int x, int y, int z) {
 		return y < -World::worldheight || y > World::worldheight - 1 ||
 			x < -134217728 || x > 134217727 || z < -134217728 || z > 134217727;
@@ -173,7 +172,6 @@ namespace World {
 	void sortChunkLoadUnloadList(int xpos, int ypos, int zpos);
 	void calcVisible(double xpos, double ypos, double zpos, Frustum& frus);
 
-	void saveAllChunks();
 	void destroyAllChunks();
 
 	void buildtree(int x, int y, int z);

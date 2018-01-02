@@ -16,8 +16,8 @@ public:
 
 	static void updatePosition();
 
-	static bool save(std::string worldn);
-	static bool load(std::string worldn);
+	static bool save(const std::string& worldn);
+	static bool load(const std::string& worldn);
 
 	static bool addItem(item itemname, short amount = 1);
 	static bool putBlock(int x, int y, int z, Block blockname);

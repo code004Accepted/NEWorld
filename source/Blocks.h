@@ -21,7 +21,7 @@ namespace Blocks {
 		bool canexplode;
 
 	public:
-		SingleBlock(std::string blockName, bool solid, bool opaque, bool translucent, bool _canexplode, float _hardness) :
+		SingleBlock(const std::string& blockName, bool solid, bool opaque, bool translucent, bool _canexplode, float _hardness) :
 			name(blockName), Solid(solid), Opaque(opaque), Translucent(translucent), canexplode(_canexplode), Hardness(_hardness) {};
 
 		//获得方块名称

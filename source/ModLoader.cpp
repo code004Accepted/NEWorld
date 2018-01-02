@@ -9,7 +9,7 @@
 std::vector<ModInfo> Mod::ModLoader::mods;
 
 //查找一个文件夹下所有的子目录
-std::vector<std::string> findFolders(std::string path) {
+std::vector<std::string> findFolders(const std::string& path) {
 	std::vector<std::string> ret;
 	long hFile = 0;
 	_finddata_t fileinfo;
@@ -44,7 +44,7 @@ void Mod::ModLoader::loadMods()
 }
 
 //加载单个Mod，loadMods会调用该函数
-Mod::ModLoader::ModLoadStatus Mod::ModLoader::loadSingleMod(std::string modPath)
+Mod::ModLoader::ModLoadStatus Mod::ModLoader::loadSingleMod(const std::string& modPath)
 {
 	ModCall call=loadMod(modPath);
 	ModInfo(*getModInfo)() = (ModInfo(*)())getFunction(call, "getModInfo");
@@ -76,12 +76,12 @@ void Mod::ModLoader::unloadMods()
 }
 
 
-Mod::ModLoader::ModCall Mod::ModLoader::loadMod(std::string filename)
+Mod::ModLoader::ModCall Mod::ModLoader::loadMod(const std::string& filename)
 {
 	return LoadLibrary(filename.c_str());
 }
 
-Mod::ModLoader::FuncPtr Mod::ModLoader::getFunction(ModCall call, std::string functionName)
+Mod::ModLoader::FuncPtr Mod::ModLoader::getFunction(ModCall call, const std::string& functionName)
 {
 	return GetProcAddress((HMODULE)call, functionName.c_str());
 }

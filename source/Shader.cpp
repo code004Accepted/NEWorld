@@ -1,7 +1,7 @@
 #include "Shader.h"
 #include "FunctionsKit.h"
 
-Shader::Shader(std::string vshPath, std::string fshPath, bool bindLocation, std::set<std::string> defines) {
+Shader::Shader(const std::string& vshPath, const std::string& fshPath, bool bindLocation, std::set<std::string> defines) {
 	shaderVertex = loadShader(vshPath, GL_VERTEX_SHADER_ARB, defines);
 	shaderFragment = loadShader(fshPath, GL_FRAGMENT_SHADER_ARB, defines);
 	shaderProgram = glCreateProgramObjectARB();
@@ -53,7 +53,7 @@ bool Shader::setUniform(const char* uniform, float * value) {
 	return true;
 }
 
-GLhandleARB Shader::loadShader(std::string filename, unsigned int mode, std::set<std::string> defines) {
+GLhandleARB Shader::loadShader(const std::string& filename, unsigned int mode, std::set<std::string> defines) {
 	std::stringstream ss;
 	GLhandleARB res;
     std::string cur, var, maxro;
@@ -97,7 +97,7 @@ GLhandleARB Shader::loadShader(std::string filename, unsigned int mode, std::set
 	return res;
 }
 
-void Shader::checkErrors(GLhandleARB res, int status, std::string errorMessage) {
+void Shader::checkErrors(GLhandleARB res, int status, const std::string& errorMessage) {
 	int st = GL_TRUE;
 	glGetObjectParameterivARB(res, status, &st);
 	if (st == GL_FALSE) DebugWarning(errorMessage);

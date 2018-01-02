@@ -8,7 +8,7 @@ namespace Globalization {
     std::map<int, Line> Lines;
     std::map<std::string, int> keys;
 
-	bool LoadLang(std::string lang) {
+	bool LoadLang(const std::string& lang) {
 		std::ifstream f("Lang/" + lang + ".lang");
 		if (f.bad()) {
 			exit(-101);
@@ -42,7 +42,7 @@ namespace Globalization {
 		return Lines[id].str;
 	}
 
-    std::string GetStrbyKey(std::string key) {
+    std::string GetStrbyKey(const std::string& key) {
 		return Lines[keys[key]].str;
 	}
 }

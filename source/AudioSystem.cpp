@@ -1,4 +1,5 @@
-#include"AudioSystem.h"
+#include "AudioSystem.h"
+#include <thread>
 namespace AudioSystem {
 	ALDevice Device;
 	//Gain
@@ -166,7 +167,7 @@ namespace AudioSystem {
 		ALfloat Pos[] = { 0.0,0.0,0.0 };
 		ALfloat Vel[] = { 0.0,0.0,0.0 };
 		SClick = Device.Play(Click, false, SoundGain, Pos, Vel);
-		Sleep(50);
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 		Device.Stop(SClick);
 		SClick = -1;
 	}

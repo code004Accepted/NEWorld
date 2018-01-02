@@ -46,7 +46,7 @@ public:
 		MutexLock(Mutex);
 		while (!updateThreadRun) {
 			MutexUnlock(Mutex);
-			Sleep(1);
+			std::this_thread::yield();
 			MutexLock(Mutex);
 		}
 		MutexUnlock(Mutex);
@@ -58,12 +58,12 @@ public:
 		while (updateThreadRun) {
 
 			MutexUnlock(Mutex);
-			Sleep(1); //Don't make it always busy
+			std::this_thread::yield(); //Don't make it always busy
 			MutexLock(Mutex);
 
 			while (updateThreadPaused) {
 				MutexUnlock(Mutex);
-				Sleep(1); //Same as before
+				std::this_thread::yield(); //Same as before
 				MutexLock(Mutex);
 				lastupdate = updateTimer = timer();
 			}
@@ -90,12 +90,7 @@ public:
 	}
 
 	void saveGame() {
-		World::saveAllChunks();
-		if (!Player::save(World::worldname)) {
-#ifdef NEWORLD_CONSOLE_OUTPUT
-			DebugWarning("Failed saving player info!");
-#endif
-		}
+        Player::save(World::worldname);
 	}
 
 	bool loadGame() {
@@ -166,11 +161,7 @@ public:
 			sumUnload = World::chunkUnloads > World::maxChunkUnloads ? World::maxChunkUnloads : World::chunkUnloads;
 			for (int i = 0; i < sumUnload; i++) {
 				World::Chunk* cp = World::chunkUnloadList[i].first;
-#ifdef NEWORLD_DEBUG
-				if (cp == nullptr || cp == World::EmptyChunkPtr) DebugError("Unload error!");
-#endif
 				int cx = cp->cx, cy = cp->cy, cz = cp->cz;
-				cp->unload();
 				World::DeleteChunk(cx, cy, cz);
 			}
 
@@ -184,7 +175,7 @@ public:
 				World::Chunk* c = World::AddChunk(cx, cy, cz);
 				c->load(false);
 				if (c->mIsEmpty) {
-					c->unload(); World::DeleteChunk(cx, cy, cz);
+					World::DeleteChunk(cx, cy, cz);
 					World::cpArray.set(cx, cy, cz, World::EmptyChunkPtr);
 				}
 			}
@@ -261,8 +252,8 @@ public:
 					sel = true;
 
 					//找方块所在区块及位置
-					selcx = getchunkpos(x); selcy = getchunkpos(y); selcz = getchunkpos(z);
-					selbx = getblockpos(x); selby = getblockpos(y); selbz = getblockpos(z);
+					selcx = World::getChunkPos(x); selcy = World::getChunkPos(y); selcz = World::getChunkPos(z);
+					selbx = World::getBlockPos(x); selby = World::getBlockPos(y); selbz = World::getBlockPos(z);
 
 					if (World::chunkOutOfBound(selcx, selcy, selcz) == false) {
 						World::Chunk* cp = World::getChunkPtr(selcx, selcy, selcz);
@@ -550,10 +541,6 @@ public:
 			}
 		}
 
-		if (!bagOpened && !chatmode) {
-			if (isPressed(GLFW_KEY_L))World::saveAllChunks();
-		}
-
 		//跳跃
 		if (!Player::glidingNow) {
 			if (!Player::inWater) {
@@ -654,7 +641,7 @@ public:
 
 	}
 
-	void debugText(std::string s, bool init) {
+	void debugText(const std::string& s, bool init) {
 		static int pos = 0;
 		if (init) {
 			pos = 0;
@@ -733,9 +720,9 @@ public:
 			if (Player::lookupdown + Player::ylookspeed > 90.0) Player::ylookspeed = 90.0 - Player::lookupdown;
 		}
 
-		Player::cxt = getchunkpos((int)Player::xpos);
-		Player::cyt = getchunkpos((int)Player::ypos);
-		Player::czt = getchunkpos((int)Player::zpos);
+		Player::cxt = World::getChunkPos((int)Player::xpos);
+		Player::cyt = World::getChunkPos((int)Player::ypos);
+		Player::czt = World::getChunkPos((int)Player::zpos);
 
 		//更新区块VBO
 		World::sortChunkBuildRenderList(RoundInt(Player::xpos), RoundInt(Player::ypos), RoundInt(Player::zpos));
@@ -1512,7 +1499,7 @@ public:
 		glFlush();
 	}
 
-	void saveScreenshot(int x, int y, int w, int h, std::string filename) {
+	void saveScreenshot(int x, int y, int w, int h, const std::string& filename) {
 		Textures::TEXTURE_RGB scrBuffer;
 		int bufw = w, bufh = h;
 		while (bufw % 4 != 0) { bufw += 1; }

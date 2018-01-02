@@ -1,7 +1,7 @@
 #include "Menus.h"
 
 namespace Menus {
-	int getDotCount(std::string s) {
+	int getDotCount(const std::string& s) {
 		int ret = 0;
 		for (unsigned int i = 0; i != s.size(); i++)
 			if (s[i] == '.') ret++;

@@ -9,9 +9,6 @@ namespace World {
 
     std::string worldname;
 	Brightness skylight = 15;         //Sky light level
-	Brightness BrightnessMax = 15;    //maximum brightness
-	Brightness BrightnessMin = 2;     //Mimimum brightness
-	Brightness BRIGHTNESSDEC = 1;     //Brightness decrease
 	Chunk* EmptyChunkPtr;
 	unsigned int EmptyBuffer;
 	int maxChunkLoads = 64;
@@ -145,7 +142,6 @@ namespace World {
 			Chunk** cp = (Chunk**)realloc(chunks, chunkArraySize * sizeof(Chunk*));
 			if (cp == nullptr && loadedChunks != 0) {
 				DebugError("Allocate memory failed!");
-				saveAllChunks();
 				destroyAllChunks();
 				glfwTerminate();
 				exit(0);
@@ -475,15 +471,15 @@ namespace World {
 		depth++;
 
 		bool updated = blockchanged;
-		int cx = getchunkpos(x);
-		int cy = getchunkpos(y);
-		int cz = getchunkpos(z);
+		int cx = getChunkPos(x);
+		int cy = getChunkPos(y);
+		int cz = getChunkPos(z);
 
 		if (chunkOutOfBound(cx, cy, cz)) return;
 
-		int bx = getblockpos(x);
-		int by = getblockpos(y);
-		int bz = getblockpos(z);
+		int bx = getBlockPos(x);
+		int by = getBlockPos(y);
+		int bz = getBlockPos(z);
 
 		Chunk* cptr = getChunkPtr(cx, cy, cz);
 		if (cptr != nullptr) {
@@ -495,14 +491,14 @@ namespace World {
 			Brightness oldbrightness = cptr->getbrightness(bx, by, bz);
 			bool skylighted = true;
 			int yi, cyi;
-			yi = y + 1; cyi = getchunkpos(yi);
+			yi = y + 1; cyi = getChunkPos(yi);
 			if (y < 0) skylighted = false;
 			else {
 				while (!chunkOutOfBound(cx, cyi + 1, cz) && chunkLoaded(cx, cyi + 1, cz) && skylighted) {
 					if (BlockInfo(getblock(x, yi, z)).isOpaque() || getblock(x, yi, z) == Blocks::WATER) {
 						skylighted = false;
 					}
-					yi++; cyi = getchunkpos(yi);
+					yi++; cyi = getChunkPos(yi);
 				}
 			}
 
@@ -578,9 +574,9 @@ namespace World {
 
 	Block getblock(int x, int y, int z, Block mask, Chunk* cptr) {
 		//获取方块
-		int	cx = getchunkpos(x), cy = getchunkpos(y), cz = getchunkpos(z);
+		int	cx = getChunkPos(x), cy = getChunkPos(y), cz = getChunkPos(z);
 		if (chunkOutOfBound(cx, cy, cz)) return Blocks::AIR;
-		int bx = getblockpos(x), by = getblockpos(y), bz = getblockpos(z);
+		int bx = getBlockPos(x), by = getBlockPos(y), bz = getBlockPos(z);
 		if (cptr != nullptr && cx == cptr->cx && cy == cptr->cy && cz == cptr->cz) {
 			return cptr->getblock(bx, by, bz);
 		}
@@ -592,9 +588,9 @@ namespace World {
 
 	Brightness getbrightness(int x, int y, int z, Chunk* cptr) {
 		//获取亮度
-		int	cx = getchunkpos(x), cy = getchunkpos(y), cz = getchunkpos(z);
+		int	cx = getChunkPos(x), cy = getChunkPos(y), cz = getChunkPos(z);
 		if (chunkOutOfBound(cx, cy, cz)) return skylight;
-		int bx = getblockpos(x), by = getblockpos(y), bz = getblockpos(z);
+		int bx = getBlockPos(x), by = getBlockPos(y), bz = getBlockPos(z);
 		if (cptr != nullptr && cx == cptr->cx && cy == cptr->cy && cz == cptr->cz) {
 			return cptr->getbrightness(bx, by, bz);
 		}
@@ -606,8 +602,8 @@ namespace World {
 
 	void setblock(int x, int y, int z, Block Blockname, Chunk* cptr) {
 		//设置方块
-		int	cx = getchunkpos(x), cy = getchunkpos(y), cz = getchunkpos(z);
-		int bx = getblockpos(x), by = getblockpos(y), bz = getblockpos(z);
+		int	cx = getChunkPos(x), cy = getChunkPos(y), cz = getChunkPos(z);
+		int bx = getBlockPos(x), by = getBlockPos(y), bz = getBlockPos(z);
 
 		if (cptr != nullptr && cptr != EmptyChunkPtr &&
 			cx == cptr->cx && cy == cptr->cy && cz == cptr->cz) {
@@ -631,8 +627,8 @@ namespace World {
 
 	void setbrightness(int x, int y, int z, Brightness Brightness, Chunk* cptr) {
 		//设置亮度
-		int	cx = getchunkpos(x), cy = getchunkpos(y), cz = getchunkpos(z);
-		int bx = getblockpos(x), by = getblockpos(y), bz = getblockpos(z);
+		int	cx = getChunkPos(x), cy = getChunkPos(y), cz = getChunkPos(z);
+		int bx = getBlockPos(x), by = getBlockPos(y), bz = getBlockPos(z);
 
 		if (cptr != nullptr && cptr != EmptyChunkPtr &&
 			cx == cptr->cx && cy == cptr->cy && cz == cptr->cz) {
@@ -673,9 +669,9 @@ namespace World {
 		int cxp, cyp, czp, cx, cy, cz, p = 0;
 		int xd, yd, zd, distsqr;
 
-		cxp = getchunkpos(xpos);
-		cyp = getchunkpos(ypos);
-		czp = getchunkpos(zpos);
+		cxp = getChunkPos(xpos);
+		cyp = getChunkPos(ypos);
+		czp = getChunkPos(zpos);
 
 		for (int ci = 0; ci < loadedChunks; ci++) {
 			if (chunks[ci]->mIsUpdated) {
@@ -709,9 +705,9 @@ namespace World {
 		int cxp, cyp, czp, cx, cy, cz, pl = 0, pu = 0, i;
 		int xd, yd, zd, distsqr, first, middle, last;
 
-		cxp = getchunkpos(xpos);
-		cyp = getchunkpos(ypos);
-		czp = getchunkpos(zpos);
+		cxp = getChunkPos(xpos);
+		cyp = getChunkPos(ypos);
+		czp = getChunkPos(zpos);
 
 		for (int ci = 0; ci < loadedChunks; ci++) {
 			cx = chunks[ci]->cx;
@@ -786,20 +782,10 @@ namespace World {
 		for (int ci = 0; ci != loadedChunks; ci++) chunks[ci]->calcVisible();
 	}
 
-	void saveAllChunks() {
-#ifndef NEWORLD_DEBUG_NO_FILEIO
-		for (int i = 0; i != loadedChunks; i++) {
-			chunks[i]->SaveToFile();
-		}
-#endif
-	}
-
 	void destroyAllChunks() {
 
 		for (int i = 0; i != loadedChunks; i++) {
 			if (!chunks[i]->mIsEmpty) {
-				chunks[i]->destroyRender();
-				chunks[i]->destroy();
 				delete chunks[i];
 			}
 		}
