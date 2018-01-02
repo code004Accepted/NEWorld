@@ -18,12 +18,12 @@ item Player::BlockInHand = Blocks::AIR;
 uint8_t Player::indexInHand = 0;
 
 Hitbox::AABB Player::playerbox;
-vector<Hitbox::AABB> Player::Hitboxes;
+std::vector<Hitbox::AABB> Player::Hitboxes;
 
 double Player::xa, Player::ya, Player::za, Player::xd, Player::yd, Player::zd;
 double Player::health = 20, Player::healthmax = 20, Player::healSpeed = 0.01, Player::dropDamage = 5.0;
 onlineid Player::onlineID;
-string Player::name;
+std::string Player::name;
 Frustum Player::ViewFrustum;
 
 double Player::speed;
@@ -181,7 +181,7 @@ bool Player::putBlock(int x, int y, int z, Block blockname) {
 	return success;
 }
 
-bool Player::save(string worldn) {
+bool Player::save(std::string worldn) {
 	uint32_t curversion = VERSION;
 	std::stringstream ss;
 	ss << "Worlds/" << worldn << "/player.NEWorldPlayer";
@@ -209,7 +209,7 @@ bool Player::save(string worldn) {
 	return true;
 }
 
-bool Player::load(string worldn) {
+bool Player::load(std::string worldn) {
 	uint32_t targetVersion;
 	std::stringstream ss;
 	ss << "Worlds/" << worldn << "/player.NEWorldPlayer";

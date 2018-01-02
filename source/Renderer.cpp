@@ -49,7 +49,7 @@ namespace Renderer {
 	int maxShadowDist = 4;
 	int shadowdist;
 	float sunlightXrot, sunlightYrot;
-	vector<Shader> shaders;
+    std::vector<Shader> shaders;
 	int ActiveShader;
 	int index = 0, size = 0;
 	unsigned int ShadowFBO, DepthTexture;
@@ -143,7 +143,7 @@ namespace Renderer {
 
 	void initShaders() {
 		ShaderAttribLoc = 1;
-		std::set<string> defines;
+		std::set<std::string> defines;
 		defines.insert("MergeFace");
 
 		sunlightXrot = 30.0f;

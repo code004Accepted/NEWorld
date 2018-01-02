@@ -34,7 +34,7 @@ bool gamebegin, gameexit, bagOpened;
 
 //多人游戏
 bool multiplayer = false;
-string serverip;
+std::string serverip;
 unsigned short port = 30001;
 
 TextureID BlockTextures, BlockTextures3D;
@@ -70,12 +70,5 @@ double mx, my, mxl, myl;
 int mw, mb, mbp, mbl, mwl;
 double mxdelta, mydelta;
 //键盘输入数据
-string inputstr;
-
-#ifdef NEWORLD_DEBUG_PERFORMANCE_REC
-int c_getChunkPtrFromCPA;
-int c_getChunkPtrFromSearch;
-int c_getHeightFromHMap;
-int c_getHeightFromWorldGen;
-#endif
+std::string inputstr;
 

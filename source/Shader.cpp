@@ -1,7 +1,7 @@
 #include "Shader.h"
 #include "FunctionsKit.h"
 
-Shader::Shader(string vshPath, string fshPath, bool bindLocation, std::set<string> defines) {
+Shader::Shader(std::string vshPath, std::string fshPath, bool bindLocation, std::set<std::string> defines) {
 	shaderVertex = loadShader(vshPath, GL_VERTEX_SHADER_ARB, defines);
 	shaderFragment = loadShader(fshPath, GL_FRAGMENT_SHADER_ARB, defines);
 	shaderProgram = glCreateProgramObjectARB();
@@ -53,10 +53,10 @@ bool Shader::setUniform(const char* uniform, float * value) {
 	return true;
 }
 
-GLhandleARB Shader::loadShader(string filename, unsigned int mode, std::set<string> defines) {
+GLhandleARB Shader::loadShader(std::string filename, unsigned int mode, std::set<std::string> defines) {
 	std::stringstream ss;
 	GLhandleARB res;
-	string cur, var, maxro;
+    std::string cur, var, maxro;
 	int lines = 0, curlen;
 	char* curline;
 	std::vector<char*> source;
@@ -97,7 +97,7 @@ GLhandleARB Shader::loadShader(string filename, unsigned int mode, std::set<stri
 	return res;
 }
 
-void Shader::checkErrors(GLhandleARB res, int status, string errorMessage) {
+void Shader::checkErrors(GLhandleARB res, int status, std::string errorMessage) {
 	int st = GL_TRUE;
 	glGetObjectParameterivARB(res, status, &st);
 	if (st == GL_FALSE) DebugWarning(errorMessage);
@@ -107,7 +107,7 @@ void Shader::checkErrors(GLhandleARB res, int status, string errorMessage) {
 	if (infologLength > 1) {
 		infoLog = new char[infologLength];
 		glGetInfoLogARB(res, infologLength, &charsWritten, infoLog);
-		cout << infoLog << endl;
+		std::cout << infoLog << std::endl;
 		delete[] infoLog;
 	}
 }

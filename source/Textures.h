@@ -11,13 +11,13 @@ namespace Textures{
 	struct TEXTURE_RGB {
 		unsigned int sizeX;
 		unsigned int sizeY;
-		unique_ptr<uint8_t[]> buffer;
+        std::unique_ptr<uint8_t[]> buffer;
 	};
 
 	struct TEXTURE_RGBA {
 		unsigned int sizeX;
 		unsigned int sizeY;
-		unique_ptr<uint8_t[]> buffer;
+        std::unique_ptr<uint8_t[]> buffer;
 	};
 
 	struct BITMAPINFOHEADER {
@@ -44,15 +44,15 @@ namespace Textures{
 	uint8_t getTextureIndex(Block blockname, uint8_t side);
 	double getTexcoordX(item item, uint8_t side);
 	double getTexcoordY(item item, uint8_t side);
-	void LoadRGBImage(TEXTURE_RGB& tex, string Filename);
-	void LoadRGBAImage(TEXTURE_RGBA& tex, string Filename, string MkFilename);
+	void LoadRGBImage(TEXTURE_RGB& tex, std::string Filename);
+	void LoadRGBAImage(TEXTURE_RGBA& tex, std::string Filename, std::string MkFilename);
 
-	TextureID LoadRGBTexture(string Filename);
-	TextureID LoadFontTexture(string Filename);
-	TextureID LoadRGBATexture(string Filename, string MkFilename);
-	TextureID LoadBlock3DTexture(string Filename, string MkFilename);
+	TextureID LoadRGBTexture(std::string Filename);
+	TextureID LoadFontTexture(std::string Filename);
+	TextureID LoadRGBATexture(std::string Filename, std::string MkFilename);
+	TextureID LoadBlock3DTexture(std::string Filename, std::string MkFilename);
 
-	void SaveRGBImage(string filename, TEXTURE_RGB& image);
+	void SaveRGBImage(std::string filename, TEXTURE_RGB& image);
 
 	void Build2DMipmaps(GLenum format, int w, int h, int level, const uint8_t* src);
 

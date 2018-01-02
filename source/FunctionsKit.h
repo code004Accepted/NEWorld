@@ -1,11 +1,11 @@
 #pragma once
 #include "StdInclude.h"
 #include "Typedefs.h"
-
+#include <chrono>
 extern double stretch;
 
 //³£ÓÃº¯Êý
-vector<string> split(string str, string pattern);
+std::vector<std::string> split(std::string str, std::string pattern);
 
 inline void UITrans(double x, double y) {
 	glTranslated(x*stretch, y*stretch, 0);
@@ -26,62 +26,47 @@ inline int fastRand() {
 	return (g_seed >> 16) & 0x7FFF;
 }
 inline void fastSrand(int seed) { g_seed = seed; }
-vector<string> split(string str, string pattern);
+std::vector<std::string> split(std::string str, std::string pattern);
 inline double rnd() { return (double)fastRand() / (RAND_MAX + 1); }
 inline int RoundInt(double d) { return int(floor(d + 0.5)); }
 
-inline string itos(int i) {
+inline std::string itos(int i) {
 	std::stringstream ss;
 	ss << i;
-	return string(ss.str());
+	return ss.str();
 }
 
-inline bool beginWith(string str, string begin) {
+inline bool beginWith(std::string str, std::string begin) {
 	if (str.size() < begin.size()) return false;
 	return str.substr(0, begin.size()) == begin;
 }
 
-inline void DebugWarning(string msg) {
-#ifdef NEWORLD_USE_WINAPI
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
-	printf("[Debug][Warning]");
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
-	printf("%s\n", msg.c_str());
-#else
+inline void DebugWarning(std::string msg) {
 	printf("[Debug][Warning]%s\n", msg.c_str());
-#endif
 }
 
-inline void DebugError(string msg) {
-#ifdef NEWORLD_USE_WINAPI
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
-	printf("[Debug][Error]");
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
-	printf("%s\n", msg.c_str());
-#else
+inline void DebugError(std::string msg) {
 	printf("[Debug][Error]%s\n", msg.c_str());
-#endif
 }
 
-template<class T> inline void conv(string str, T& ret) {
+template<class T> 
+inline void conv(std::string str, T& ret) {
 	std::stringstream s(str);
 	s >> ret;
 }
 
-template<class T> inline T clamp(T x, T min, T max) {
+template<class T> 
+inline T clamp(T x, T min, T max) {
 	if (x < min) return min;
 	if (x > max) return max;
 	return x;
 }
 
-#ifdef NEWORLD_USE_WINAPI
 inline double timer() {
-	static LARGE_INTEGER counterFreq;
-	if (counterFreq.QuadPart == 0) QueryPerformanceFrequency(&counterFreq);
-	LARGE_INTEGER now;
-	QueryPerformanceCounter(&now);
-	return (double)now.QuadPart / counterFreq.QuadPart;
+    auto duri = std::chrono::steady_clock::now().time_since_epoch();
+    return static_cast<double>(duri.count()) / decltype(duri)::period::den;
 }
+#ifdef NEWORLD_USE_WINAPI
 inline unsigned int MByteToWChar(wchar_t* dst, const char* src, unsigned int n) {
     int res = MultiByteToWideChar(CP_ACP, 0, src, n, dst, n);
     return res;
@@ -91,8 +76,6 @@ inline unsigned int WCharToMByte(char* dst, const wchar_t* src, unsigned int n) 
 }
 #else
 inline unsigned int MByteToWChar(wchar_t* dst, const char* src, unsigned int n) { size_t res; mbstowcs_s(&res, dst, n, src, _TRUNCATE); return res; }
-inline unsigned int WCharToMByte(char* dst, const wchar_t* src, unsigned int n) { size_t res; wcstombs_s(&res, dst, n, src, _TRUNCATE); return res; }
-inline double timer() { return (double)clock() / CLOCKS_PER_SEC; }
 #endif
 inline Mutex_t MutexCreate() { return new std::mutex; }
 inline void MutexDestroy(Mutex_t _hMutex) { delete _hMutex; }

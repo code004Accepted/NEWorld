@@ -21,7 +21,7 @@ namespace Renderer{
 	extern int shadowdist;
 	extern float sunlightXrot, sunlightYrot;
 	extern unsigned int DepthTexture;
-	extern vector<Shader> shaders;
+	extern std::vector<Shader> shaders;
 	extern int ActiveShader;
 
 	void Init(int tc, int cc, int ac = 0);

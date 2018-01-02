@@ -1,10 +1,14 @@
 #pragma once
 #include "StdInclude.h"
 
+#include <set>
+#include <string>
+
 class Shader {
 public:
-	Shader(string vshPath, string fshPath, bool bindLocation = false) :Shader(vshPath, fshPath, bindLocation, std::set<string>()) {}
-	Shader(string vshPath, string fshPath, bool bindLocation, std::set<string> defines);
+	Shader(std::string vshPath, std::string fshPath, bool bindLocation = false) :
+        Shader(vshPath, fshPath, bindLocation, std::set<std::string>()) {}
+	Shader(std::string vshPath, std::string fshPath, bool bindLocation, std::set<std::string> defines);
 
 	inline void bind() { glUseProgramObjectARB(shaderProgram); }
 	static inline void unbind() { glUseProgramObjectARB(0); }
@@ -16,8 +20,8 @@ public:
 	bool setUniform(const char* uniform, float* value);
 
 private:
-	GLhandleARB loadShader(string filename, unsigned int mode, std::set<string> defines);
-	void checkErrors(GLhandleARB res, int status, string errorMessage);
+	GLhandleARB loadShader(std::string filename, unsigned int mode, std::set<std::string> defines);
+	void checkErrors(GLhandleARB res, int status, std::string errorMessage);
 
 	GLhandleARB shaderFragment;
 	GLhandleARB shaderVertex;

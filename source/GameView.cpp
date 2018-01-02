@@ -10,13 +10,13 @@ ThreadFunc updateThreadFunc(void*);
 
 int getMouseScroll() { return mw; }
 int getMouseButton() { return mb; }
-vector<Command> commands;
+std::vector<Command> commands;
 
 class GameDView :public GUI::Form {
 private:
-	string chatword;
+    std::string chatword;
 	bool chatmode = false;
-	vector<string> chatMessages;
+    std::vector<std::string> chatMessages;
 
 	int fps, fpsc, ups, upsc;
 	double fctime, uctime;
@@ -502,7 +502,7 @@ public:
 				chatmode = !chatmode;
 				if (chatword != "") { //指令的执行，或发出聊天文本
 					if (chatword.substr(0, 1) == "/") { //指令
-						vector<string> command = split(chatword, " ");
+                        std::vector<std::string> command = split(chatword, " ");
 						if (!doCommand(command)) { //执行失败
 							DebugWarning("Fail to execute the command: " + chatword);
 							chatMessages.push_back("Fail to execute the command: " + chatword);
@@ -654,7 +654,7 @@ public:
 
 	}
 
-	void debugText(string s, bool init) {
+	void debugText(std::string s, bool init) {
 		static int pos = 0;
 		if (init) {
 			pos = 0;
@@ -1222,17 +1222,6 @@ public:
 			ss << "load:" << World::loadedChunks << " unload:" << World::unloadedChunks 
 				<< " render:"  << WorldRenderer::RenderChunkList.size() << " update:" <<World::updatedChunks ;
 			debugText(ss.str(), false); ss.str("");
-
-#ifdef NEWORLD_DEBUG_PERFORMANCE_REC
-			ss << c_getChunkPtrFromCPA << " CPA requests";
-			debugText(ss.str()); ss.str("");
-			ss << c_getChunkPtrFromSearch << " search requests";
-			debugText(ss.str()); ss.str("");
-			ss << c_getHeightFromHMap << " heightmap requests";
-			debugText(ss.str()); ss.str("");
-			ss << c_getHeightFromWorldGen << " worldgen requests";
-			debugText(ss.str()); ss.str("");
-#endif
 			debugText("", true);
 		}
 		else {
@@ -1523,14 +1512,14 @@ public:
 		glFlush();
 	}
 
-	void saveScreenshot(int x, int y, int w, int h, string filename) {
+	void saveScreenshot(int x, int y, int w, int h, std::string filename) {
 		Textures::TEXTURE_RGB scrBuffer;
 		int bufw = w, bufh = h;
 		while (bufw % 4 != 0) { bufw += 1; }
 		while (bufh % 4 != 0) { bufh += 1; }
 		scrBuffer.sizeX = bufw;
 		scrBuffer.sizeY = bufh;
-		scrBuffer.buffer = unique_ptr<uint8_t[]>(new uint8_t[bufw*bufh * 3]);
+		scrBuffer.buffer = std::unique_ptr<uint8_t[]>(new uint8_t[bufw*bufh * 3]);
 		glReadPixels(x, y, bufw, bufh, GL_RGB, GL_UNSIGNED_BYTE, scrBuffer.buffer.get());
 		Textures::SaveRGBImage(filename, scrBuffer);
 	}
@@ -1543,14 +1532,14 @@ public:
 
 
 	void registerCommands() {
-		commands.push_back(Command("/give", [](const vector<string>& command) {
+		commands.push_back(Command("/give", [](const std::vector<std::string>& command) {
 			if (command.size() != 3) return false;
 			item itemid; conv(command[1], itemid);
 			short amount; conv(command[2], amount);
 			Player::addItem(itemid, amount);
 			return true;
 		}));
-		commands.push_back(Command("/tp", [](const vector<string>& command) {
+		commands.push_back(Command("/tp", [](const std::vector<std::string>& command) {
 			if (command.size() != 4) return false;
 			double x; conv(command[1], x);
 			double y; conv(command[2], y);
@@ -1560,12 +1549,12 @@ public:
 			Player::zpos = z;
 			return true;
 		}));
-		commands.push_back(Command("/suicide", [](const vector<string>& command) {
+		commands.push_back(Command("/suicide", [](const std::vector<std::string>& command) {
 			if (command.size() != 1) return false;
 			Player::spawn();
 			return true;
 		}));
-		commands.push_back(Command("/setblock", [](const vector<string>& command) {
+		commands.push_back(Command("/setblock", [](const std::vector<std::string>& command) {
 			if (command.size() != 5) return false;
 			int x; conv(command[1], x);
 			int y; conv(command[2], y);
@@ -1574,7 +1563,7 @@ public:
 			World::setblock(x, y, z, b);
 			return true;
 		}));
-		commands.push_back(Command("/tree", [](const vector<string>& command) {
+		commands.push_back(Command("/tree", [](const std::vector<std::string>& command) {
 			if (command.size() != 4) return false;
 			int x; conv(command[1], x);
 			int y; conv(command[2], y);
@@ -1582,7 +1571,7 @@ public:
 			World::buildtree(x, y, z);
 			return true;
 		}));
-		commands.push_back(Command("/explode", [](const vector<string>& command) {
+		commands.push_back(Command("/explode", [](const std::vector<std::string>& command) {
 			if (command.size() != 5) return false;
 			int x; conv(command[1], x);
 			int y; conv(command[2], y);
@@ -1591,13 +1580,13 @@ public:
 			World::explode(x, y, z, r);
 			return true;
 		}));
-		commands.push_back(Command("/gamemode", [](const vector<string>& command) {
+		commands.push_back(Command("/gamemode", [](const std::vector<std::string>& command) {
 			if (command.size() != 2) return false;
 			int mode; conv(command[1], mode);
 			Player::changeGameMode(mode);
 			return true;
 		}));
-		commands.push_back(Command("/kit", [](const vector<string>& command) {
+		commands.push_back(Command("/kit", [](const std::vector<std::string>& command) {
 			if (command.size() != 1) return false;
 			Player::inventory[0][0] = 1; Player::inventoryAmount[0][0] = 255;
 			Player::inventory[0][1] = 2; Player::inventoryAmount[0][1] = 255;
@@ -1619,7 +1608,7 @@ public:
 			Player::inventory[1][7] = 18; Player::inventoryAmount[1][7] = 255;
 			return true;
 		}));
-		commands.push_back(Command("/time", [](const vector<string>& command) {
+		commands.push_back(Command("/time", [](const std::vector<std::string>& command) {
 			if (command.size() != 2) return false;
 			int time; conv(command[1], time);
 			if (time<0 || time>gameTimemax) return false;
@@ -1628,7 +1617,7 @@ public:
 		}));
 	}
 
-	bool doCommand(const vector<string>& command) {
+	bool doCommand(const std::vector<std::string>& command) {
 		for (unsigned int i = 0; i != commands.size(); i++) {
 			if (command[0] == commands[i].identifier) {
 				return commands[i].execute(command);

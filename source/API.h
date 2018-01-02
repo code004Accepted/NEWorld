@@ -1,14 +1,8 @@
 ﻿#pragma once
 #include <functional>
-#include <string>
-#include <map>
-#include <vector>
-#include "Definitions.h"
-#include "World.h"
-#include "Chunk.h"
-#include "Command.h"
 #include "ModSupport.h"
-extern vector<Command> commands;
+
+extern std::vector<Command> commands;
 
 namespace Mod {
 

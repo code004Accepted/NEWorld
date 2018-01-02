@@ -14,9 +14,9 @@ namespace Menus {
 		bool refresh = true;
 		int selected = 0, mouseon;
 		int worldcount;
-		string chosenWorldName;
-		vector<string> worldnames;
-		vector<TextureID> thumbnails, texSizeX, texSizeY;
+        std::string chosenWorldName;
+        std::vector<std::string> worldnames;
+        std::vector<TextureID> thumbnails, texSizeX, texSizeY;
 		int trs = 0;
 		GUI::label title;
 		GUI::vscroll vscroll;
@@ -82,7 +82,7 @@ namespace Menus {
 			}
 			if (deletebtn.clicked) {
 				//删除世界文件
-				system((string("rd /s/q \"Worlds\\") + chosenWorldName + "\"").c_str());
+				system((std::string("rd /s/q \"Worlds\\") + chosenWorldName + "\"").c_str());
 				deletebtn.clicked = false;
 				World::worldname = "";
 				enterbtn.enabled = false;
@@ -109,12 +109,12 @@ namespace Menus {
 							if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0) {
 								worldnames.push_back(fileinfo.name);
 								std::fstream file;
-								file.open(("Worlds\\" + string(fileinfo.name) + "\\Thumbnail.bmp").c_str(), std::ios::in);
+								file.open(("Worlds\\" + std::string(fileinfo.name) + "\\Thumbnail.bmp").c_str(), std::ios::in);
 								thumbnails.push_back(0);
 								texSizeX.push_back(0);
 								texSizeY.push_back(0);
 								if (file.is_open()) {
-									Textures::LoadRGBImage(tmb, "Worlds\\" + string(fileinfo.name) + "\\Thumbnail.bmp");
+									Textures::LoadRGBImage(tmb, "Worlds\\" + std::string(fileinfo.name) + "\\Thumbnail.bmp");
 									glGenTextures(1, &thumbnails[thumbnails.size() - 1]);
 									glBindTexture(GL_TEXTURE_2D, thumbnails[thumbnails.size() - 1]);
 									glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

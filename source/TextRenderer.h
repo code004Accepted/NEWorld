@@ -1,11 +1,13 @@
 #pragma once
-#include "Definitions.h"
+#include <string>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 namespace TextRenderer {
 	struct UnicodeChar {
 		bool aval;
-		TextureID tex;
-		VBOID buffer;
+        unsigned int tex;
+		unsigned int buffer;
 		unsigned int vtxs;
 		int xpos, ypos;
 		int width, height, advance;
@@ -32,7 +34,7 @@ namespace TextRenderer {
 	void resize();
 	void setFontColor(float r, float g, float b, float a);
 	void loadchar(unsigned int uc);
-	int getStrWidth(string s);
-	void renderString(int x, int y, string glstring);
-	void renderASCIIString(int x, int y, string glstring);
+	int getStrWidth(std::string s);
+	void renderString(int x, int y, std::string glstring);
+	void renderASCIIString(int x, int y, std::string glstring);
 }

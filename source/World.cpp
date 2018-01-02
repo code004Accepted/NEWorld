@@ -3,10 +3,11 @@
 #include "Renderer.h"
 #include "WorldGen.h"
 #include "Particles.h"
+#include <direct.h>
 
 namespace World {
 
-	string worldname;
+    std::string worldname;
 	Brightness skylight = 15;         //Sky light level
 	Brightness BrightnessMax = 15;    //maximum brightness
 	Brightness BrightnessMin = 2;     //Mimimum brightness
@@ -29,13 +30,14 @@ namespace World {
 	int unloadedChunks, unloadedChunksCount;
 	int chunkBuildRenderList[256][2];
 	int chunkLoadList[256][4];
-	pair<Chunk*, int> chunkUnloadList[256];
-	vector<unsigned int> vbuffersShouldDelete;
+    std::pair<Chunk*, int> chunkUnloadList[256];
+    std::vector<unsigned int> vbuffersShouldDelete;
 	int chunkBuildRenders, chunkLoads, chunkUnloads;
-	//bool* loadedChunkArray = nullptr; //Accelerate sortings
+    int getChunkPtrIndex(int x, int y, int z);
+    void ExpandChunkArray(int cc);
+    void ReduceChunkArray(int cc);
 
 	void Init(){
-		
 		std::stringstream ss;
 		ss << "Worlds/" << worldname << "/";
 		_mkdir(ss.str().c_str());
@@ -43,8 +45,6 @@ namespace World {
 		ss << "Worlds/" << worldname << "/chunks";
 		_mkdir(ss.str().c_str());
 		
-		//EmptyChunkPtr = new chunk(0, 0, 0, getChunkID(0, 0, 0));
-		//EmptyChunkPtr->mIsEmpty = true;
 		EmptyChunkPtr = (Chunk*)~0;
 
 		WorldGen::perlinNoiseInit(3404);
@@ -54,12 +54,10 @@ namespace World {
 		cpArray.create((viewdistance + 2) * 2);
 
 		HMap.setSize((viewdistance + 2) * 2 * 16);
-		HMap.create();
-		
+		HMap.create();	
 	}
 
-	inline pair<int,int> binary_search_chunks(Chunk** target, int len, ChunkID cid) {
-		//¶þ·Ö²éÕÒ,GO!
+	inline std::pair<int,int> binary_search_chunks(Chunk** target, int len, ChunkID cid) {
 		int first = 0;
 		int last = len - 1;
 		int	middle = (first + last) / 2;
@@ -71,10 +69,9 @@ namespace World {
 		return std::make_pair(first, middle);
 	}
 	Chunk* AddChunk(int x, int y, int z) {
-
 		ChunkID cid;
 		cid = getChunkID(x, y, z);  //Chunk ID
-		pair<int, int> pos = binary_search_chunks(chunks, loadedChunks, cid);
+        std::pair<int, int> pos = binary_search_chunks(chunks, loadedChunks, cid);
 		if (loadedChunks > 0 && chunks[pos.second]->id == cid) {
 			printf("[Console][Error]");
 			printf("Chunk(%d,%d,%d)has been loaded,when adding chunk.\n", x, y, z);
@@ -108,15 +105,9 @@ namespace World {
 	}
 
 	int getChunkPtrIndex(int x, int y, int z) {
-#ifdef NEWORLD_DEBUG_PERFORMANCE_REC
-		c_getChunkPtrFromSearch++;
-#endif
 		ChunkID cid = getChunkID(x, y, z);
-		pair<int, int> pos = binary_search_chunks(chunks, loadedChunks, cid);
+        std::pair<int, int> pos = binary_search_chunks(chunks, loadedChunks, cid);
 		if (chunks[pos.second]->id == cid) return pos.second;
-#ifdef NEWORLD_DEBUG
-		DebugError("getChunkPtrIndex Error!");
-#endif
 		return -1;
 	}
 
@@ -131,10 +122,7 @@ namespace World {
 				return ret;
 			}
 			if (loadedChunks > 0){
-#ifdef NEWORLD_DEBUG_PERFORMANCE_REC
-				c_getChunkPtrFromSearch++;
-#endif
-				pair<int, int> pos = binary_search_chunks(chunks, loadedChunks, cid);
+                std::pair<int, int> pos = binary_search_chunks(chunks, loadedChunks, cid);
 				if (chunks[pos.second]->id == cid) {
 					ret = chunks[pos.second];
 					cpCacheID = cid;
@@ -440,11 +428,10 @@ namespace World {
 		}
 	}
 
-	vector<Hitbox::AABB> getHitboxes(const Hitbox::AABB& box) {
+    std::vector<Hitbox::AABB> getHitboxes(const Hitbox::AABB& box) {
 		//返回与box相交的所有方块AABB
-
 		Hitbox::AABB blockbox;
-		vector<Hitbox::AABB> Hitboxes;
+        std::vector<Hitbox::AABB> Hitboxes;
 
 		for (int a = int(box.xmin + 0.5) - 1; a <= int(box.xmax + 0.5) + 1; a++) {
 			for (int b = int(box.ymin + 0.5) - 1; b <= int(box.ymax + 0.5) + 1; b++) {

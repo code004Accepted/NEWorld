@@ -1,5 +1,6 @@
 ﻿#include "API.h"
 #include "Player.h"
+#include "World.h"
 
 std::map<std::string, void*> Mod::sharedData;
 
@@ -10,7 +11,7 @@ APIPackage Mod::getPackage() {
 	api.getChunk = World::getChunkPtr;
 	api.getBlock = std::bind(World::getblock, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, 0, nullptr);
 	api.setBlock = std::bind(World::setblock, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, nullptr);
-	api.getCommand = [](string s) -> Command* {
+	api.getCommand = [](std::string s) -> Command* {
 		for (size_t i = 0; i < commands.size(); i++)
 			if (commands[i].identifier == s) return &commands[i];
 		return nullptr;

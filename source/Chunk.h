@@ -8,7 +8,7 @@ class Object;
 
 namespace World {
 	
-	extern string worldname;
+	extern std::string worldname;
 	extern Brightness BrightnessMin;
 	extern Brightness skylight;
 
@@ -20,7 +20,7 @@ namespace World {
 	private:
 		Block* pblocks;
 		Brightness* pbrightness;
-		vector<Object*> objects;
+        std::vector<Object*> objects;
 		static double relBaseX, relBaseY, relBaseZ;
 		static Frustum TestFrustum;
 
@@ -47,18 +47,18 @@ namespace World {
 		void buildTerrain(bool initIfEmpty = true);
 		void buildDetail();
 		void build(bool initIfEmpty = true);
-		inline string getChunkPath() {
+		inline std::string getChunkPath() {
 			//assert(mIsEmpty == false);
 			std::stringstream ss;
 			ss << "Worlds/" << worldname << "/chunks/chunk_" << cx << "_" << cy << "_" << cz << ".NEWorldChunk";
 			return ss.str();
 		}
-		inline string getObjectsPath() {
+		inline std::string getObjectsPath() {
 			std::stringstream ss;
 			ss << "Worlds/" << worldname << "/objects/chunk_" << cx << "_" << cy << "_" << cz << ".NEWorldObjects";
 			return ss.str();
 		}
-		inline bool fileExist(string path){
+		inline bool fileExist(std::string path){
 			//assert(mIsEmpty == false);
 			std::fstream file;
 			file.open(path, std::ios::in);

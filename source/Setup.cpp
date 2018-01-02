@@ -30,7 +30,7 @@ void splashScreen() {
 }
 
 void createWindow() {
-	glfwSetErrorCallback([](int, const char* desc) { cout << desc << endl; });
+	glfwSetErrorCallback([](int, const char* desc) { std::cout << desc << std::endl; });
 	std::stringstream title;
 	title << "NEWorld " << MAJOR_VERSION << minOR_VERSION << EXT_VERSION;
 	if (Multisample != 0) glfwWindowHint(GLFW_SAMPLES, Multisample);
@@ -114,7 +114,7 @@ void loadTextures() {
 	DefaultSkin = Textures::LoadRGBATexture("Textures/Player/skin_xiaoqiao.bmp", "Textures/Player/skinmask_xiaoqiao.bmp");
 
 	for (int gloop = 1; gloop <= 10; gloop++) {
-		string path = "Textures/blocks/destroy_" + itos(gloop) + ".bmp";
+        std::string path = "Textures/blocks/destroy_" + itos(gloop) + ".bmp";
 		DestroyImage[gloop] = Textures::LoadRGBATexture(path, path);
 	}
 

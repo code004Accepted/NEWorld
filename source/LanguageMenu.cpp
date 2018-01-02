@@ -1,6 +1,8 @@
 #include "Menus.h"
+#include <deque>
+
 struct Langinfo {
-	string Symbol, EngSymbol, Name;
+    std::string Symbol, EngSymbol, Name;
 	GUI::button * Button;
 };
 
@@ -23,8 +25,8 @@ namespace Menus {
 			for (int i = 0; i < count; i++) {
 				index >> Info.Symbol;
 				std::ifstream LF("Lang/" + Info.Symbol + ".lang");
-				getline(LF, Info.EngSymbol);
-				getline(LF, Info.Name);
+                std::getline(LF, Info.EngSymbol);
+                std::getline(LF, Info.Name);
 				LF.close();
 				Info.Button = new GUI::button(Info.EngSymbol + "--" + Info.Name, -200, 200, i * 36 + 42, i * 36 + 72, 0.5, 0.5, 0.0, 0.0);
 				registerControls(1, Info.Button);
@@ -54,7 +56,7 @@ namespace Menus {
 
 		void onLeave() {
 			for (size_t i = 0; i < Langs.size(); i++) {
-				for (vector<GUI::controls*>::iterator iter = children.begin(); iter != children.end(); ) {
+				for (std::vector<GUI::controls*>::iterator iter = children.begin(); iter != children.end(); ) {
 					if ((*iter)->id == Langs[i].Button->id) iter = children.erase(iter);
 					else ++iter;
 				}

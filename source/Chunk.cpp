@@ -33,37 +33,6 @@ namespace World {
 		}
 	};
 
-	inline string v22string(int x, int y) {
-		char * _ = (char*)malloc(sizeof(int) * 2+1);
-		int * __ = (int*)_;
-		__[0] = x;
-		__[1] = y;
-		_[sizeof(int) * 2] = '\0';
-		string s = string(_);
-		free(_);
-		free(__);
-		return string(_);
-	}
-
-	/*std::map<std::string, HMapManager> HeightMap;
-
-	HMapManager* HMapInclude(int x, int z) {
-		string _ = v22string(x, z);
-		if (!(HeightMap.find(_) != HeightMap.end())) {
-			pair<string, HMapManager> n = { _, HMapManager(x, z) };
-			HeightMap.insert(n);
-		}
-		HeightMap[_].count++;
-		return &HeightMap[_];
-	}
-
-	void HMapExclude(int x, int z) {
-		string _ = v22string(x, z);
-		if (!(HeightMap.find(_) != HeightMap.end())) return;
-		HeightMap[_].count--;
-		if (HeightMap[_].count == 0) HeightMap.erase(_);
-	}*/
-
 	double Chunk::relBaseX, Chunk::relBaseY, Chunk::relBaseZ;
 	Frustum Chunk::TestFrustum;
 
@@ -71,13 +40,6 @@ namespace World {
 		aabb = getBaseAABB();
 		pblocks = new Block[4096];
 		pbrightness = new Brightness[4096];
-		//memset(pblocks, 0, sizeof(pblocks));
-		//memset(pbrightness, 0, sizeof(pbrightness));
-#ifdef NEWORLD_DEBUG_CONSOLE_OUTPUT
-		if (pblocks == nullptr || pbrightness == nullptr){
-			DebugError("Allocate memory failed!");
-		}
-#endif
 	}
 
 	void Chunk::destroy() {

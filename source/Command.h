@@ -1,10 +1,13 @@
 #pragma once
-#include "stdinclude.h"
+#include <vector>
+#include <string>
+#include <functional>
 
 class Command {
 public:
-	Command(string _identifier, std::function<bool(const vector<string>&)> _execute) :identifier(_identifier), execute(_execute) {};
+	Command(std::string _identifier, std::function<bool(const std::vector<std::string>&)> _execute) :
+        identifier(_identifier), execute(_execute) {};
 
-	string identifier;
-	std::function<bool(const vector<string>&)> execute;
+    std::string identifier;
+	std::function<bool(const std::vector<std::string>&)> execute;
 };

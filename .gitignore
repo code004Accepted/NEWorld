@@ -204,3 +204,5 @@ FakesAssemblies/
 *.dll
 *.exe
 /Audio
+/Fonts
+/Textures

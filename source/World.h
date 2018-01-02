@@ -5,16 +5,55 @@
 #include "Chunk.h"
 #include "Hitbox.h"
 #include "Blocks.h"
-#include"Player.h"
-#include"Particles.h"
-#include"Items.h"
+#include "Player.h"
+#include "Particles.h"
+#include "Items.h"
 
 extern int viewdistance;
 class Frsutum;
 
 namespace World {
 
-	extern string worldname;
+    // POD ONLY!
+    template <class Tk, class Td, size_t size, template<class> class Compare = std::less>
+    class OrderedList
+    {
+    public:
+        OrderedList() noexcept : mComp(), mSize(0) {}
+        using ArrayType = std::array<std::pair<Tk, Td>, size>;
+        using Iterator = typename ArrayType::iterator;
+        using ConstIterator = typename ArrayType::const_iterator;
+        Iterator begin() noexcept { return mList.begin(); }
+        ConstIterator begin() const noexcept { return mList.begin(); }
+        Iterator end() noexcept { return mList.begin() + mSize; }
+        ConstIterator end() const noexcept { return mList.begin() + mSize; }
+        void insert(Tk key, Td data) noexcept
+        {
+            int first = 0, last = mSize - 1;
+            while (first <= last)
+            {
+                int middle = (first + last) / 2;
+                if (mComp(key, mList[middle].first))
+                    last = middle - 1;
+                else
+                    first = middle + 1;
+            }
+            if (first <= mSize && first < size)
+            {
+                mSize = std::min(size, mSize + 1);
+                for (int j = size - 1; j > first; j--)
+                    mList[j] = mList[j - 1];
+                mList[first] = std::pair<Tk, Td>(key, data);
+            }
+        }
+        void clear() noexcept { mSize = 0; }
+    private:
+        size_t mSize;
+        ArrayType mList;
+        Compare<Tk> mComp;
+    };
+
+	extern std::string worldname;
 	const int worldsize = 134217728;
 	const int worldheight = 128;
 	extern Brightness skylight;         //Sky light level
@@ -40,8 +79,8 @@ namespace World {
 	extern int unloadedChunks, unloadedChunksCount;
 	extern int chunkBuildRenderList[256][2];
 	extern int chunkLoadList[256][4];
-	extern pair<Chunk*, int> chunkUnloadList[256];
-	extern vector<unsigned int> vbuffersShouldDelete;
+	extern std::pair<Chunk*, int> chunkUnloadList[256];
+	extern std::vector<unsigned int> vbuffersShouldDelete;
 	extern int chunkBuildRenders, chunkLoads, chunkUnloads;
 
 	void Init();
@@ -54,10 +93,7 @@ namespace World {
 		if (z == -134217728) z = 0; if (z <= 0) z = abs(z) + (1LL << 27);
 		return (ChunkID(y) << 56) + (ChunkID(x) << 28) + z;
 	}
-	int getChunkPtrIndex(int x, int y, int z);
 	Chunk* getChunkPtr(int x, int y, int z);
-	void ExpandChunkArray(int cc);
-	void ReduceChunkArray(int cc);
 
 	#define getchunkpos(n) ((n)>>4)
 	#define getblockpos(n) ((n)&15)
@@ -71,7 +107,7 @@ namespace World {
 		return false;
 	}
 
-	vector<Hitbox::AABB> getHitboxes(const Hitbox::AABB& box);
+    std::vector<Hitbox::AABB> getHitboxes(const Hitbox::AABB& box);
 	bool inWater(const Hitbox::AABB& box);
 
 	void renderblock(int x, int y, int z, Chunk* chunkptr);

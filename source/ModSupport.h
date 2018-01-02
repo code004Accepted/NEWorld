@@ -52,7 +52,7 @@ struct APIPackage {
 	std::function<World::Chunk*(int cx, int cy, int cz)> getChunk;
 	std::function<Block(int cx, int cy, int cz)> getBlock;
 	std::function<void(int x, int y, int z, Block Block)> setBlock;
-	std::function<Command*(string commandName)> getCommand;
+	std::function<Command*(std::string commandName)> getCommand;
 	std::function<bool(Command command)> registerCommand;
 	std::function<void*(std::string key)> getSharedData;
 	std::function<void(std::string key, void* value)> setSharedData;

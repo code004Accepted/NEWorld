@@ -84,7 +84,7 @@ namespace Textures {
 			return NULLBLOCK;
 	}
 
-	void LoadRGBImage(TEXTURE_RGB& tex, string Filename) {
+	void LoadRGBImage(TEXTURE_RGB& tex, std::string Filename) {
 		unsigned int ind = 0;
 		TEXTURE_RGB& bitmap = tex; //返回位图
 		bitmap.buffer = nullptr; bitmap.sizeX = bitmap.sizeY = 0;
@@ -100,7 +100,7 @@ namespace Textures {
 		bmpfile.read((char*)&bih, sizeof(BITMAPINFOHEADER));
 		bitmap.sizeX = bih.biWidth;
 		bitmap.sizeY = bih.biHeight;
-		bitmap.buffer = unique_ptr<uint8_t[]>(new unsigned char[bitmap.sizeX * bitmap.sizeY * 3]);
+		bitmap.buffer = std::unique_ptr<uint8_t[]>(new unsigned char[bitmap.sizeX * bitmap.sizeY * 3]);
 		//¶ÁÈ¡Êý¾Ý
 		bmpfile.read((char*)bitmap.buffer.get(), bitmap.sizeX*bitmap.sizeY * 3);
 		bmpfile.close();
@@ -114,7 +114,7 @@ namespace Textures {
 		}
 	}
 
-	void LoadRGBAImage(TEXTURE_RGBA& tex, string Filename, string MkFilename) {
+	void LoadRGBAImage(TEXTURE_RGBA& tex, std::string Filename, std::string MkFilename) {
 		unsigned char *rgb = nullptr, *a = nullptr;
 		unsigned int ind = 0;
 		bool noMaskFile = (MkFilename == "");
@@ -142,7 +142,7 @@ namespace Textures {
 		bmpfile.read((char*)&bih, sizeof(BITMAPINFOHEADER)); //Ëü½«¸²¸ÇÖ®Ç°´ÓmaskÎÄ¼þ¶Á³öÀ´µÄinfoÊý¾Ý
 		bitmap.sizeX = bih.biWidth;
 		bitmap.sizeY = bih.biHeight;
-		bitmap.buffer = unique_ptr<uint8_t[]>(new unsigned char[bitmap.sizeX * bitmap.sizeY * 4]);
+		bitmap.buffer = std::unique_ptr<uint8_t[]>(new unsigned char[bitmap.sizeX * bitmap.sizeY * 4]);
 		//¶ÁÈ¡Êý¾Ý
 		rgb = new unsigned char[bitmap.sizeX * bitmap.sizeY * 3];
 		bmpfile.read((char*)rgb, bitmap.sizeX*bitmap.sizeY * 3);
@@ -165,7 +165,7 @@ namespace Textures {
 		}
 	}
 
-	TextureID LoadRGBTexture(string Filename) {
+	TextureID LoadRGBTexture(std::string Filename) {
 		TEXTURE_RGB image;
 		TextureID ret;
 		LoadRGBImage(image, Filename);
@@ -177,7 +177,7 @@ namespace Textures {
 		return ret;
 	}
 	
-	TextureID LoadFontTexture(string Filename) {
+	TextureID LoadFontTexture(std::string Filename) {
 		TEXTURE_RGBA Texture;
 		TEXTURE_RGB image;
 		uint8_t *ip, *tp;
@@ -185,7 +185,7 @@ namespace Textures {
 		LoadRGBImage(image, Filename);
 		Texture.sizeX = image.sizeX;
 		Texture.sizeY = image.sizeY;
-		Texture.buffer = unique_ptr<uint8_t[]>(new unsigned char[image.sizeX * image.sizeY * 4]);
+		Texture.buffer = std::unique_ptr<uint8_t[]>(new unsigned char[image.sizeX * image.sizeY * 4]);
 		if (Texture.buffer == nullptr) {
 			printf("[console][Warning] Cannot alloc memory when loading %s\n", Filename.c_str());
 			return 0;
@@ -206,7 +206,7 @@ namespace Textures {
 		return ret;
 	}
 
-	TextureID LoadRGBATexture(string Filename, string MkFilename) {
+	TextureID LoadRGBATexture(std::string Filename, std::string MkFilename) {
 		TextureID ret;
 		TEXTURE_RGBA image;
 		LoadRGBAImage(image, Filename, MkFilename);
@@ -218,7 +218,7 @@ namespace Textures {
 		return ret;
 	}
 
-	TextureID LoadBlock3DTexture(string Filename, string MkFilename) {
+	TextureID LoadBlock3DTexture(std::string Filename, std::string MkFilename) {
 		int sz = BLOCKTEXTURE_UNITSIZE, cnt = BLOCKTEXTURE_UNITS*BLOCKTEXTURE_UNITS;
 		//int mipmapLevel = (int)log2(BLOCKTEXTURE_UNITSIZE), sum = 0, cursize = 0, scale = 1;
 		uint8_t *src, *cur;
@@ -265,7 +265,7 @@ namespace Textures {
 		return ret;
 	}
 
-	void SaveRGBImage(string filename, TEXTURE_RGB& image) {
+	void SaveRGBImage(std::string filename, TEXTURE_RGB& image) {
 		BITMAPFILEHEADER bitmapfileheader;
 		BITMAPINFOHEADER bitmapinfoheader;
 		bitmapfileheader.bfSize = image.sizeX*image.sizeY * 3 + 54;

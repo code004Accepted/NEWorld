@@ -8,6 +8,8 @@
 #include "Menus.h"
 #include "ModLoader.h"
 #include "Setup.h"
+#include <direct.h>
+
 void loadOptions();
 void saveOptions();
 
@@ -51,7 +53,7 @@ int main() {
 	ApplicationBeforeLaunch();
 	windowwidth = defaultwindowwidth;
 	windowheight = defaultwindowheight;
-	cout << "[Console][Event]Initialize GLFW" << (glfwInit() == 1 ? "" : " - Failed!") << endl;
+	std::cout << "[Console][Event]Initialize GLFW" << (glfwInit() == 1 ? "" : " - Failed!") << std::endl;
 	createWindow();
 	setupScreen();
 	glDisable(GL_CULL_FACE);
@@ -85,17 +87,17 @@ void AppCleanUp()
 }
 
 template<typename T>
-void loadoption(std::map<string, string> &m, const char* name, T &value) {
+void loadoption(std::map<std::string, std::string> &m, const char* name, T &value) {
 	if (m.find(name) == m.end()) return;
 	std::stringstream ss;
 	ss << m[name]; ss >> value;
 }
 
 void loadOptions() {
-	std::map<string, string> options;
+	std::map<std::string, std::string> options;
 	std::ifstream filein("Configs/options.ini", std::ios::in);
 	if (!filein.is_open()) return;
-	string name, value;
+    std::string name, value;
 	while (!filein.eof()) {
 		filein >> name >> value;
 		options[name] = value;
@@ -123,11 +125,11 @@ void loadOptions() {
 
 template<typename T>
 void saveoption(std::ofstream &out, const char* name, T &value) {
-	out << string(name) << " " << value << endl;
+	out << std::string(name) << " " << value << std::endl;
 }
 
 void saveOptions() {
-	std::map<string, string> options;
+	std::map<std::string, std::string> options;
 	std::ofstream fileout("Configs/options.ini", std::ios::out);
 	if (!fileout.is_open()) return;
 	saveoption(fileout, "Language", Globalization::Cur_Lang);

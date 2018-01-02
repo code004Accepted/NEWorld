@@ -16,8 +16,8 @@ public:
 
 	static void updatePosition();
 
-	static bool save(string worldn);
-	static bool load(string worldn);
+	static bool save(std::string worldn);
+	static bool load(std::string worldn);
 
 	static bool addItem(item itemname, short amount = 1);
 	static bool putBlock(int x, int y, int z, Block blockname);
@@ -27,11 +27,11 @@ public:
 
 	static PlayerPacket convertToPlayerPacket();
 	static Hitbox::AABB playerbox;
-	static vector<Hitbox::AABB> Hitboxes;
+	static std::vector<Hitbox::AABB> Hitboxes;
 	static double xa, ya, za, xd, yd, zd;
 	static double health, healthmax, healSpeed, dropDamage;
 	static onlineid onlineID;
-	static string name;
+	static std::string name;
 	static Frustum ViewFrustum;
 
 	enum GameMode { Survival, Creative };
