@@ -10,7 +10,7 @@ namespace World {
 
     std::string worldname;
     Brightness skylight = 15;         //Sky light level
-    Chunk* EmptyChunkPtr;
+    Chunk* EmptyChunkPtr = (Chunk*)~0;
     unsigned int EmptyBuffer;
     int maxChunkLoads = 64;
     int maxChunkUnloads = 64;
@@ -18,8 +18,8 @@ namespace World {
 
     Chunk** chunks;
     int loadedChunks, chunkArraySize;
-    Chunk* cpCachePtr = nullptr;
-    ChunkID cpCacheID = 0;
+    thread_local Chunk* cpCachePtr = nullptr;
+    thread_local ChunkID cpCacheID = 0;
     CPARegionalCache cpArray;
     HeightMap HMap;
     int cloud[128][128];
@@ -42,15 +42,9 @@ namespace World {
         ss.clear(); ss.str("");
         ss << "Worlds/" << worldname << "/chunks";
         _mkdir(ss.str().c_str());
-
         EmptyChunkPtr = (Chunk*)~0;
-
         WorldGen::perlinNoiseInit(3404);
-        cpCachePtr = nullptr;
-        cpCacheID = 0;
-
         cpArray.create((viewdistance + 2) * 2);
-
         HMap.setSize((viewdistance + 2) * 2 * 16);
         HMap.create();
     }
@@ -58,7 +52,7 @@ namespace World {
     inline std::pair<int, int> binary_search_chunks(Chunk** target, int len, ChunkID cid) {
         int first = 0;
         int last = len - 1;
-        int    middle = (first + last) / 2;
+        int middle = (first + last) / 2;
         while (first <= last && target[middle]->id != cid) {
             if (target[middle]->id > cid) { last = middle - 1; }
             if (target[middle]->id < cid) { first = middle + 1; }
@@ -91,13 +85,8 @@ namespace World {
     void DeleteChunk(int x, int y, int z) {
         int index = World::getChunkPtrIndex(x, y, z);
         delete chunks[index];
-        for (int i = index; i < loadedChunks - 1; i++) {
+        for (int i = index; i < loadedChunks - 1; i++)
             chunks[i] = chunks[i + 1];
-        }
-        if (cpCachePtr == chunks[index]) {
-            cpCacheID = 0;
-            cpCachePtr = nullptr;
-        }
         cpArray.DeleteChunk(x, y, z);
         chunks[loadedChunks - 1] = nullptr;
         ReduceChunkArray(1);
