@@ -9,7 +9,7 @@ bool ALDevice::InitAL(ALCchar * DeviceName)//≥ı ºªØ
 	Device = alcOpenDevice(DeviceName);
 	if (Device)
 	{
-		Context = alcCreateContext(Device, NULL);
+		Context = alcCreateContext(Device, nullptr);
 		if (Context)
 		{
 			alcMakeContextCurrent(Context);

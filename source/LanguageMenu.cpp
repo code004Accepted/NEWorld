@@ -1,5 +1,6 @@
 #include "Menus.h"
 #include <deque>
+#include <fstream>
 
 struct Langinfo {
     std::string Symbol, EngSymbol, Name;

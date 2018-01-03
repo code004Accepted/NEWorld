@@ -87,23 +87,13 @@ namespace World {
 
 	Chunk* AddChunk(int x, int y, int z);
 	void DeleteChunk(int x, int y, int z);
-	inline ChunkID getChunkID(int x, int y, int z) {
-		if (y == -128) y = 0; if (y <= 0) y = abs(y) + (1LL << 7);
-		if (x == -134217728) x = 0; if (x <= 0) x = abs(x) + (1LL << 27);
-		if (z == -134217728) z = 0; if (z <= 0) z = abs(z) + (1LL << 27);
-		return (ChunkID(y) << 56) + (ChunkID(x) << 28) + z;
-	}
+
 	Chunk* getChunkPtr(int x, int y, int z);
     template <class T> constexpr auto getChunkPos(T n) noexcept { return n >> 4; }
-    template <class T> constexpr auto getBlockPos(T n) noexcept { return n & 0b1111; }
-	inline bool chunkOutOfBound(int x, int y, int z) {
-		return y < -World::worldheight || y > World::worldheight - 1 ||
-			x < -134217728 || x > 134217727 || z < -134217728 || z > 134217727;
-	}
+    template <class T> constexpr auto getBlockPos(T n) noexcept { return n & 0xF; }
+
 	inline bool chunkLoaded(int x, int y, int z) {
-		if (chunkOutOfBound(x, y, z))return false;
-		if (getChunkPtr(x, y, z) != nullptr)return true;
-		return false;
+        return getChunkPtr(x, y, z);
 	}
 
     std::vector<Hitbox::AABB> getHitboxes(const Hitbox::AABB& box);
@@ -111,11 +101,10 @@ namespace World {
 
 	void renderblock(int x, int y, int z, Chunk* chunkptr);
 	void updateblock(int x, int y, int z, bool blockchanged, int depth = 0);
-	Block getblock(int x, int y, int z, Block mask = Blocks::AIR, Chunk* cptr = nullptr);
-	Brightness getbrightness(int x, int y, int z, Chunk* cptr = nullptr);
+	Block getBlock(int x, int y, int z, Block mask = Blocks::AIR, Chunk* cptr = nullptr);
+	Brightness getBrightness(int x, int y, int z, Chunk* cptr = nullptr);
 	void setblock(int x, int y, int z, Block Block, Chunk* cptr = nullptr);
 	void setbrightness(int x, int y, int z, Brightness Brightness, Chunk* cptr = nullptr);
-	inline void putblock(int x, int y, int z, Block Block) { setblock(x, y, z, Block); }
 	inline void pickleaf(){
 		if (rnd() < 0.2) {
 			if (rnd() < 0.5)Player::addItem(APPLE);
@@ -125,36 +114,17 @@ namespace World {
 			Player::addItem(Blocks::LEAF);
 		}
 	}
-	inline void picktree(int x, int y, int z) {
-		if (getblock(x, y, z) != Blocks::LEAF)Player::addItem(getblock(x, y, z));
-		else pickleaf();
-		for (int j = 1; j <=10; j++) {
-			Particles::throwParticle(getblock(x, y, z),
-				float(x + rnd() - 0.5f), float(y + rnd() - 0.2f), float(z + rnd() - 0.5f),
-				float(rnd()*0.2f - 0.1f), float(rnd()*0.2f - 0.1f), float(rnd()*0.2f - 0.1f),
-				float(rnd()*0.02 + 0.03), int(rnd() * 60) + 30);
-		}
-		setblock(x, y, z, Blocks::AIR);
-		//上
-		if ((getblock(x, y + 1, z) == Blocks::WOOD) || (getblock(x, y + 1, z) == Blocks::LEAF))picktree(x, y + 1, z);
-		//前
-		if ((getblock(x, y , z + 1) == Blocks::WOOD) || (getblock(x, y , z + 1) == Blocks::LEAF))picktree(x, y, z + 1); 
-		//后
-		if ((getblock(x, y, z - 1) == Blocks::WOOD) || (getblock(x, y, z - 1) == Blocks::LEAF))picktree(x, y, z - 1); 
-		//左
-		if ((getblock(x+1, y, z) == Blocks::WOOD) || (getblock(x+1, y, z) == Blocks::LEAF))picktree(x+1, y, z); 
-		//右
-		if ((getblock(x - 1, y, z) == Blocks::WOOD) || (getblock(x - 1, y, z) == Blocks::LEAF))picktree(x - 1, y, z);
-	}
+   
+    void picktree(int x, int y, int z);
 	inline void pickblock(int x, int y, int z) {
-		if (getblock(x, y, z) == Blocks::WOOD && 
-			((getblock(x, y+1, z) == Blocks::WOOD)|| (getblock(x, y + 1, z) == Blocks::LEAF)) &&
-			(getblock(x, y, z + 1) == Blocks::AIR) && (getblock(x, y, z - 1) == Blocks::AIR) &&
-			(getblock(x + 1, y, z) == Blocks::AIR) && (getblock(x - 1, y, z) == Blocks::AIR) &&
-			(getblock(x, y - 1, z) != Blocks::AIR)
+		if (getBlock(x, y, z) == Blocks::WOOD && 
+			((getBlock(x, y+1, z) == Blocks::WOOD)|| (getBlock(x, y + 1, z) == Blocks::LEAF)) &&
+			(getBlock(x, y, z + 1) == Blocks::AIR) && (getBlock(x, y, z - 1) == Blocks::AIR) &&
+			(getBlock(x + 1, y, z) == Blocks::AIR) && (getBlock(x - 1, y, z) == Blocks::AIR) &&
+			(getBlock(x, y - 1, z) != Blocks::AIR)
 			) { picktree(x, y + 1, z); }//触发砍树模式
 		//击打树叶
-		if (getblock(x, y, z)!=Blocks::LEAF)Player::addItem(getblock(x, y, z));
+		if (getBlock(x, y, z)!=Blocks::LEAF)Player::addItem(getBlock(x, y, z));
 		else pickleaf();
 
 		setblock(x, y, z, Blocks::AIR); 

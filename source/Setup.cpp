@@ -6,6 +6,7 @@
 #include "Renderer.h"
 #include "World.h"
 #include "Items.h"
+#include <iostream>
 
 void splashScreen() {
 	TextureID splTex = Textures::LoadRGBTexture("Textures/GUI/splashscreen.bmp");
@@ -34,7 +35,7 @@ void createWindow() {
 	std::stringstream title;
 	title << "NEWorld " << MAJOR_VERSION << minOR_VERSION << EXT_VERSION;
 	if (Multisample != 0) glfwWindowHint(GLFW_SAMPLES, Multisample);
-	MainWindow = glfwCreateWindow(windowwidth, windowheight, title.str().c_str(), NULL, NULL);
+	MainWindow = glfwCreateWindow(windowwidth, windowheight, title.str().c_str(), nullptr, nullptr);
 	MouseCursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
 	glfwMakeContextCurrent(MainWindow);
 	glfwSetCursor(MainWindow, MouseCursor);
@@ -144,15 +145,10 @@ void MouseButtonFunc(GLFWwindow *, int button, int action, int) {
 
 void CharInputFunc(GLFWwindow *, unsigned int c) {
 	if (c >= 128) {
-		wchar_t* pwszUnicode = new wchar_t[2];
-		pwszUnicode[0] = (wchar_t)c;
-		pwszUnicode[1] = '\0';
-		char* pszMultiByte;
-		pszMultiByte = (char*)malloc((unsigned int)4);
-		pszMultiByte = (char*)realloc(pszMultiByte, WCharToMByte(pszMultiByte, pwszUnicode, 4));
+        wchar_t pwszUnicode[2] = { c, 0 };
+        char pszMultiByte[6] = { 0 };
+		WCharToMByte(pszMultiByte, pwszUnicode, 6);
 		inputstr += pszMultiByte;
-		free(pszMultiByte);
-		delete[] pwszUnicode;
 	}
 	else inputstr += (char)c;
 }

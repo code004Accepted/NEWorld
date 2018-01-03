@@ -9,8 +9,8 @@ APIPackage Mod::getPackage() {
 	static bool init = false;
 	if (init) return api;
 	api.getChunk = World::getChunkPtr;
-	api.getBlock = std::bind(World::getblock, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, 0, nullptr);
-	api.setBlock = std::bind(World::setblock, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, nullptr);
+    api.getBlock = [](int x, int y, int z) { return World::getBlock(x, y, z); };
+    api.setBlock = [](int x, int y, int z, Block blk) { World::setblock(x, y, z, blk); };
 	api.getCommand = [](const std::string& s) -> Command* {
 		for (size_t i = 0; i < commands.size(); i++)
 			if (commands[i].identifier == s) return &commands[i];
@@ -85,7 +85,7 @@ APIPackage Mod::getPackage() {
 		player.zposold = Player::zposold;
 		return player;
 	};
-	api.updateBlock = std::bind(World::updateblock, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, 0);
+    api.updateBlock = [](int x, int y, int z, bool chgd) { World::updateblock(x, y, z, chgd); };
 	api.setChunkUpdated = World::setChunkUpdated;
 	init = true;
 	return api;

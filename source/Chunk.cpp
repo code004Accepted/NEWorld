@@ -2,6 +2,8 @@
 #include "WorldGen.h"
 #include "World.h"
 #include "Blocks.h"
+#include <algorithm>
+#include <fstream>
 
 namespace ChunkRenderer {
 	void RenderChunk(World::Chunk* c);
@@ -188,14 +190,21 @@ namespace World {
 		}
 	}
 
-	void Chunk::buildRender() {
-		for (int8_t x = -1; x <= 1; x++) 
-			for (int8_t y = -1; y <= 1; y++) 
-				for (int8_t z = -1; z <= 1; z++) 
-					if (x && y && z) 
-					    if (!chunkOutOfBound(cx + x, cy + y, cz + z))
-					        if (!chunkLoaded(cx + x, cy + y, cz + z))
-                                return;
+    bool Chunk::fileExist(const std::string & path) {
+        std::fstream file;
+        file.open(path, std::ios::in);
+        bool ret = file.is_open();
+        file.close();
+        return ret;
+    }
+
+    void Chunk::buildRender() {
+        for (int8_t x = -1; x <= 1; x++)
+            for (int8_t y = -1; y <= 1; y++)
+                for (int8_t z = -1; z <= 1; z++)
+                    if (x && y && z)
+                        if (!chunkLoaded(cx + x, cy + y, cz + z))
+                            return;
 		
 		rebuiltChunks++;
 		updatedChunks++;

@@ -9,6 +9,8 @@
 #include "ModLoader.h"
 #include "Setup.h"
 #include <direct.h>
+#include <iostream>
+#include <fstream>
 
 void loadOptions();
 void saveOptions();
@@ -17,22 +19,6 @@ void saveOptions();
 //==============================     主程序     ================================//
 
 void ApplicationBeforeLaunch() {
-#ifdef NEWORLD_X64
-	SetDllDirectoryA("");
-	SetDllDirectoryA("Dllx64");
-#endif
-#ifndef NEWORLD_USE_WINAPI
-	setlocale(LC_ALL, "zh_CN.UTF-8");
-#else
-	//提交OpenGL信息
-	std::ifstream postexe("Post.exe");
-	if (postexe.is_open()) {
-		postexe.close();
-		WinExec("Post.exe", SW_SHOWDEFAULT);
-		std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-	}
-	else postexe.close();
-#endif
 	loadOptions();
 	Globalization::Load();
 

@@ -198,26 +198,26 @@ public:
 			x = int(rnd() * 16); gx = x + cx * 16;
 			y = int(rnd() * 16); gy = y + cy * 16;
 			z = int(rnd() * 16); gz = z + cz * 16;
-			if (World::chunks[i]->getblock(x, y, z) == Blocks::DIRT &&
-				World::getblock(gx, gy + 1, gz, Blocks::NONEMPTY) == Blocks::AIR && (
-					World::getblock(gx + 1, gy, gz, Blocks::AIR) == Blocks::GRASS ||
-					World::getblock(gx - 1, gy, gz, Blocks::AIR) == Blocks::GRASS ||
-					World::getblock(gx, gy, gz + 1, Blocks::AIR) == Blocks::GRASS ||
-					World::getblock(gx, gy, gz - 1, Blocks::AIR) == Blocks::GRASS ||
-					World::getblock(gx + 1, gy + 1, gz, Blocks::AIR) == Blocks::GRASS ||
-					World::getblock(gx - 1, gy + 1, gz, Blocks::AIR) == Blocks::GRASS ||
-					World::getblock(gx, gy + 1, gz + 1, Blocks::AIR) == Blocks::GRASS ||
-					World::getblock(gx, gy + 1, gz - 1, Blocks::AIR) == Blocks::GRASS ||
-					World::getblock(gx + 1, gy - 1, gz, Blocks::AIR) == Blocks::GRASS ||
-					World::getblock(gx - 1, gy - 1, gz, Blocks::AIR) == Blocks::GRASS ||
-					World::getblock(gx, gy - 1, gz + 1, Blocks::AIR) == Blocks::GRASS ||
-					World::getblock(gx, gy - 1, gz - 1, Blocks::AIR) == Blocks::GRASS)) {
+			if (World::chunks[i]->getBlock(x, y, z) == Blocks::DIRT &&
+				World::getBlock(gx, gy + 1, gz, Blocks::NONEMPTY) == Blocks::AIR && (
+					World::getBlock(gx + 1, gy, gz, Blocks::AIR) == Blocks::GRASS ||
+					World::getBlock(gx - 1, gy, gz, Blocks::AIR) == Blocks::GRASS ||
+					World::getBlock(gx, gy, gz + 1, Blocks::AIR) == Blocks::GRASS ||
+					World::getBlock(gx, gy, gz - 1, Blocks::AIR) == Blocks::GRASS ||
+					World::getBlock(gx + 1, gy + 1, gz, Blocks::AIR) == Blocks::GRASS ||
+					World::getBlock(gx - 1, gy + 1, gz, Blocks::AIR) == Blocks::GRASS ||
+					World::getBlock(gx, gy + 1, gz + 1, Blocks::AIR) == Blocks::GRASS ||
+					World::getBlock(gx, gy + 1, gz - 1, Blocks::AIR) == Blocks::GRASS ||
+					World::getBlock(gx + 1, gy - 1, gz, Blocks::AIR) == Blocks::GRASS ||
+					World::getBlock(gx - 1, gy - 1, gz, Blocks::AIR) == Blocks::GRASS ||
+					World::getBlock(gx, gy - 1, gz + 1, Blocks::AIR) == Blocks::GRASS ||
+					World::getBlock(gx, gy - 1, gz - 1, Blocks::AIR) == Blocks::GRASS)) {
 				//长草
 				World::chunks[i]->setblock(x, y, z, Blocks::GRASS);
 				World::updateblock(x + cx * 16, y + cy * 16 + 1, z + cz * 16, true);
 				World::setChunkUpdated(cx, cy, cz, true);
 			}
-			if (World::chunks[i]->getblock(x, y, z) == Blocks::GRASS && World::getblock(gx, gy + 1, gz, Blocks::AIR) != Blocks::AIR) {
+			if (World::chunks[i]->getBlock(x, y, z) == Blocks::GRASS && World::getBlock(gx, gy + 1, gz, Blocks::AIR) != Blocks::AIR) {
 				//草被覆盖
 				World::chunks[i]->setblock(x, y, z, Blocks::DIRT);
 				World::updateblock(x + cx * 16, y + cy * 16 + 1, z + cz * 16, true);
@@ -243,7 +243,7 @@ public:
 				lz += cos(M_PI / 180 * (Player::heading - 180))*sin(M_PI / 180 * (Player::lookupdown + 90)) / (double)selectPrecision;
 
 				//碰到方块
-				if (BlockInfo(World::getblock(RoundInt(lx), RoundInt(ly), RoundInt(lz))).isSolid()) {
+				if (BlockInfo(World::getBlock(RoundInt(lx), RoundInt(ly), RoundInt(lz))).isSolid()) {
 					int x, y, z, xl, yl, zl;
 					x = RoundInt(lx); y = RoundInt(ly); z = RoundInt(lz);
 					xl = RoundInt(lxl); yl = RoundInt(lyl); zl = RoundInt(lzl);
@@ -255,13 +255,11 @@ public:
 					selcx = World::getChunkPos(x); selcy = World::getChunkPos(y); selcz = World::getChunkPos(z);
 					selbx = World::getBlockPos(x); selby = World::getBlockPos(y); selbz = World::getBlockPos(z);
 
-					if (World::chunkOutOfBound(selcx, selcy, selcz) == false) {
-						World::Chunk* cp = World::getChunkPtr(selcx, selcy, selcz);
-						if (cp == nullptr || cp == World::EmptyChunkPtr) continue;
-						selb = cp->getblock(selbx, selby, selbz);
-					}
-					selbr = World::getbrightness(xl, yl, zl);
-					selb = World::getblock(x, y, z);
+                    if (auto cp = World::getChunkPtr(selcx, selcy, selcz); cp && (cp != World::EmptyChunkPtr))
+						selb = cp->getBlock(selbx, selby, selbz);
+
+					selbr = World::getBrightness(xl, yl, zl);
+					selb = World::getBlock(x, y, z);
 					if (mb == 1 || glfwGetKey(MainWindow, GLFW_KEY_ENTER) == GLFW_PRESS) {
 						Particles::throwParticle(selb,
 							float(x + rnd() - 0.5f), float(y + rnd() - 0.2f), float(z + rnd() - 0.5f),
@@ -912,7 +910,7 @@ public:
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		if (World::getblock(RoundInt(xpos), RoundInt(ypos), RoundInt(zpos)) == Blocks::WATER) {
+		if (World::getBlock(RoundInt(xpos), RoundInt(ypos), RoundInt(zpos)) == Blocks::WATER) {
 			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			glBindTexture(GL_TEXTURE_2D, BlockTextures);
 			double tcX = Textures::getTexcoordX(Blocks::WATER, 1);
@@ -1624,9 +1622,9 @@ public:
 
 		Mutex = MutexCreate();
 		MutexLock(Mutex);
-		updateThread = ThreadCreate(&updateThreadFunc, NULL);
+		updateThread = ThreadCreate(&updateThreadFunc, nullptr);
 		if (multiplayer) {
-			fastSrand((unsigned int)time(NULL));
+			fastSrand((unsigned int)time(nullptr));
 			Player::name = "";
 			Player::onlineID = rand();/*
 			Network::init(serverip, port);*/

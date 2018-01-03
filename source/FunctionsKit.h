@@ -72,7 +72,7 @@ inline unsigned int MByteToWChar(wchar_t* dst, const char* src, unsigned int n) 
     return res;
 }
 inline unsigned int WCharToMByte(char* dst, const wchar_t* src, unsigned int n) {
-    return WideCharToMultiByte(CP_ACP, 0, src, n, dst, n * 2, NULL, NULL);
+    return WideCharToMultiByte(CP_ACP, 0, src, n, dst, n * 2, nullptr, nullptr);
 }
 #else
 inline unsigned int MByteToWChar(wchar_t* dst, const char* src, unsigned int n) { size_t res; mbstowcs_s(&res, dst, n, src, _TRUNCATE); return res; }

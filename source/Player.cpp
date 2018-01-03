@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "World.h"
+#include <fstream>
 
 int Player::gamemode = GameMode::Survival;
 bool Player::Glide;
@@ -172,10 +173,9 @@ bool Player::putBlock(int x, int y, int z, Block blockname) {
 	bool success = false;
 	blockbox.xmin = x - 0.5; blockbox.ymin = y - 0.5; blockbox.zmin = z - 0.5;
 	blockbox.xmax = x + 0.5; blockbox.ymax = y + 0.5; blockbox.zmax = z + 0.5;
-	int cx = World::getChunkPos(x), cy = World::getChunkPos(y), cz = World::getChunkPos(z);
-	if (!World::chunkOutOfBound(cx, cy, cz) && (((Hitbox::Hit(playerbox, blockbox) == false) || CrossWall ||
-		BlockInfo(blockname).isSolid() == false) && BlockInfo(World::getblock(x, y, z)).isSolid() == false)) {
-		World::putblock(x, y, z, blockname);
+	if (((!Hitbox::Hit(playerbox, blockbox) || CrossWall || !BlockInfo(blockname).isSolid()) && 
+        !BlockInfo(World::getBlock(x, y, z)).isSolid())) {
+		World::setblock(x, y, z, blockname);
 		success = true;
 	}
 	return success;

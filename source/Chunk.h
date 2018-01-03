@@ -7,12 +7,16 @@
 class Object;
 
 namespace World {
-	
 	extern std::string worldname;
 	extern Brightness skylight;
 
 	class Chunk;
-	ChunkID getChunkID(int x, int y, int z);
+
+    // This function will only be used on client side, so just checking the lower 20 bits will be enough
+    constexpr ChunkID getChunkID(int x, int y, int z) noexcept {
+        return (ChunkID(x & 0xFFFFF) << 40) + (ChunkID(y & 0xFFFFF) << 20) + (z & 0xFFFFF);
+    }
+
 	void explode(int x, int y, int z, int r, Chunk* c);
 
 	class Chunk{
@@ -39,18 +43,12 @@ namespace World {
 			ss << "Worlds/" << worldname << "/chunks/chunk_" << cx << "_" << cy << "_" << cz << ".NEWorldChunk";
 			return ss.str();
 		}
-		inline bool fileExist(const std::string& path) {
-			std::fstream file;
-			file.open(path, std::ios::in);
-			bool ret = file.is_open();
-			file.close();
-			return ret;
-		}
+        bool fileExist(const std::string& path);
 		void buildRender();
-		inline Block getblock(int x, int y, int z) {
+		inline Block getBlock(int x, int y, int z) {
 			return mBlocks[(x << 8) ^ (y << 4) ^ z];
 		}
-		inline Brightness getbrightness(int x, int y, int z){
+		inline Brightness getBrightness(int x, int y, int z){
 			return mBrightness[(x << 8) ^ (y << 4) ^ z];
 		}
 		inline void setblock(int x, int y, int z, Block iblock) {

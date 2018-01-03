@@ -223,7 +223,7 @@ typedef void ALvoid;
  * Source type (Static, Streaming or undetermined)
  * Source is Static if a Buffer has been attached using AL_BUFFER
  * Source is Streaming if one or more Buffers have been attached using alSourceQueueBuffers
- * Source is undetermined when it has the NULL buffer attached
+ * Source is undetermined when it has the nullptr buffer attached
  */
 #define AL_SOURCE_TYPE                            0x1027
 #define AL_STATIC                                 0x1028

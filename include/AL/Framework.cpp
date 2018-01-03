@@ -30,53 +30,53 @@
 #include "CWaves.h"
 #include "aldlist.h"
 
-static CWaves *g_pWaveLoader = NULL;
+static CWaves *g_pWaveLoader = nullptr;
 
 // Imported EFX functions
 
 // Effect objects
-LPALGENEFFECTS alGenEffects = NULL;
-LPALDELETEEFFECTS alDeleteEffects = NULL;
-LPALISEFFECT alIsEffect = NULL;
-LPALEFFECTI alEffecti = NULL;
-LPALEFFECTIV alEffectiv = NULL;
-LPALEFFECTF alEffectf = NULL;
-LPALEFFECTFV alEffectfv = NULL;
-LPALGETEFFECTI alGetEffecti = NULL;
-LPALGETEFFECTIV alGetEffectiv = NULL;
-LPALGETEFFECTF alGetEffectf = NULL;
-LPALGETEFFECTFV alGetEffectfv = NULL;
+LPALGENEFFECTS alGenEffects = nullptr;
+LPALDELETEEFFECTS alDeleteEffects = nullptr;
+LPALISEFFECT alIsEffect = nullptr;
+LPALEFFECTI alEffecti = nullptr;
+LPALEFFECTIV alEffectiv = nullptr;
+LPALEFFECTF alEffectf = nullptr;
+LPALEFFECTFV alEffectfv = nullptr;
+LPALGETEFFECTI alGetEffecti = nullptr;
+LPALGETEFFECTIV alGetEffectiv = nullptr;
+LPALGETEFFECTF alGetEffectf = nullptr;
+LPALGETEFFECTFV alGetEffectfv = nullptr;
 
 //Filter objects
-LPALGENFILTERS alGenFilters = NULL;
-LPALDELETEFILTERS alDeleteFilters = NULL;
-LPALISFILTER alIsFilter = NULL;
-LPALFILTERI alFilteri = NULL;
-LPALFILTERIV alFilteriv = NULL;
-LPALFILTERF alFilterf = NULL;
-LPALFILTERFV alFilterfv = NULL;
-LPALGETFILTERI alGetFilteri = NULL;
-LPALGETFILTERIV alGetFilteriv = NULL;
-LPALGETFILTERF alGetFilterf = NULL;
-LPALGETFILTERFV alGetFilterfv = NULL;
+LPALGENFILTERS alGenFilters = nullptr;
+LPALDELETEFILTERS alDeleteFilters = nullptr;
+LPALISFILTER alIsFilter = nullptr;
+LPALFILTERI alFilteri = nullptr;
+LPALFILTERIV alFilteriv = nullptr;
+LPALFILTERF alFilterf = nullptr;
+LPALFILTERFV alFilterfv = nullptr;
+LPALGETFILTERI alGetFilteri = nullptr;
+LPALGETFILTERIV alGetFilteriv = nullptr;
+LPALGETFILTERF alGetFilterf = nullptr;
+LPALGETFILTERFV alGetFilterfv = nullptr;
 
 // Auxiliary slot object
-LPALGENAUXILIARYEFFECTSLOTS alGenAuxiliaryEffectSlots = NULL;
-LPALDELETEAUXILIARYEFFECTSLOTS alDeleteAuxiliaryEffectSlots = NULL;
-LPALISAUXILIARYEFFECTSLOT alIsAuxiliaryEffectSlot = NULL;
-LPALAUXILIARYEFFECTSLOTI alAuxiliaryEffectSloti = NULL;
-LPALAUXILIARYEFFECTSLOTIV alAuxiliaryEffectSlotiv = NULL;
-LPALAUXILIARYEFFECTSLOTF alAuxiliaryEffectSlotf = NULL;
-LPALAUXILIARYEFFECTSLOTFV alAuxiliaryEffectSlotfv = NULL;
-LPALGETAUXILIARYEFFECTSLOTI alGetAuxiliaryEffectSloti = NULL;
-LPALGETAUXILIARYEFFECTSLOTIV alGetAuxiliaryEffectSlotiv = NULL;
-LPALGETAUXILIARYEFFECTSLOTF alGetAuxiliaryEffectSlotf = NULL;
-LPALGETAUXILIARYEFFECTSLOTFV alGetAuxiliaryEffectSlotfv = NULL;
+LPALGENAUXILIARYEFFECTSLOTS alGenAuxiliaryEffectSlots = nullptr;
+LPALDELETEAUXILIARYEFFECTSLOTS alDeleteAuxiliaryEffectSlots = nullptr;
+LPALISAUXILIARYEFFECTSLOT alIsAuxiliaryEffectSlot = nullptr;
+LPALAUXILIARYEFFECTSLOTI alAuxiliaryEffectSloti = nullptr;
+LPALAUXILIARYEFFECTSLOTIV alAuxiliaryEffectSlotiv = nullptr;
+LPALAUXILIARYEFFECTSLOTF alAuxiliaryEffectSlotf = nullptr;
+LPALAUXILIARYEFFECTSLOTFV alAuxiliaryEffectSlotfv = nullptr;
+LPALGETAUXILIARYEFFECTSLOTI alGetAuxiliaryEffectSloti = nullptr;
+LPALGETAUXILIARYEFFECTSLOTIV alGetAuxiliaryEffectSlotiv = nullptr;
+LPALGETAUXILIARYEFFECTSLOTF alGetAuxiliaryEffectSlotf = nullptr;
+LPALGETAUXILIARYEFFECTSLOTFV alGetAuxiliaryEffectSlotfv = nullptr;
 
 // XRAM functions and enum values
 
-LPEAXSETBUFFERMODE eaxSetBufferMode = NULL;
-LPEAXGETBUFFERMODE eaxGetBufferMode = NULL;
+LPEAXSETBUFFERMODE eaxSetBufferMode = nullptr;
+LPEAXGETBUFFERMODE eaxGetBufferMode = nullptr;
 
 ALenum eXRAMSize = 0;
 ALenum eXRAMFree = 0;
@@ -96,7 +96,7 @@ void ALFWShutdown()
 	if (g_pWaveLoader)
 	{
 		delete g_pWaveLoader;
-		g_pWaveLoader = NULL;
+		g_pWaveLoader = nullptr;
 	}
 
 	ALFWprintf("\nPress a key to quit\n");
@@ -105,9 +105,9 @@ void ALFWShutdown()
 
 ALboolean ALFWInitOpenAL()
 {
-	ALDeviceList *pDeviceList = NULL;
-	ALCcontext *pContext = NULL;
-	ALCdevice *pDevice = NULL;
+	ALDeviceList *pDeviceList = nullptr;
+	ALCcontext *pContext = nullptr;
+	ALCdevice *pDevice = nullptr;
 	ALint i;
 	ALboolean bReturn = AL_FALSE;
 
@@ -126,7 +126,7 @@ ALboolean ALFWInitOpenAL()
 		pDevice = alcOpenDevice(pDeviceList->GetDeviceName(i - 1));
 		if (pDevice)
 		{
-			pContext = alcCreateContext(pDevice, NULL);
+			pContext = alcCreateContext(pDevice, nullptr);
 			if (pContext)
 			{
 				ALFWprintf("\nOpened %s Device\n", alcGetString(pDevice, ALC_DEVICE_SPECIFIER));
@@ -153,7 +153,7 @@ ALboolean ALFWShutdownOpenAL()
 	pContext = alcGetCurrentContext();
 	pDevice = alcGetContextsDevice(pContext);
 	
-	alcMakeContextCurrent(NULL);
+	alcMakeContextCurrent(nullptr);
 	alcDestroyContext(pContext);
 	alcCloseDevice(pDevice);
 
@@ -245,8 +245,8 @@ ALboolean ALFWIsXRAMSupported()
 
 ALboolean ALFWIsEFXSupported()
 {
-	ALCdevice *pDevice = NULL;
-	ALCcontext *pContext = NULL;
+	ALCdevice *pDevice = nullptr;
+	ALCcontext *pContext = nullptr;
 	ALboolean bEFXSupport = AL_FALSE;
 
 	pContext = alcGetCurrentContext();

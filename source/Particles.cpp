@@ -67,7 +67,7 @@ namespace Particles {
 		//if (!Frustum::aabbInFrustum(ptc.hb)) return;
 		ptcsrendered++;
 		float size = (float)BLOCKTEXTURE_UNITSIZE / BLOCKTEXTURE_SIZE * (ptc.psize <= 1.0f ? ptc.psize : 1.0f);
-		float col = World::getbrightness(RoundInt(ptc.xpos), RoundInt(ptc.ypos), RoundInt(ptc.zpos)) / (float)World::BrightnessMax;
+		float col = World::getBrightness(RoundInt(ptc.xpos), RoundInt(ptc.ypos), RoundInt(ptc.zpos)) / (float)World::BrightnessMax;
 		float col1 = col * 0.5f;
 		float col2 = col * 0.7f;
 		float tcx = ptc.tcX;

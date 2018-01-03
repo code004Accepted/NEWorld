@@ -25,7 +25,7 @@ public:
 	void Stop(ALuint Source);
 	void unload(ALuint uiBuffer);
 	void ShutdownAL() {
-		alcMakeContextCurrent(NULL);
+		alcMakeContextCurrent(nullptr);
 		alcDestroyContext(Context);
 		alcCloseDevice(Device);
 	}
