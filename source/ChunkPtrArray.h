@@ -15,8 +15,7 @@ namespace World {
         }
         void set(int x, int y, int z, Chunk* c) noexcept {
             x -= mOriX; y -= mOriY; z -= mOriZ;
-            if (elementExists(x, y, z)) { mCache[x * mSize2 + y * mSize1 + z] = c;
-}
+            if (elementExists(x, y, z)) mCache[x * mSize2 + y * mSize1 + z] = c;
         }
         void AddChunk(Chunk* cptr, int cx, int cy, int cz) noexcept { set(cx, cy, cz, cptr); }
         void DeleteChunk(int cx, int cy, int cz) noexcept { set(cx, cy, cz, nullptr); }

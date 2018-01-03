@@ -26,7 +26,6 @@ namespace World {
         Chunk(int cxi, int cyi, int czi, ChunkID idi);
         ~Chunk();
 		int cx, cy, cz;
-		Hitbox::AABB aabb;
 		bool mIsEmpty, mIsUpdated, mIsRenderBuilt, mIsModified, mIsDetailGenerated;
 		ChunkID id;
 		vtxCount vertexes[4];
@@ -35,15 +34,6 @@ namespace World {
 		bool visible;
 
 		void load(bool initIfEmpty = true);
-		void buildTerrain(bool initIfEmpty = true);
-		void buildDetail();
-		void build(bool initIfEmpty = true);
-		inline std::string getChunkPath() {
-			std::stringstream ss;
-			ss << "Worlds/" << worldname << "/chunks/chunk_" << cx << "_" << cy << "_" << cz << ".NEWorldChunk";
-			return ss.str();
-		}
-        bool fileExist(const std::string& path);
 		void buildRender();
 		inline Block getBlock(int x, int y, int z) {
 			return mBlocks[(x << 8) ^ (y << 4) ^ z];
@@ -74,11 +64,20 @@ namespace World {
         Block mBlocks[4096];
         Brightness mBrightness[4096];
         std::vector<Object*> objects;
+        Hitbox::AABB mAABB;
         static double relBaseX, relBaseY, relBaseZ;
         static Frustum TestFrustum;
         bool LoadFromFile(); //返回true代表区块文件打开成功
         void SaveToFile();
         void destroyRender();
         Hitbox::AABB getBaseAABB();
+        void buildTerrain(bool initIfEmpty = true);
+        void buildDetail();
+        void build(bool initIfEmpty = true);
+        inline std::string getChunkPath() {
+            std::stringstream ss;
+            ss << "Worlds/" << worldname << "/chunks/chunk_" << cx << "_" << cy << "_" << cz;
+            return ss.str();
+        }
 	};
 }

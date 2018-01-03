@@ -40,7 +40,7 @@ namespace World {
 
     Chunk::Chunk(int cxi, int cyi, int czi, ChunkID idi) : cx(cxi), cy(cyi), cz(czi), id(idi),
         mIsModified(false), mIsEmpty(false), mIsUpdated(false), mIsRenderBuilt(false), mIsDetailGenerated(false), loadAnim(0.0), vertexes{ 0 }, vbuffer{ 0 } {
-        aabb = getBaseAABB();
+        mAABB = getBaseAABB();
     }
 
     Chunk::~Chunk()
@@ -190,14 +190,6 @@ namespace World {
 		}
 	}
 
-    bool Chunk::fileExist(const std::string & path) {
-        std::fstream file;
-        file.open(path, std::ios::in);
-        bool ret = file.is_open();
-        file.close();
-        return ret;
-    }
-
     void Chunk::buildRender() {
         for (int8_t x = -1; x <= 1; x++)
             for (int8_t y = -1; y <= 1; y++)
@@ -247,12 +239,12 @@ namespace World {
 
 	Frustum::ChunkBox Chunk::getRelativeAABB() {
 		Frustum::ChunkBox ret;
-		ret.xmin = (float)(aabb.xmin - relBaseX);
-		ret.xmax = (float)(aabb.xmax - relBaseX);
-		ret.ymin = (float)(aabb.ymin - loadAnim - relBaseY);
-		ret.ymax = (float)(aabb.ymax - loadAnim - relBaseY);
-		ret.zmin = (float)(aabb.zmin - relBaseZ);
-		ret.zmax = (float)(aabb.zmax - relBaseZ);
+		ret.xmin = (float)(mAABB.xmin - relBaseX);
+		ret.xmax = (float)(mAABB.xmax - relBaseX);
+		ret.ymin = (float)(mAABB.ymin - loadAnim - relBaseY);
+		ret.ymax = (float)(mAABB.ymax - loadAnim - relBaseY);
+		ret.zmin = (float)(mAABB.zmin - relBaseZ);
+		ret.zmax = (float)(mAABB.zmax - relBaseZ);
 		return ret;
 	}
 	
