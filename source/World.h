@@ -53,97 +53,95 @@ namespace World {
         Compare<Tk> mComp;
     };
 
-	extern std::string worldname;
-	const int worldsize = 134217728;
-	const int worldheight = 128;
+    extern std::string worldname;
+    const int worldsize = 134217728;
+    const int worldheight = 128;
     constexpr Brightness BrightnessMax = 15;    //maximum brightness
     constexpr Brightness BrightnessMin = 2;     //Mimimum brightness
     constexpr Brightness BrightnessDec = 1;     //Brightness decrease
     extern Brightness skylight;         //Sky light level
-	extern Chunk* EmptyChunkPtr;
-	extern unsigned int EmptyBuffer;
-	extern int maxChunkLoads;
-	extern int maxChunkUnloads;
-	extern int maxChunkRenders;
+    extern Chunk* EmptyChunkPtr;
+    extern unsigned int EmptyBuffer;
+    extern int maxChunkLoads;
+    extern int maxChunkUnloads;
+    extern int maxChunkRenders;
 
-	extern Chunk** chunks;
-	extern int loadedChunks, chunkArraySize;
-	extern Chunk* cpCachePtr;
-	extern ChunkID cpCacheID;
-	extern HeightMap HMap;
-	extern CPARegionalCache cpArray;
+    extern Chunk** chunks;
+    extern int loadedChunks, chunkArraySize;
+    extern HeightMap HMap;
+    extern CPARegionalCache cpArray;
 
-	extern int cloud[128][128];
-	extern int rebuiltChunks, rebuiltChunksCount;
-	extern int updatedChunks, updatedChunksCount;
-	extern int unloadedChunks, unloadedChunksCount;
-	extern int chunkBuildRenderList[256][2];
-	extern int chunkLoadList[256][4];
-	extern std::pair<Chunk*, int> chunkUnloadList[256];
-	extern std::vector<unsigned int> vbuffersShouldDelete;
-	extern int chunkBuildRenders, chunkLoads, chunkUnloads;
+    extern int cloud[128][128];
+    extern int rebuiltChunks, rebuiltChunksCount;
+    extern int updatedChunks, updatedChunksCount;
+    extern int unloadedChunks, unloadedChunksCount;
+    extern int chunkBuildRenderList[256][2];
+    extern int chunkLoadList[256][4];
+    extern std::pair<Chunk*, int> chunkUnloadList[256];
+    extern std::vector<unsigned int> vbuffersShouldDelete;
+    extern int chunkBuildRenders, chunkLoads, chunkUnloads;
 
-	void Init();
+    void Init();
 
-	Chunk* AddChunk(int x, int y, int z);
-	void DeleteChunk(int x, int y, int z);
+    Chunk* AddChunk(int x, int y, int z);
+    void DeleteChunk(int x, int y, int z);
 
-	Chunk* getChunkPtr(int x, int y, int z);
+    Chunk* getChunkPtr(int x, int y, int z);
     template <class T> constexpr auto getChunkPos(T n) noexcept { return n >> 4; }
     template <class T> constexpr auto getBlockPos(T n) noexcept { return n & 0xF; }
 
-	inline bool chunkLoaded(int x, int y, int z) {
+    inline bool chunkLoaded(int x, int y, int z) {
         return getChunkPtr(x, y, z);
-	}
+    }
 
     std::vector<Hitbox::AABB> getHitboxes(const Hitbox::AABB& box);
-	bool inWater(const Hitbox::AABB& box);
+    bool inWater(const Hitbox::AABB& box);
 
-	void renderblock(int x, int y, int z, Chunk* chunkptr);
-	void updateblock(int x, int y, int z, bool blockchanged, int depth = 0);
-	Block getBlock(int x, int y, int z, Block mask = Blocks::AIR, Chunk* cptr = nullptr);
-	Brightness getBrightness(int x, int y, int z, Chunk* cptr = nullptr);
-	void setblock(int x, int y, int z, Block Block, Chunk* cptr = nullptr);
-	void setbrightness(int x, int y, int z, Brightness Brightness, Chunk* cptr = nullptr);
-	inline void pickleaf(){
-		if (rnd() < 0.2) {
-			if (rnd() < 0.5)Player::addItem(APPLE);
-			else Player::addItem(STICK);
-		}
-		else {
-			Player::addItem(Blocks::LEAF);
-		}
-	}
+    void renderblock(int x, int y, int z, Chunk* chunkptr);
+    void updateblock(int x, int y, int z, bool blockchanged, int depth = 0);
+    Block getBlock(int x, int y, int z, Block mask = Blocks::AIR, Chunk* cptr = nullptr);
+    Brightness getBrightness(int x, int y, int z, Chunk* cptr = nullptr);
+    void setblock(int x, int y, int z, Block Block, Chunk* cptr = nullptr);
+    void setbrightness(int x, int y, int z, Brightness Brightness, Chunk* cptr = nullptr);
+    inline void pickleaf(){
+        if (rnd() < 0.2) {
+            if (rnd() < 0.5)Player::addItem(APPLE);
+            else Player::addItem(STICK);
+        }
+        else {
+            Player::addItem(Blocks::LEAF);
+        }
+    }
    
     void picktree(int x, int y, int z);
-	inline void pickblock(int x, int y, int z) {
-		if (getBlock(x, y, z) == Blocks::WOOD && 
-			((getBlock(x, y+1, z) == Blocks::WOOD)|| (getBlock(x, y + 1, z) == Blocks::LEAF)) &&
-			(getBlock(x, y, z + 1) == Blocks::AIR) && (getBlock(x, y, z - 1) == Blocks::AIR) &&
-			(getBlock(x + 1, y, z) == Blocks::AIR) && (getBlock(x - 1, y, z) == Blocks::AIR) &&
-			(getBlock(x, y - 1, z) != Blocks::AIR)
-			) { picktree(x, y + 1, z); }//触发砍树模式
-		//击打树叶
-		if (getBlock(x, y, z)!=Blocks::LEAF)Player::addItem(getBlock(x, y, z));
-		else pickleaf();
+    inline void pickblock(int x, int y, int z) {
+        if (getBlock(x, y, z) == Blocks::WOOD && 
+            ((getBlock(x, y+1, z) == Blocks::WOOD)|| (getBlock(x, y + 1, z) == Blocks::LEAF)) &&
+            (getBlock(x, y, z + 1) == Blocks::AIR) && (getBlock(x, y, z - 1) == Blocks::AIR) &&
+            (getBlock(x + 1, y, z) == Blocks::AIR) && (getBlock(x - 1, y, z) == Blocks::AIR) &&
+            (getBlock(x, y - 1, z) != Blocks::AIR)
+            ) { picktree(x, y + 1, z); }//触发砍树模式
+        //击打树叶
+        if (getBlock(x, y, z)!=Blocks::LEAF)Player::addItem(getBlock(x, y, z));
+        else pickleaf();
 
-		setblock(x, y, z, Blocks::AIR); 
-	}
+        setblock(x, y, z, Blocks::AIR); 
+    }
 
 
-	inline bool chunkInRange(int x, int y, int z, int px, int py, int pz, int dist) {
-		//检测给出的chunk坐标是否在渲染范围内
-		if (x<px - dist || x>px + dist - 1 || y<py - dist || y>py + dist - 1 || z<pz - dist || z>pz + dist - 1) return false;
-		return true;
-	}
-	bool chunkUpdated(int x, int y, int z);
-	void setChunkUpdated(int x, int y, int z, bool value);
-	void sortChunkBuildRenderList(int xpos, int ypos, int zpos);
-	void sortChunkLoadUnloadList(int xpos, int ypos, int zpos);
-	void calcVisible(double xpos, double ypos, double zpos, Frustum& frus);
+    inline bool chunkInRange(int x, int y, int z, int px, int py, int pz, int dist) {
+        //检测给出的chunk坐标是否在渲染范围内
+        if (x<px - dist || x>px + dist - 1 || y<py - dist || y>py + dist - 1 || z<pz - dist || z>pz + dist - 1) return false;
+        return true;
+    }
+    bool chunkUpdated(int x, int y, int z);
+    void setChunkUpdated(int x, int y, int z, bool value);
+    void sortChunkBuildRenderList(int xpos, int ypos, int zpos);
+    void sortChunkLoadUnloadList(int xpos, int ypos, int zpos);
+    void calcVisible(double xpos, double ypos, double zpos, Frustum& frus);
 
-	void destroyAllChunks();
+    void destroyAllChunks();
 
-	void buildtree(int x, int y, int z);
-	void explode(int x, int y, int z, int r, Chunk* c = nullptr);
+    void buildtree(int x, int y, int z);
+    void explode(int x, int y, int z, int r, Chunk* c = nullptr);
 }

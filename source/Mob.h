@@ -6,7 +6,7 @@ public:
 
 
 protected:
-	int health;
+    int health;
 
 
 };

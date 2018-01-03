@@ -3,8 +3,8 @@
 #include <memory>
 
 namespace World {
-	class Chunk;
-	class CPARegionalCache{
+    class Chunk;
+    class CPARegionalCache{
     public:
         void create(int s);
         void move(int xd, int yd, int zd);
@@ -25,5 +25,5 @@ namespace World {
         }
         std::unique_ptr<Chunk*[]> mCache { nullptr };
         int mOriX, mOriY, mOriZ, mSize1, mSize2, mSize3;
-	};
+    };
 }  // namespace World

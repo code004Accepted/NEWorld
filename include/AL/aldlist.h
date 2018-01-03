@@ -8,40 +8,40 @@
 
 typedef struct
 {
-	std::string			strDeviceName;
-	int				iMajorVersion;
-	int				iMinorVersion;
-	unsigned int	uiSourceCount;
-	std::vector<std::string>	*pvstrExtensions;
-	bool			bSelected;
+    std::string            strDeviceName;
+    int                iMajorVersion;
+    int                iMinorVersion;
+    unsigned int    uiSourceCount;
+    std::vector<std::string>    *pvstrExtensions;
+    bool            bSelected;
 } ALDEVICEINFO, *LPALDEVICEINFO;
 
 class ALDeviceList
 {
 private:
-	OPENALFNTABLE	ALFunction;
-	std::vector<ALDEVICEINFO> vDeviceInfo;
-	int defaultDeviceIndex;
-	int filterIndex;
+    OPENALFNTABLE    ALFunction;
+    std::vector<ALDEVICEINFO> vDeviceInfo;
+    int defaultDeviceIndex;
+    int filterIndex;
 
 public:
-	ALDeviceList ();
-	~ALDeviceList ();
-	int GetNumDevices();
-	char *GetDeviceName(int index);
-	void GetDeviceVersion(int index, int *major, int *minor);
-	unsigned int GetMaxNumSources(int index);
-	bool IsExtensionSupported(int index, char *szExtName);
-	int GetDefaultDevice();
-	void FilterDevicesMinVer(int major, int minor);
-	void FilterDevicesMaxVer(int major, int minor);
-	void FilterDevicesExtension(char *szExtName);
-	void ResetFilters();
-	int GetFirstFilteredDevice();
-	int GetNextFilteredDevice();
+    ALDeviceList ();
+    ~ALDeviceList ();
+    int GetNumDevices();
+    char *GetDeviceName(int index);
+    void GetDeviceVersion(int index, int *major, int *minor);
+    unsigned int GetMaxNumSources(int index);
+    bool IsExtensionSupported(int index, char *szExtName);
+    int GetDefaultDevice();
+    void FilterDevicesMinVer(int major, int minor);
+    void FilterDevicesMaxVer(int major, int minor);
+    void FilterDevicesExtension(char *szExtName);
+    void ResetFilters();
+    int GetFirstFilteredDevice();
+    int GetNextFilteredDevice();
 
 private:
-	unsigned int GetMaxNumSources();
+    unsigned int GetMaxNumSources();
 };
 
 #endif // ALDEVICELIST_H
