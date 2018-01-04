@@ -551,12 +551,12 @@ namespace World {
             }
 
             setChunkUpdated(cx, cy, cz, true);
-            if (bx == 15 && cx < worldsize - 1) setChunkUpdated(cx + 1, cy, cz, true);
-            if (bx == 0 && cx > -worldsize) setChunkUpdated(cx - 1, cy, cz, true);
-            if (by == 15 && cy < worldheight - 1) setChunkUpdated(cx, cy + 1, cz, true);
-            if (by == 0 && cy > -worldheight) setChunkUpdated(cx, cy - 1, cz, true);
-            if (bz == 15 && cz < worldsize - 1) setChunkUpdated(cx, cy, cz + 1, true);
-            if (bz == 0 && cz > -worldsize) setChunkUpdated(cx, cy, cz - 1, true);
+            if (bx == 15) setChunkUpdated(cx + 1, cy, cz, true);
+            if (bx == 0) setChunkUpdated(cx - 1, cy, cz, true);
+            if (by == 15) setChunkUpdated(cx, cy + 1, cz, true);
+            if (by == 0) setChunkUpdated(cx, cy - 1, cz, true);
+            if (bz == 15) setChunkUpdated(cx, cy, cz + 1, true);
+            if (bz == 0) setChunkUpdated(cx, cy, cz - 1, true);
 
         }
     }

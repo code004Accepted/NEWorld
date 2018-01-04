@@ -19,7 +19,7 @@ namespace World {
 
     struct HMapManager {
         int H[16][16];
-        int low, high, count;
+        int low, high;
         HMapManager() {};
         HMapManager(int cx, int cz) {
             int l = MAXINT, hi = WorldGen::WaterLevel, h;
@@ -31,7 +31,7 @@ namespace World {
                     H[x][z] = h;
                 }
             }
-            low = (l - 21) / 16, high = (hi + 16) / 16; count = 0;
+            low = (l - 21) / 16, high = (hi + 16) / 16; 
         }
     };
 

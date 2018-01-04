@@ -54,8 +54,6 @@ namespace World {
     };
 
     extern std::string worldname;
-    const int worldsize = 134217728;
-    const int worldheight = 128;
     constexpr Brightness BrightnessMax = 15;    //maximum brightness
     constexpr Brightness BrightnessMin = 2;     //Mimimum brightness
     constexpr Brightness BrightnessDec = 1;     //Brightness decrease
@@ -67,7 +65,7 @@ namespace World {
     extern int maxChunkRenders;
 
     extern Chunk** chunks;
-    extern int loadedChunks, chunkArraySize;
+    extern int loadedChunks;
     extern HeightMap HMap;
     extern CPARegionalCache cpArray;
 

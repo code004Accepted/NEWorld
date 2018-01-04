@@ -1,17 +1,18 @@
 #include "Frustum.h"
 #define _USE_MATH_DEFINES
-#include <math.h>
-#include <memory>
+#include <cmath>
+#include <algorithm>
 
 void Frustum::LoadIdentity() {
-    memset(proj, 0, sizeof(proj));
-    memset(modl, 0, sizeof(modl));
+    std::fill_n(proj, 16, 0.0f);
+    std::fill_n(modl, 16, 0.0f);
     modl[0] = modl[5] = modl[10] = modl[15] = 1.0f;
 }
 
 inline void Frustum::MultMatrix(float * a, float * b) {
-    float sum[16]; MultMatrixTo(sum, a, b);
-    memcpy(a, sum, sizeof(sum));
+    float sum[16]; 
+    MultMatrixTo(sum, a, b);
+    std::copy_n(sum, 16, a);
 }
 
 void Frustum::SetPerspective(float FOV, float aspect, float Znear, float Zfar) {
@@ -33,7 +34,7 @@ void Frustum::SetOrtho(float left, float right, float top, float bottom, float Z
 
 void Frustum::MultRotate(float angle, float x, float y, float z) {
     float m[16], sum[16];
-    memset(m, 0, sizeof(m));
+    std::fill_n(m, 16, 0.0f);
     float length = sqrtf(x * x + y * y + z * z);
     x /= length; y /= length; z /= length;
     float alpha = angle * (float)M_PI / 180.0f;
@@ -51,7 +52,7 @@ void Frustum::MultRotate(float angle, float x, float y, float z) {
     m[10] = t * z * z + c;
     m[15] = 1.0f;
     MultMatrixTo(sum, m, modl);
-    memcpy(modl, sum, sizeof(sum));
+    std::copy_n(sum, 16, modl);
 }
 
 inline void Frustum::normalize(int side) {

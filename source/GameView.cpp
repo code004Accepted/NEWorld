@@ -95,9 +95,6 @@ public:
 
     bool loadGame() {
         if (!Player::load(World::worldname)) {
-#ifdef NEWORLD_CONSOLE_OUTPUT
-            DebugWarning("Failed loading player info!");
-#endif
             return false;
         }
         return true;
@@ -634,9 +631,6 @@ public:
         Player::intxposold = RoundInt(Player::xpos);
         Player::intyposold = RoundInt(Player::ypos);
         Player::intzposold = RoundInt(Player::zpos);
-
-        //    Time_updategame += timer() - Time_updategame;
-
     }
 
     void debugText(const std::string& s, bool init) {
@@ -882,27 +876,8 @@ public:
 
         MutexLock(Mutex);
 
-        if (DebugHitbox) {
-            glDisable(GL_CULL_FACE);
-            glDisable(GL_TEXTURE_2D);
-            for (unsigned int i = 0; i < Player::Hitboxes.size(); i++) {
-                Hitbox::renderAABB(Player::Hitboxes[i], GUI::FgR, GUI::FgG, GUI::FgB, 3, 0.002);
-            }
-
-            glLoadIdentity();
-            glRotated(plookupdown, 1, 0, 0);
-            glRotated(360.0 - pheading, 0, 1, 0);
-            glTranslated(-Player::xpos, -Player::ypos - Player::height - Player::heightExt, -Player::zpos);
-
-            Hitbox::renderAABB(Player::playerbox, 1.0f, 1.0f, 1.0f, 1);
-            Hitbox::renderAABB(Hitbox::Expand(Player::playerbox, Player::xd, Player::yd, Player::zd), 1.0f, 1.0f, 1.0f, 1);
-        }
-
         glEnable(GL_CULL_FACE);
         glEnable(GL_TEXTURE_2D);
-
-        //Time_renderscene = timer() - Time_renderscene;
-        //Time_renderGUI_ = timer();
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
