@@ -12,9 +12,6 @@ namespace World {
     Brightness skylight = 15;         //Sky light level
     Chunk* EmptyChunkPtr = (Chunk*)~0;
     unsigned int EmptyBuffer;
-    int maxChunkLoads = 64;
-    int maxChunkUnloads = 64;
-    int maxChunkRenders = 1;
 
     Chunk** chunks;
     int loadedChunks, chunkArraySize;
@@ -26,11 +23,10 @@ namespace World {
     int rebuiltChunks, rebuiltChunksCount;
     int updatedChunks, updatedChunksCount;
     int unloadedChunks, unloadedChunksCount;
-    int chunkBuildRenderList[256][2];
-    int chunkLoadList[256][4];
-    std::pair<Chunk*, int> chunkUnloadList[256];
+    OrderedList<int, Vec3i, maxChunkLoads> chunkLoadList;
+    OrderedList<int, Chunk*, maxChunkRenders> chunkBuildRenderList;
+    OrderedList<int, Chunk*, maxChunkUnloads, std::greater> chunkUnloadList;
     std::vector<unsigned int> vbuffersShouldDelete;
-    int chunkBuildRenders, chunkLoads, chunkUnloads;
     int getChunkPtrIndex(int x, int y, int z);
     void ExpandChunkArray(int cc);
     void ReduceChunkArray(int cc);
@@ -132,10 +128,8 @@ namespace World {
             while (chunkArraySize < loadedChunks) chunkArraySize *= 2;
             Chunk** cp = (Chunk**)realloc(chunks, chunkArraySize * sizeof(Chunk*));
             if (cp == nullptr && loadedChunks != 0) {
-                DebugError("Allocate memory failed!");
                 destroyAllChunks();
-                glfwTerminate();
-                exit(0);
+                throw std::bad_alloc();
             }
             chunks = cp;
         }
@@ -561,29 +555,23 @@ namespace World {
         }
     }
 
-    Block getBlock(int x, int y, int z, Block mask, Chunk* cptr) {
+    Block getBlock(int x, int y, int z, Block mask, Chunk* ci) {
         //获取方块
-        int    cx = getChunkPos(x), cy = getChunkPos(y), cz = getChunkPos(z);
-        int bx = getBlockPos(x), by = getBlockPos(y), bz = getBlockPos(z);
-        if (cptr != nullptr && cx == cptr->cx && cy == cptr->cy && cz == cptr->cz) {
-            return cptr->getBlock(bx, by, bz);
-        }
-        Chunk* ci = getChunkPtr(cx, cy, cz);
+        int cx = getChunkPos(x), cy = getChunkPos(y), cz = getChunkPos(z);
+        if (!ci || cx != ci->cx || cy != ci->cy || cz != ci->cz)
+            ci = getChunkPtr(cx, cy, cz);
         if (ci == EmptyChunkPtr) return Blocks::AIR;
-        if (ci != nullptr) return ci->getBlock(bx, by, bz);
+        if (ci != nullptr) return ci->getBlock(getBlockPos(x), getBlockPos(y), getBlockPos(z));
         return mask;
     }
 
-    Brightness getBrightness(int x, int y, int z, Chunk* cptr) {
+    Brightness getBrightness(int x, int y, int z, Chunk* ci) {
         //获取亮度
-        int    cx = getChunkPos(x), cy = getChunkPos(y), cz = getChunkPos(z);
-        int bx = getBlockPos(x), by = getBlockPos(y), bz = getBlockPos(z);
-        if (cptr != nullptr && cx == cptr->cx && cy == cptr->cy && cz == cptr->cz) {
-            return cptr->getBrightness(bx, by, bz);
-        }
-        Chunk* ci = getChunkPtr(cx, cy, cz);
+        int cx = getChunkPos(x), cy = getChunkPos(y), cz = getChunkPos(z);
+        if (!ci || cx != ci->cx || cy != ci->cy || cz != ci->cz)
+            ci = getChunkPtr(cx, cy, cz);
         if (ci == EmptyChunkPtr) if (cy < 0) return BrightnessMin; else return skylight;
-        if (ci != nullptr)return ci->getBrightness(bx, by, bz);
+        if (ci != nullptr)return ci->getBrightness(getBlockPos(x), getBlockPos(y), getBlockPos(z));
         return skylight;
     }
 
@@ -612,7 +600,7 @@ namespace World {
 
     void setbrightness(int x, int y, int z, Brightness Brightness, Chunk* cptr) {
         //设置亮度
-        int    cx = getChunkPos(x), cy = getChunkPos(y), cz = getChunkPos(z);
+        int cx = getChunkPos(x), cy = getChunkPos(y), cz = getChunkPos(z);
         int bx = getBlockPos(x), by = getBlockPos(y), bz = getBlockPos(z);
 
         if (cptr != nullptr && cptr != EmptyChunkPtr &&
@@ -678,42 +666,32 @@ namespace World {
         cyp = getChunkPos(ypos);
         czp = getChunkPos(zpos);
 
+        chunkBuildRenderList.clear();
         for (int ci = 0; ci < loadedChunks; ci++) {
             if (chunks[ci]->mIsUpdated) {
                 cx = chunks[ci]->cx;
                 cy = chunks[ci]->cy;
                 cz = chunks[ci]->cz;
-                if (!chunkInRange(cx, cy, cz, cxp, cyp, czp, viewdistance)) continue;
-                xd = cx * 16 + 7 - xpos;
-                yd = cy * 16 + 7 - ypos;
-                zd = cz * 16 + 7 - zpos;
-                distsqr = xd * xd + yd * yd + zd * zd;
-                for (int i = 0; i < maxChunkRenders; i++) {
-                    if (distsqr < chunkBuildRenderList[i][0] || p <= i) {
-                        for (int j = maxChunkRenders - 1; j >= i + 1; j--) {
-                            chunkBuildRenderList[j][0] = chunkBuildRenderList[j - 1][0];
-                            chunkBuildRenderList[j][1] = chunkBuildRenderList[j - 1][1];
-                        }
-                        chunkBuildRenderList[i][0] = distsqr;
-                        chunkBuildRenderList[i][1] = ci;
-                        break;
-                    }
+                if (chunkInRange(cx, cy, cz, cxp, cyp, czp, viewdistance)) {
+                    xd = cx * 16 + 7 - xpos;
+                    yd = cy * 16 + 7 - ypos;
+                    zd = cz * 16 + 7 - zpos;
+                    distsqr = xd * xd + yd * yd + zd * zd;
+                    chunkBuildRenderList.insert(distsqr, chunks[ci]);
                 }
-                if (p < maxChunkRenders) p++;
             }
         }
-        chunkBuildRenders = p;
     }
 
     void sortChunkLoadUnloadList(int xpos, int ypos, int zpos) {
-
-        int cxp, cyp, czp, cx, cy, cz, pl = 0, pu = 0, i;
-        int xd, yd, zd, distsqr, first, middle, last;
+        int cxp, cyp, czp, cx, cy, cz;
+        int xd, yd, zd, distsqr;
 
         cxp = getChunkPos(xpos);
         cyp = getChunkPos(ypos);
         czp = getChunkPos(zpos);
 
+        chunkUnloadList.clear();
         for (int ci = 0; ci < loadedChunks; ci++) {
             cx = chunks[ci]->cx;
             cy = chunks[ci]->cy;
@@ -723,62 +701,21 @@ namespace World {
                 yd = cy * 16 + 7 - ypos;
                 zd = cz * 16 + 7 - zpos;
                 distsqr = xd * xd + yd * yd + zd * zd;
-
-                first = 0; last = pl - 1;
-                while (first <= last) {
-                    middle = (first + last) / 2;
-                    if (distsqr > chunkUnloadList[middle].second)last = middle - 1;
-                    else first = middle + 1;
-                }
-                if (first > pl || first >= maxChunkUnloads) continue;
-                i = first;
-
-                for (int j = maxChunkUnloads - 1; j > i; j--) {
-                    chunkUnloadList[j].first = chunkUnloadList[j - 1].first;
-                    chunkUnloadList[j].second = chunkUnloadList[j - 1].second;
-                }
-                chunkUnloadList[i].first = chunks[ci];
-                chunkUnloadList[i].second = distsqr;
-
-                if (pl < maxChunkUnloads) pl++;
+                chunkUnloadList.insert(distsqr, chunks[ci]);
             }
         }
-        chunkUnloads = pl;
 
-        for (cx = cxp - viewdistance - 1; cx <= cxp + viewdistance; cx++) {
-            for (cy = cyp - viewdistance - 1; cy <= cyp + viewdistance; cy++) {
-                for (cz = czp - viewdistance - 1; cz <= czp + viewdistance; cz++) {
-                    if (cpArray.get(cx, cy, cz) == nullptr) {
+        chunkLoadList.clear();
+        for (cx = cxp - viewdistance - 1; cx <= cxp + viewdistance; cx++)
+            for (cy = cyp - viewdistance - 1; cy <= cyp + viewdistance; cy++)
+                for (cz = czp - viewdistance - 1; cz <= czp + viewdistance; cz++)
+                    if (!cpArray.get(cx, cy, cz)) {
                         xd = cx * 16 + 7 - xpos;
                         yd = cy * 16 + 7 - ypos;
                         zd = cz * 16 + 7 - zpos;
                         distsqr = xd * xd + yd * yd + zd * zd;
-
-                        first = 0; last = pu - 1;
-                        while (first <= last) {
-                            middle = (first + last) / 2;
-                            if (distsqr < chunkLoadList[middle][0]) last = middle - 1;
-                            else first = middle + 1;
-                        }
-                        if (first > pu || first >= maxChunkLoads) continue;
-                        i = first;
-
-                        for (int j = maxChunkLoads - 1; j > i; j--) {
-                            chunkLoadList[j][0] = chunkLoadList[j - 1][0];
-                            chunkLoadList[j][1] = chunkLoadList[j - 1][1];
-                            chunkLoadList[j][2] = chunkLoadList[j - 1][2];
-                            chunkLoadList[j][3] = chunkLoadList[j - 1][3];
-                        }
-                        chunkLoadList[i][0] = distsqr;
-                        chunkLoadList[i][1] = cx;
-                        chunkLoadList[i][2] = cy;
-                        chunkLoadList[i][3] = cz;
-                        if (pu < maxChunkLoads) pu++;
+                        chunkLoadList.insert(distsqr, { cx, cy, cz });
                     }
-                }
-            }
-        }
-        chunkLoads = pu;
     }
 
     void calcVisible(double xpos, double ypos, double zpos, Frustum& frus) {
@@ -788,11 +725,10 @@ namespace World {
 
     void destroyAllChunks() {
 
-        for (int i = 0; i != loadedChunks; i++) {
-            if (!chunks[i]->mIsEmpty) {
+        for (int i = 0; i != loadedChunks; i++)
+            if (!chunks[i]->mIsEmpty)
                 delete chunks[i];
-            }
-        }
+
         free(chunks);
         chunks = nullptr;
         loadedChunks = 0;
@@ -807,34 +743,19 @@ namespace World {
 
         unloadedChunks = 0;
         unloadedChunksCount = 0;
-
-        memset(chunkBuildRenderList, 0, 256 * 2 * sizeof(int));
-        memset(chunkLoadList, 0, 256 * 4 * sizeof(int));
-
-        chunkBuildRenders = 0;
-        chunkLoads = 0;
-        chunkUnloads = 0;
-
     }
 
     void buildtree(int x, int y, int z) {
         //对生成条件进行更严格的检测
         //一：正上方五格必须为空气
         for (int i = y + 1; i < y + 6; i++)
-        {
             if (getBlock(x, i, z) != Blocks::AIR)return;
-        }
         //二：周围五格不能有树
         for (int ix = x - 4; ix < x + 4; ix++)
-        {
             for (int iy = y - 4; iy < y + 4; iy++)
-            {
                 for (int iz = z - 4; iz < z + 4; iz++)
-                {
                     if (getBlock(ix, iy, iz) == Blocks::WOOD || getBlock(ix, iy, iz) == Blocks::LEAF)return;
-                }
-            }
-        }
+
         //终于可以开始生成了
         //设置泥土
         setblock(x, y, z, Blocks::DIRT);
@@ -842,19 +763,15 @@ namespace World {
         int h = 0;//高度
                   //测算泥土数量
         int Dirt = 0;//泥土数
-        for (int ix = x - 4; ix < x + 4; ix++)
-        {
-            for (int iy = y - 4; iy < y; iy++)
-            {
-                for (int iz = z - 4; iz < z + 4; iz++)
-                {
+        for (int ix = x - 4; ix < x + 4; ix++) {
+            for (int iy = y - 4; iy < y; iy++) {
+                for (int iz = z - 4; iz < z + 4; iz++) {
                     if (getBlock(ix, iy, iz) == Blocks::DIRT)Dirt++;
                 }
             }
         }
         //测算最高高度
-        for (int i = y + 1; i < y + 16; i++)
-        {
+        for (int i = y + 1; i < y + 16; i++) {
             if (getBlock(x, i, z) == Blocks::AIR) { h++; }
             else { break; };
         }
@@ -862,20 +779,16 @@ namespace World {
         h = std::min(h, static_cast<int>(Dirt * 15 / 268 * 0.8));
         if (h < 7)return;
         //开始生成树干
-        for (int i = y + 1; i < y + h + 1; i++)
-        {
+        for (int i = y + 1; i < y + h + 1; i++) {
             setblock(x, i, z, Blocks::WOOD);
         }
         //设置树叶及枝杈
         //计算树叶起始生成高度
         int leafh = int(double(h)*0.618) + 1;//黄金分割比大法好！！！
         int distancen2 = int(double((h - leafh + 1)*(h - leafh + 1))) + 1;
-        for (int iy = y + leafh; iy < y + int(double(h)*1.382) + 2; iy++)
-        {
-            for (int ix = x - 6; ix < x + 6; ix++)
-            {
-                for (int iz = z - 6; iz < z + 6; iz++)
-                {
+        for (int iy = y + leafh; iy < y + int(double(h)*1.382) + 2; iy++) {
+            for (int ix = x - 6; ix < x + 6; ix++) {
+                for (int iz = z - 6; iz < z + 6; iz++) {
                     int distancen = Distancen(ix, iy, iz, x, y + leafh + 1, z);
                     if ((getBlock(ix, iy, iz) == Blocks::AIR) && (distancen <distancen2)) {
                         if ((distancen <= distancen2 / 9))//生成枝杈

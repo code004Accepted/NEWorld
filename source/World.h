@@ -8,6 +8,8 @@
 #include "Player.h"
 #include "Particles.h"
 #include "Items.h"
+#include "Math/Vector.h"
+#include <array>
 
 extern int viewdistance;
 class Frsutum;
@@ -16,8 +18,7 @@ namespace World {
 
     // POD ONLY!
     template <class Tk, class Td, size_t size, template<class> class Compare = std::less>
-    class OrderedList
-    {
+    class OrderedList {
     public:
         OrderedList() noexcept : mComp(), mSize(0) {}
         using ArrayType = std::array<std::pair<Tk, Td>, size>;
@@ -27,19 +28,16 @@ namespace World {
         ConstIterator begin() const noexcept { return mList.begin(); }
         Iterator end() noexcept { return mList.begin() + mSize; }
         ConstIterator end() const noexcept { return mList.begin() + mSize; }
-        void insert(Tk key, Td data) noexcept
-        {
+        void insert(Tk key, Td data) noexcept {
             int first = 0, last = mSize - 1;
-            while (first <= last)
-            {
+            while (first <= last) {
                 int middle = (first + last) / 2;
                 if (mComp(key, mList[middle].first))
                     last = middle - 1;
                 else
                     first = middle + 1;
             }
-            if (first <= mSize && first < size)
-            {
+            if (first <= mSize && first < size) {
                 mSize = std::min(size, mSize + 1);
                 for (int j = size - 1; j > first; j--)
                     mList[j] = mList[j - 1];
@@ -60,9 +58,9 @@ namespace World {
     extern Brightness skylight;         //Sky light level
     extern Chunk* EmptyChunkPtr;
     extern unsigned int EmptyBuffer;
-    extern int maxChunkLoads;
-    extern int maxChunkUnloads;
-    extern int maxChunkRenders;
+    constexpr int maxChunkLoads = 64;
+    constexpr int maxChunkUnloads = 64;
+    constexpr int maxChunkRenders = 1;
 
     extern Chunk** chunks;
     extern int loadedChunks;
@@ -73,11 +71,10 @@ namespace World {
     extern int rebuiltChunks, rebuiltChunksCount;
     extern int updatedChunks, updatedChunksCount;
     extern int unloadedChunks, unloadedChunksCount;
-    extern int chunkBuildRenderList[256][2];
-    extern int chunkLoadList[256][4];
-    extern std::pair<Chunk*, int> chunkUnloadList[256];
+    extern OrderedList<int, Vec3i, maxChunkLoads> chunkLoadList;
+    extern OrderedList<int, Chunk*, maxChunkRenders> chunkBuildRenderList;
+    extern OrderedList<int, Chunk*, maxChunkUnloads, std::greater> chunkUnloadList;
     extern std::vector<unsigned int> vbuffersShouldDelete;
-    extern int chunkBuildRenders, chunkLoads, chunkUnloads;
 
     void Init();
 
@@ -101,7 +98,7 @@ namespace World {
     Brightness getBrightness(int x, int y, int z, Chunk* cptr = nullptr);
     void setblock(int x, int y, int z, Block Block, Chunk* cptr = nullptr);
     void setbrightness(int x, int y, int z, Brightness Brightness, Chunk* cptr = nullptr);
-    inline void pickleaf(){
+    inline void pickleaf() {
         if (rnd() < 0.2) {
             if (rnd() < 0.5)Player::addItem(APPLE);
             else Player::addItem(STICK);
@@ -110,20 +107,22 @@ namespace World {
             Player::addItem(Blocks::LEAF);
         }
     }
-   
+
     void picktree(int x, int y, int z);
     inline void pickblock(int x, int y, int z) {
-        if (getBlock(x, y, z) == Blocks::WOOD && 
-            ((getBlock(x, y+1, z) == Blocks::WOOD)|| (getBlock(x, y + 1, z) == Blocks::LEAF)) &&
+        if (getBlock(x, y, z) == Blocks::WOOD &&
+            ((getBlock(x, y + 1, z) == Blocks::WOOD) || (getBlock(x, y + 1, z) == Blocks::LEAF)) &&
             (getBlock(x, y, z + 1) == Blocks::AIR) && (getBlock(x, y, z - 1) == Blocks::AIR) &&
             (getBlock(x + 1, y, z) == Blocks::AIR) && (getBlock(x - 1, y, z) == Blocks::AIR) &&
             (getBlock(x, y - 1, z) != Blocks::AIR)
-            ) { picktree(x, y + 1, z); }//触发砍树模式
-        //击打树叶
-        if (getBlock(x, y, z)!=Blocks::LEAF)Player::addItem(getBlock(x, y, z));
+            ) {
+            picktree(x, y + 1, z);
+        }//触发砍树模式
+         //击打树叶
+        if (getBlock(x, y, z) != Blocks::LEAF)Player::addItem(getBlock(x, y, z));
         else pickleaf();
 
-        setblock(x, y, z, Blocks::AIR); 
+        setblock(x, y, z, Blocks::AIR);
     }
 
 

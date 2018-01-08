@@ -68,11 +68,11 @@ inline double timer() {
 }
 #ifdef NEWORLD_USE_WINAPI
 inline unsigned int MByteToWChar(wchar_t* dst, const char* src, unsigned int n) {
-    int res = MultiByteToWideChar(CP_ACP, 0, src, n, dst, n);
+    int res = MultiByteToWideChar(CP_UTF8, 0, src, n, dst, n);
     return res;
 }
 inline unsigned int WCharToMByte(char* dst, const wchar_t* src, unsigned int n) {
-    return WideCharToMultiByte(CP_ACP, 0, src, n, dst, n * 2, nullptr, nullptr);
+    return WideCharToMultiByte(CP_UTF8, 0, src, n, dst, n * 2, nullptr, nullptr);
 }
 #else
 inline unsigned int MByteToWChar(wchar_t* dst, const char* src, unsigned int n) { size_t res; mbstowcs_s(&res, dst, n, src, _TRUNCATE); return res; }

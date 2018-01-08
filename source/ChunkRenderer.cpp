@@ -31,7 +31,6 @@ namespace ChunkRenderer {
         float col2 = (float)p.col2 * 0.25f / World::BrightnessMax;
         float col3 = (float)p.col3 * 0.25f / World::BrightnessMax;
         int x = p.x, y = p.y, z = p.z, length = p.length;
-#ifdef NERDMODE1
         Renderer::TexCoord3d(0.0, 0.0, (p.tex + 0.5) / 64.0);
         if (p.direction == 0) {
             if (Renderer::AdvancedRender) Renderer::Attrib1f(2.0f);
@@ -103,77 +102,6 @@ namespace ChunkRenderer {
             Renderer::Color3f(col3, col3, col3);
             Renderer::TexCoord2d(length + 1.0, 0.0); Renderer::Vertex3d(x + length + 0.5, y - 0.5, z - 0.5);
         }
-#else
-        float T3d = (Textures::getTextureIndex(p.block, face) - 0.5) / 64.0;
-        switch (p.direction)
-        {
-        case 0: {
-            if (p.block != Blocks::GLOWSTONE) color *= 0.7;
-            float geomentry[] = {
-                0.0, 0.0, T3d, color, color, color, x + 0.5, y - 0.5, z - 0.5,
-                0.0, 1.0, T3d, color, color, color, x + 0.5, y + 0.5, z - 0.5,
-                length + 1.0, 1.0, T3d, color, color, color, x + 0.5, y + 0.5, z + length + 0.5,
-                length + 1.0, 0.0, T3d, color, color, color, x + 0.5, y - 0.5, z + length + 0.5
-            };
-            Renderer::Quad(geomentry);
-        }
-                break;
-        case 1: {
-            if (p.block != Blocks::GLOWSTONE) color *= 0.7;
-            float geomentry[] = {
-                0.0, 1.0, T3d, color, color, color, x - 0.5, y + 0.5, z - 0.5,
-                0.0, 0.0, T3d, color, color, color, x - 0.5, y - 0.5, z - 0.5,
-                length + 1.0, 0.0, T3d, color, color, color, x - 0.5, y - 0.5, z + length + 0.5,
-                length + 1.0, 1.0, T3d, color, color, color, x - 0.5, y + 0.5, z + length + 0.5
-            };
-            Renderer::Quad(geomentry);
-        }
-                break;
-        case 2: {
-            float geomentry[] = {
-                0.0, 0.0, T3d, color, color, color, x + 0.5, y + 0.5, z - 0.5,
-                0.0, 1.0, T3d, color, color, color, x - 0.5, y + 0.5, z - 0.5,
-                length + 1.0, 1.0, T3d, color, color, color, x - 0.5, y + 0.5, z + length + 0.5,
-                length + 1.0, 0.0, T3d, color, color, color, x + 0.5, y + 0.5, z + length + 0.5
-            };
-            Renderer::Quad(geomentry);
-        }
-                break;
-        case 3: {
-            float geomentry[] = {
-                0.0, 0.0, T3d, color, color, color, x - 0.5, y - 0.5, z - 0.5,
-                0.0, 1.0, T3d, color, color, color, x + 0.5, y - 0.5, z - 0.5,
-                length + 1.0, 1.0, T3d, color, color, color, x + 0.5, y - 0.5, z + length + 0.5,
-                length + 1.0, 0.0, T3d, color, color, color, x - 0.5, y - 0.5, z + length + 0.5
-            };
-            Renderer::Quad(geomentry);
-        }
-                break;
-        case 4: {
-            if (p.block != Blocks::GLOWSTONE) color *= 0.5;
-            float geomentry[] = {
-                0.0, 1.0, T3d, color, color, color, x - 0.5, y + 0.5, z + 0.5,
-                0.0, 0.0, T3d, color, color, color, x - 0.5, y - 0.5, z + 0.5,
-                length + 1.0, 0.0, T3d, color, color, color, x + length + 0.5, y - 0.5, z + 0.5,
-                length + 1.0, 1.0, T3d, color, color, color, x + length + 0.5, y + 0.5, z + 0.5
-            };
-            Renderer::Quad(geomentry);
-        }
-                break;
-        case 5: {
-            if (p.block != Blocks::GLOWSTONE) color *= 0.5;
-            float geomentry[] = {
-                0.0, 0.0, T3d, color, color, color, x - 0.5, y - 0.5, z - 0.5,
-                0.0, 1.0, T3d, color, color, color, x - 0.5, y + 0.5, z - 0.5,
-                length + 1.0, 1.0, T3d, color, color, color, x + length + 0.5, y + 0.5, z - 0.5,
-                length + 1.0, 0.0, T3d, color, color, color, x + length + 0.5, y - 0.5, z - 0.5
-            };
-            Renderer::Quad(geomentry);
-        }
-                break;
-        }
-#endif // NERDMODE1
-
     }
 
     void RenderPrimitive_Depth(QuadPrimitive_Depth& p) {

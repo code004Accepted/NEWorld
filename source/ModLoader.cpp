@@ -11,18 +11,9 @@ std::vector<ModInfo> Mod::ModLoader::mods;
 //查找一个文件夹下所有的子目录
 std::vector<std::string> findFolders(const std::string& path) {
     std::vector<std::string> ret;
-    long hFile = 0;
-    _finddata_t fileinfo;
-    if ((hFile = _findfirst((path+"*").c_str(), &fileinfo)) != -1) {
-        do {
-            if ((fileinfo.attrib &  _A_SUBDIR)) {
-                if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0) {
-                    ret.push_back(fileinfo.name);
-                }
-            }
-        } while (_findnext(hFile, &fileinfo) == 0);
-        _findclose(hFile);
-    }
+    for (auto&& x : filesystem::directory_iterator(path))
+        if (filesystem::is_directory(x.path()))
+            ret.push_back(x.path().string());
     return ret;
 }
 

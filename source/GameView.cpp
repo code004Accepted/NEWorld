@@ -24,8 +24,6 @@ private:
     bool GUIrenderswitch;
     bool DebugMode;
     bool DebugHitbox;
-    //bool DebugChunk;
-    //bool DebugPerformance;
     bool DebugShadow;
     bool DebugMergeFace;
 
@@ -154,29 +152,18 @@ public:
             World::sortChunkLoadUnloadList(RoundInt(Player::xpos), RoundInt(Player::ypos), RoundInt(Player::zpos));
 
             //卸载区块(Unload chunks)
-            int sumUnload;
-            sumUnload = World::chunkUnloads > World::maxChunkUnloads ? World::maxChunkUnloads : World::chunkUnloads;
-            for (int i = 0; i < sumUnload; i++) {
-                World::Chunk* cp = World::chunkUnloadList[i].first;
-                int cx = cp->cx, cy = cp->cy, cz = cp->cz;
-                World::DeleteChunk(cx, cy, cz);
-            }
+            for (auto&&[dist, cp] : World::chunkUnloadList) 
+                World::DeleteChunk(cp->cx, cp->cy, cp->cz);
 
             //加载区块(Load chunks)
-            int sumLoad;
-            sumLoad = World::chunkLoads > World::maxChunkLoads ? World::maxChunkLoads : World::chunkLoads;
-            for (int i = 0; i < sumLoad; i++) {
-                int cx = World::chunkLoadList[i][1];
-                int cy = World::chunkLoadList[i][2];
-                int cz = World::chunkLoadList[i][3];
-                World::Chunk* c = World::AddChunk(cx, cy, cz);
+            for (auto&&[dist, pos] : World::chunkLoadList) {
+                auto c = World::AddChunk(pos.x, pos.y, pos.z);
                 c->load(false);
                 if (c->mIsEmpty) {
-                    World::DeleteChunk(cx, cy, cz);
-                    World::cpArray.set(cx, cy, cz, World::EmptyChunkPtr);
+                    World::DeleteChunk(pos.x, pos.y, pos.z);
+                    World::cpArray.set(pos.x, pos.y, pos.z, World::EmptyChunkPtr);
                 }
             }
-
         }
 
         //加载动画
@@ -718,11 +705,8 @@ public:
 
         //更新区块VBO
         World::sortChunkBuildRenderList(RoundInt(Player::xpos), RoundInt(Player::ypos), RoundInt(Player::zpos));
-        int brl = World::chunkBuildRenders > World::maxChunkRenders ? World::maxChunkRenders : World::chunkBuildRenders;
-        for (int i = 0; i < brl; i++) {
-            int ci = World::chunkBuildRenderList[i][1];
-            World::chunks[ci]->buildRender();
-        }
+        for (auto&&[dist, cp] : World::chunkBuildRenderList)
+            cp->buildRender();
 
         //删除已卸载区块的VBO
         if (World::vbuffersShouldDelete.size() > 0) {

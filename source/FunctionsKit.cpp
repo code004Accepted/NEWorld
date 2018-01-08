@@ -1,4 +1,5 @@
 #include "FunctionsKit.h"
+
 unsigned int g_seed;
 
 std::vector<std::string> split(const std::string& str, const std::string& pattern) {
