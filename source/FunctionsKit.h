@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #include "StdInclude.h"
 #include "Typedefs.h"
 #include <chrono>
 extern double stretch;
 
-//³£ÓÃº¯Êı
+//å¸¸ç”¨å‡½æ•°
 std::vector<std::string> split(const std::string& str, const std::string& pattern);
 
 inline void UITrans(double x, double y) {
@@ -85,7 +85,7 @@ inline Thread_t ThreadCreate(ThreadFunc_t func, void* param) { return new std::t
 inline void ThreadWait(Thread_t _hThread) { _hThread->join(); }
 inline void ThreadDestroy(Thread_t _hThread) { delete _hThread; }
 inline unsigned int wstrlen(const wchar_t* wstr) { return wcslen(wstr); }
-inline int Distancen(int ix, int iy, int iz, int x, int y, int z)//¼ÆËã¾àÀëµÄÆ½·½
+inline int Distancen(int ix, int iy, int iz, int x, int y, int z)//è®¡ç®—è·ç¦»çš„å¹³æ–¹
 {
     return (ix - x)*(ix - x) + (iy - y)*(iy - y) + (iz - z)*(iz - z);
 }

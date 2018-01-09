@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Definitions.h"
 
 const double g = 9.8;
@@ -22,7 +22,7 @@ public:
     static bool addItem(item itemname, short amount = 1);
     static bool putBlock(int x, int y, int z, Block blockname);
 
-    //�޸���Ϸģʽ
+    //修改游戏模式
     static void changeGameMode(int gamemode);
 
     static PlayerPacket convertToPlayerPacket();

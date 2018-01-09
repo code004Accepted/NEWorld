@@ -1,8 +1,8 @@
-#include "AL-EFX.h"
+﻿#include "AL-EFX.h"
 namespace EFX {
     ALuint uiEffectSlot, uiEffect;
     EFXEAXREVERBPROPERTIES efxReverb;
-    EAXREVERBPROPERTIES EAXprop = Generic;//Ч��
+    EAXREVERBPROPERTIES EAXprop = Generic;//效果
     ALboolean CreateEffect(ALuint *puiEffect, ALenum eEffectType);
     ALboolean CreateAuxEffectSlot(ALuint *puiAuxEffectSlot);
     ALboolean SetEFXEAXReverbProperties(EFXEAXREVERBPROPERTIES *pEFXEAXReverb, ALuint uiEffect);

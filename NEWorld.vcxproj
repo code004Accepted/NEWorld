@@ -67,27 +67,27 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)include\Netycat\include;$(ProjectDir)include\Netycat\src;$(ProjectDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)/source;$(ProjectDir)include\Netycat\include;$(ProjectDir)include\Netycat\src;$(ProjectDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)libraries;$(LibraryPath)</LibraryPath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <OutDir>$(SolutionDir)\Bin\Product\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\Bin\Internal\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)/source;$(ProjectDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib64;$(LibraryPath)</LibraryPath>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <OutDir>$(SolutionDir)\Bin\Product\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\Bin\Internal\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)/source;$(ProjectDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)libraries;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\Bin\Product\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\Bin\Internal\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)/source;$(ProjectDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib64;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)</TargetName>
     <OutDir>$(SolutionDir)\Bin\Product\$(Platform)\$(Configuration)\</OutDir>
@@ -271,41 +271,41 @@
     <ClCompile Include="source\Chunk.cpp" />
     <ClCompile Include="source\ChunkPtrArray.cpp" />
     <ClCompile Include="source\ChunkRenderer.cpp" />
-    <ClCompile Include="source\CreateWorldMenu.cpp" />
     <ClCompile Include="source\Effect.cpp" />
     <ClCompile Include="source\FunctionsKit.cpp" />
-    <ClCompile Include="source\GameMenu.cpp" />
     <ClCompile Include="source\GameView.cpp" />
-    <ClCompile Include="source\GUIOptionsMenu.cpp" />
+    <ClCompile Include="source\GUI\Menus\CreateWorldMenu.cpp" />
+    <ClCompile Include="source\GUI\Menus\GameMenu.cpp" />
+    <ClCompile Include="source\GUI\Menus\GUIOptionsMenu.cpp" />
+    <ClCompile Include="source\GUI\Menus\Information.cpp" />
+    <ClCompile Include="source\GUI\Menus\LanguageMenu.cpp" />
+    <ClCompile Include="source\GUI\Menus\MainMenu.cpp" />
+    <ClCompile Include="source\GUI\Menus\MultiplayerGame.cpp" />
+    <ClCompile Include="source\GUI\Menus\OptionsMenu.cpp" />
+    <ClCompile Include="source\GUI\Menus\RenderOptionsMenu.cpp" />
+    <ClCompile Include="source\GUI\Menus\ShaderOptionsMenu.cpp" />
+    <ClCompile Include="source\GUI\Menus\SoundMenu.cpp" />
+    <ClCompile Include="source\GUI\Menus\WorldMenu.cpp" />
     <ClCompile Include="source\HeightMap.cpp" />
     <ClCompile Include="source\Definitions.cpp" />
     <ClCompile Include="source\Frustum.cpp" />
     <ClCompile Include="source\GUI.cpp" />
     <ClCompile Include="source\Globalization.cpp" />
     <ClCompile Include="source\Hitbox.cpp" />
-    <ClCompile Include="source\Information.cpp" />
     <ClCompile Include="source\Items.cpp" />
-    <ClCompile Include="source\LanguageMenu.cpp" />
-    <ClCompile Include="source\MainMenu.cpp" />
     <ClCompile Include="source\ModLoader.cpp" />
-    <ClCompile Include="source\MultiplayerGame.cpp" />
     <ClCompile Include="source\NEWorld.cpp" />
-    <ClCompile Include="source\OptionsMenu.cpp" />
     <ClCompile Include="source\Particles.cpp" />
     <ClCompile Include="source\Player.cpp" />
     <ClCompile Include="source\Renderer.cpp" />
-    <ClCompile Include="source\RenderOptionsMenu.cpp" />
     <ClCompile Include="source\RTDevice.cpp" />
     <ClCompile Include="source\Setup.cpp" />
     <ClCompile Include="source\Shader.cpp" />
-    <ClCompile Include="source\ShaderOptionsMenu.cpp" />
     <ClCompile Include="source\ShadowMaps.cpp" />
-    <ClCompile Include="source\SoundMenu.cpp" />
     <ClCompile Include="source\TextRenderer.cpp" />
     <ClCompile Include="source\Textures.cpp" />
     <ClCompile Include="source\World.cpp" />
     <ClCompile Include="source\WorldGen.cpp" />
-    <ClCompile Include="source\WorldMenu.cpp" />
     <ClCompile Include="source\WorldRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -316,6 +316,7 @@
     <Image Include="source\neworld.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="NEWorld.licenseheader" />
     <None Include="Shaders\Depth.fsh" />
     <None Include="Shaders\Main.fsh" />
     <None Include="Shaders\Shadow.fsh" />

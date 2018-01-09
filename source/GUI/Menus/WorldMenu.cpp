@@ -1,4 +1,4 @@
-#include "Menus.h"
+ï»¿#include "Menus.h"
 #include "World.h"
 #include "Textures.h"
 #include "GameView.h"
@@ -82,7 +82,7 @@ namespace Menus {
                 GameView();
             }
             if (deletebtn.clicked) {
-                //É¾³ıÊÀ½çÎÄ¼ş
+                //åˆ é™¤ä¸–ç•Œæ–‡ä»¶
                 system((std::string("rd /s/q \"Worlds\\") + chosenWorldName + "\"").c_str());
                 deletebtn.clicked = false;
                 World::worldname = "";
@@ -100,7 +100,7 @@ namespace Menus {
                 mouseon = -1;
                 vscroll.barpos = 0;
                 chosenWorldName = "";
-                //²éÕÒËùÓĞÊÀ½ç´æµµ
+                //æŸ¥æ‰¾æ‰€æœ‰ä¸–ç•Œå­˜æ¡£
                 Textures::TEXTURE_RGB tmb;
                 for (auto&& x : filesystem::directory_iterator("Worlds/")) {
                     if (filesystem::is_directory(x.path())) {
@@ -145,7 +145,7 @@ namespace Menus {
                 else {
                     bool marginOnSides;
                     float w, h;
-                    //¼ÆËã²ÄÖÊ×ø±ê£¬±£³Ö¸ß¿í±È£¨°´Å¥´óĞ¡Îª500x60£©£¬ÓĞĞ¡Ñ§ÊıÑ§»ù´¡µÄÈË×ĞÏ¸ÏëÒ»ÏëÓ¦¸ÃÄÜ¶®QAQ
+                    //è®¡ç®—æè´¨åæ ‡ï¼Œä¿æŒé«˜å®½æ¯”ï¼ˆæŒ‰é’®å¤§å°ä¸º500x60ï¼‰ï¼Œæœ‰å°å­¦æ•°å­¦åŸºç¡€çš„äººä»”ç»†æƒ³ä¸€æƒ³åº”è¯¥èƒ½æ‡‚QAQ
                     if (texSizeX[i] * 60 / 500 < texSizeY[i]) {
                         marginOnSides = true;
                         w = 1.0f, h = texSizeX[i] * 60 / 500.0f / texSizeY[i];

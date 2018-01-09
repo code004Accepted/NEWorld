@@ -1,4 +1,4 @@
-#include "Hitbox.h"
+ï»¿#include "Hitbox.h"
 #include <algorithm>
 
 namespace Hitbox {
@@ -26,7 +26,7 @@ namespace Hitbox {
     }
 
     double maxMoveOnXclip(const AABB& boxA, const AABB& boxB, double movedist) {
-        //ÓÃboxAÈ¥×²boxB£¬±ğ¸ã·´ÁË
+        //ç”¨boxAå»æ’boxBï¼Œåˆ«æåäº†
         if (!(inYclip(boxA, boxB) && inZclip(boxA, boxB))) return movedist;
         else if (boxA.xmin >= boxB.xmax && movedist < 0.0) return std::max(boxB.xmax - boxA.xmin, movedist);
         else if (boxA.xmax <= boxB.xmin && movedist > 0.0) return std::min(boxB.xmin - boxA.xmax, movedist);
@@ -34,7 +34,7 @@ namespace Hitbox {
     }
 
     double maxMoveOnYclip(const AABB& boxA, const AABB& boxB, double movedist) {
-        //ÓÃboxAÈ¥×²boxB£¬±ğ¸ã·´ÁË £¨ÕâºÃÏñÊÇ¾ä·Ï»°£©
+        //ç”¨boxAå»æ’boxBï¼Œåˆ«æåäº† ï¼ˆè¿™å¥½åƒæ˜¯å¥åºŸè¯ï¼‰
         if (!(inXclip(boxA, boxB) && inZclip(boxA, boxB))) return movedist;
         else if (boxA.ymin >= boxB.ymax && movedist < 0.0) return std::max(boxB.ymax - boxA.ymin, movedist);
         else if (boxA.ymax <= boxB.ymin && movedist > 0.0) return std::min(boxB.ymin - boxA.ymax, movedist);
@@ -42,7 +42,7 @@ namespace Hitbox {
     }
 
     double maxMoveOnZclip(const AABB& boxA, const AABB& boxB, double movedist) {
-        //ÓÃboxAÈ¥×²boxB£¬±ğ¸ã·´ÁË £¨ÕâºÃÏñ»¹ÊÇ¾ä·Ï»°£©
+        //ç”¨boxAå»æ’boxBï¼Œåˆ«æåäº† ï¼ˆè¿™å¥½åƒè¿˜æ˜¯å¥åºŸè¯ï¼‰
         if (!(inXclip(boxA, boxB) && inYclip(boxA, boxB))) return movedist;
         else if (boxA.zmin >= boxB.zmax && movedist < 0.0) return std::max(boxB.zmax - boxA.zmin, movedist);
         else if (boxA.zmax <= boxB.zmin && movedist > 0.0) return std::min(boxB.zmin - boxA.zmax, movedist);
@@ -64,7 +64,7 @@ namespace Hitbox {
 
     void MoveTo(AABB &box, double x, double y, double z) {
         double l, w, h;
-        //×¢ÒâÔÚÖ´ĞĞÕâ¸ö¹ı³ÌÊ±£¬²ÎÊıÖĞµÄxyz×ø±ê½«³ÉÎªÒÆ¶¯ºóµÄAABBµÄÖĞĞÄ£¬¶ø²»ÊÇ³õÊ¼»¯AABBÊ±µÄÔ­µã£¡
+        //æ³¨æ„åœ¨æ‰§è¡Œè¿™ä¸ªè¿‡ç¨‹æ—¶ï¼Œå‚æ•°ä¸­çš„xyzåæ ‡å°†æˆä¸ºç§»åŠ¨åçš„AABBçš„ä¸­å¿ƒï¼Œè€Œä¸æ˜¯åˆå§‹åŒ–AABBæ—¶çš„åŸç‚¹ï¼
         l = (box.xmax - box.xmin) / 2;
         w = (box.ymax - box.ymin) / 2;
         h = (box.zmax - box.zmin) / 2;

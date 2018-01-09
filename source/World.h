@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Definitions.h"
 #include "chunkPtrArray.h"
 #include "HeightMap.h"
@@ -117,8 +117,8 @@ namespace World {
             (getBlock(x, y - 1, z) != Blocks::AIR)
             ) {
             picktree(x, y + 1, z);
-        }//´¥·¢¿³Ê÷Ä£Ê½
-         //»÷´òÊ÷Ò¶
+        }//è§¦å‘ç æ ‘æ¨¡å¼
+         //å‡»æ‰“æ ‘å¶
         if (getBlock(x, y, z) != Blocks::LEAF)Player::addItem(getBlock(x, y, z));
         else pickleaf();
 
@@ -127,7 +127,7 @@ namespace World {
 
 
     inline bool chunkInRange(int x, int y, int z, int px, int py, int pz, int dist) {
-        //¼ì²â¸ø³öµÄchunk×ø±êÊÇ·ñÔÚäÖÈ¾·¶Î§ÄÚ
+        //æ£€æµ‹ç»™å‡ºçš„chunkåæ ‡æ˜¯å¦åœ¨æ¸²æŸ“èŒƒå›´å†…
         if (x<px - dist || x>px + dist - 1 || y<py - dist || y>py + dist - 1 || z<pz - dist || z>pz + dist - 1) return false;
         return true;
     }

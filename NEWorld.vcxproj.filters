@@ -267,38 +267,11 @@
     <ClCompile Include="source\GUI.cpp">
       <Filter>源代码\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="source\RenderOptionsMenu.cpp">
-      <Filter>Source\GUI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="source\CreateWorldMenu.cpp">
-      <Filter>Source\GUI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="source\GUIOptionsMenu.cpp">
-      <Filter>Source\GUI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="source\MainMenu.cpp">
-      <Filter>Source\GUI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="source\MultiplayerGame.cpp">
-      <Filter>Source\GUI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="source\OptionsMenu.cpp">
-      <Filter>Source\GUI\Menus</Filter>
-    </ClCompile>
     <ClCompile Include="source\ChunkRenderer.cpp">
       <Filter>Source\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="source\GameMenu.cpp">
-      <Filter>Source\GUI\Menus</Filter>
-    </ClCompile>
     <ClCompile Include="source\Globalization.cpp">
       <Filter>Source\GUI\Globalization</Filter>
-    </ClCompile>
-    <ClCompile Include="source\LanguageMenu.cpp">
-      <Filter>Source\GUI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="source\ShaderOptionsMenu.cpp">
-      <Filter>Source\GUI\Menus</Filter>
     </ClCompile>
     <ClCompile Include="source\TextRenderer.cpp">
       <Filter>Source\Renderer\GUIRenderer</Filter>
@@ -339,14 +312,8 @@
     <ClCompile Include="source\Shader.cpp">
       <Filter>Source\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="source\WorldMenu.cpp">
-      <Filter>Source\GUI\Menus</Filter>
-    </ClCompile>
     <ClCompile Include="source\GameView.cpp">
       <Filter>Source\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Information.cpp">
-      <Filter>Source\GUI\Menus</Filter>
     </ClCompile>
     <ClCompile Include="include\AL\ALDevice.cpp">
       <Filter>Source\Common\OpenAL</Filter>
@@ -369,9 +336,6 @@
     <ClCompile Include="source\AudioSystem.cpp">
       <Filter>Source\Game</Filter>
     </ClCompile>
-    <ClCompile Include="source\SoundMenu.cpp">
-      <Filter>Source\GUI\Menus</Filter>
-    </ClCompile>
     <ClCompile Include="source\RTDevice.cpp">
       <Filter>Source\Renderer\RTRTR</Filter>
     </ClCompile>
@@ -380,6 +344,42 @@
     </ClCompile>
     <ClCompile Include="source\Hitbox.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GUI\Menus\GameMenu.cpp">
+      <Filter>Source\GUI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GUI\Menus\GUIOptionsMenu.cpp">
+      <Filter>Source\GUI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GUI\Menus\Information.cpp">
+      <Filter>Source\GUI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GUI\Menus\LanguageMenu.cpp">
+      <Filter>Source\GUI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GUI\Menus\MainMenu.cpp">
+      <Filter>Source\GUI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GUI\Menus\OptionsMenu.cpp">
+      <Filter>Source\GUI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GUI\Menus\RenderOptionsMenu.cpp">
+      <Filter>Source\GUI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GUI\Menus\ShaderOptionsMenu.cpp">
+      <Filter>Source\GUI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GUI\Menus\SoundMenu.cpp">
+      <Filter>Source\GUI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GUI\Menus\WorldMenu.cpp">
+      <Filter>Source\GUI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GUI\Menus\CreateWorldMenu.cpp">
+      <Filter>Source\GUI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GUI\Menus\MultiplayerGame.cpp">
+      <Filter>Source\GUI\Menus</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -414,5 +414,6 @@
     <None Include="Shaders\Shadow.vsh">
       <Filter>Source\Renderer\Shader</Filter>
     </None>
+    <None Include="NEWorld.licenseheader" />
   </ItemGroup>
 </Project>
