@@ -1,41 +1,32 @@
-﻿#include "AL-EFX.h"
+#include "AL-EFX.h"
+
 namespace EFX {
     ALuint uiEffectSlot, uiEffect;
     EFXEAXREVERBPROPERTIES efxReverb;
-    EAXREVERBPROPERTIES EAXprop = Generic;//效果
-    ALboolean CreateEffect(ALuint *puiEffect, ALenum eEffectType);
-    ALboolean CreateAuxEffectSlot(ALuint *puiAuxEffectSlot);
-    ALboolean SetEFXEAXReverbProperties(EFXEAXREVERBPROPERTIES *pEFXEAXReverb, ALuint uiEffect);
-    bool UpdateEAXprop();
-    bool Init()
-    {
+    EAXREVERBPROPERTIES EAXprop = Generic; //效果
+
+
+    bool Init() {
         if (ALFWIsEFXSupported()) {
             if (CreateAuxEffectSlot(&uiEffectSlot)) {
-                if (CreateEffect(&uiEffect, AL_EFFECT_EAXREVERB))
-                {
-                    return UpdateEAXprop();
-                }
+                if (CreateEffect(&uiEffect, AL_EFFECT_EAXREVERB)) { return UpdateEAXprop(); }
             }
         }
         return false;
+    }
 
-    }
-    void set(ALuint Source) {
-        alSource3i(Source, AL_AUXILIARY_SEND_FILTER, uiEffectSlot, 0, AL_FILTER_NULL);
-    }
+    void set(ALuint Source) { alSource3i(Source, AL_AUXILIARY_SEND_FILTER, uiEffectSlot, 0, AL_FILTER_NULL); }
+
     bool UpdateEAXprop() {
         ConvertReverbParameters(&EAXprop, &efxReverb);
         if (SetEFXEAXReverbProperties(&efxReverb, uiEffect)) {
             alAuxiliaryEffectSloti(uiEffectSlot, AL_EFFECTSLOT_EFFECT, uiEffect);
             return true;
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
-    ALboolean CreateAuxEffectSlot(ALuint *puiAuxEffectSlot)
-    {
+
+    ALboolean CreateAuxEffectSlot(ALuint* puiAuxEffectSlot) {
         ALboolean bReturn = AL_FALSE;
 
         // Clear AL Error state
@@ -48,19 +39,17 @@ namespace EFX {
 
         return bReturn;
     }
-    ALboolean CreateEffect(ALuint *puiEffect, ALenum eEffectType)
-    {
+
+    ALboolean CreateEffect(ALuint* puiEffect, ALenum eEffectType) {
         ALboolean bReturn = AL_FALSE;
 
-        if (puiEffect)
-        {
+        if (puiEffect) {
             // Clear AL Error State
             alGetError();
 
             // Generate an Effect
             alGenEffects(1, puiEffect);
-            if (alGetError() == AL_NO_ERROR)
-            {
+            if (alGetError() == AL_NO_ERROR) {
                 // Set the Effect Type
                 alEffecti(*puiEffect, AL_EFFECT_TYPE, eEffectType);
                 if (alGetError() == AL_NO_ERROR)
@@ -72,12 +61,11 @@ namespace EFX {
 
         return bReturn;
     }
-    ALboolean SetEFXEAXReverbProperties(EFXEAXREVERBPROPERTIES *pEFXEAXReverb, ALuint uiEffect)
-    {
+
+    ALboolean SetEFXEAXReverbProperties(EFXEAXREVERBPROPERTIES* pEFXEAXReverb, ALuint uiEffect) {
         ALboolean bReturn = AL_FALSE;
 
-        if (pEFXEAXReverb)
-        {
+        if (pEFXEAXReverb) {
             // Clear AL Error code
             alGetError();
 

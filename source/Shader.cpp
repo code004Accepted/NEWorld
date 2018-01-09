@@ -1,17 +1,35 @@
-﻿#include "Shader.h"
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "Shader.h"
 #include "FunctionsKit.h"
 #include <iostream>
 #include <fstream>
 
-Shader::Shader(const std::string& vshPath, const std::string& fshPath, bool bindLocation, std::set<std::string> defines) {
+Shader::Shader(const std::string& vshPath, const std::string& fshPath, bool bindLocation,
+               std::set<std::string> defines) {
     shaderVertex = loadShader(vshPath, GL_VERTEX_SHADER_ARB, defines);
     shaderFragment = loadShader(fshPath, GL_FRAGMENT_SHADER_ARB, defines);
     shaderProgram = glCreateProgramObjectARB();
     glAttachObjectARB(shaderProgram, shaderVertex);
     glAttachObjectARB(shaderProgram, shaderFragment);
-    if (bindLocation) {
-        glBindAttribLocationARB(shaderProgram, 1, "VertexAttrib");
-    }
+    if (bindLocation) { glBindAttribLocationARB(shaderProgram, 1, "VertexAttrib"); }
     glLinkProgramARB(shaderProgram);
 
     //检查错误
@@ -33,6 +51,7 @@ bool Shader::setUniform(const char* uniform, float value) {
     glUniform1fARB(loc, value);
     return true;
 }
+
 bool Shader::setUniform(const char* uniform, int value) {
     int loc = glGetUniformLocationARB(shaderProgram, uniform);
     assert(loc != -1);
@@ -40,6 +59,7 @@ bool Shader::setUniform(const char* uniform, int value) {
     glUniform1iARB(loc, value);
     return true;
 }
+
 bool Shader::setUniform(const char* uniform, float v0, float v1, float v2, float v3) {
     int loc = glGetUniformLocationARB(shaderProgram, uniform);
     assert(loc != -1);
@@ -47,7 +67,8 @@ bool Shader::setUniform(const char* uniform, float v0, float v1, float v2, float
     glUniform4fARB(loc, v0, v1, v2, v3);
     return true;
 }
-bool Shader::setUniform(const char* uniform, float * value) {
+
+bool Shader::setUniform(const char* uniform, float* value) {
     int loc = glGetUniformLocationARB(shaderProgram, uniform);
     assert(loc != -1);
     if (loc == -1) return false;
@@ -68,7 +89,8 @@ GLhandleARB Shader::loadShader(const std::string& filename, unsigned int mode, s
     while (!filein.eof()) {
         std::getline(filein, cur);
         if (cur.empty()) continue;
-        if (beginWith(cur, "#")) { //处理NEWorld预处理器标志
+        if (beginWith(cur, "#")) {
+            //处理NEWorld预处理器标志
             ss.str(cur);
             ss >> maxro;
             if (maxro == "##NEWORLD_SHADER_DEFINES") {

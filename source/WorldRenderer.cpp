@@ -1,3 +1,22 @@
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "WorldRenderer.h"
 
 namespace WorldRenderer {
@@ -9,7 +28,7 @@ namespace WorldRenderer {
         for (int i = 0; i < World::loadedChunks; i++) {
             if (!World::chunks[i]->mIsRenderBuilt || World::chunks[i]->mIsEmpty) continue;
             if (World::chunkInRange(World::chunks[i]->cx, World::chunks[i]->cy, World::chunks[i]->cz,
-                cx, cy, cz, renderdistance)) {
+                                    cx, cy, cz, renderdistance)) {
                 if (!frustest || World::chunks[i]->visible) {
                     renderedChunks++;
                     RenderChunkList.push_back(RenderChunk(World::chunks[i], (curtime - lastupdate) * 30.0));
@@ -28,8 +47,7 @@ namespace WorldRenderer {
         }
         else TexcoordCount = ColorCount = 0;
 
-        for (unsigned int i = 0; i < RenderChunkList.size(); i++) {
-            RenderChunk cr = RenderChunkList[i];
+        for (auto cr : RenderChunkList) {
             if (cr.vertexes[0] == 0) continue;
             glPushMatrix();
             glTranslated(cr.cx * 16.0 - x, cr.cy * 16.0 - cr.loadAnim - y, cr.cz * 16.0 - z);

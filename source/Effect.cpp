@@ -1,43 +1,52 @@
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "Effect.h"
 #include "Definitions.h"
 #include <math.h>
 
 
 namespace Effect {
-
     void readScreen(int x, int y, int w, int h, uint8_t* data) {
-
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         glReadPixels(x, y, w, h, GL_RGB, GL_UNSIGNED_BYTE, data);
-
     }
 
     void writeScreen(int x, int y, int w, int h, uint8_t* data) {
-
         glPixelStorei(GL_PACK_ALIGNMENT, 1);
         glRasterPos2i(x, y + h);
         glDrawPixels(w, h, GL_RGB, GL_UNSIGNED_BYTE, data);
-
     }
 
 
     void gray(int w, int h, uint8_t* src, uint8_t* dst) {
-
         uintptr_t size = w * h * 3;
 
         for (uintptr_t i = 0; i < size; i += 3) {
-
             dst[i] = dst[i + 1] = dst[i + 2]
                 = (uint8_t)(0.299f * src[i]
                     + 0.587f * src[i + 1]
                     + 0.114f * src[i + 2]);
-
         }
-
     }
 
     void blurGaussianX(int w, int h, uint8_t* src, uint8_t* dst, int rx) {
-
         int size = rx * 2 + 1;
 
         float* mat = new float[size];
@@ -47,73 +56,47 @@ namespace Effect {
         float sum = 0.0f;
 
         for (int i = 0; i < size; i++) {
-
             int x = i - rx;
             int x2 = x * x;
 
-            float val = ::expf(sigma2 * x2);
+            float val = expf(sigma2 * x2);
 
             mat[i] = val;
 
             sum += val;
-
         }
 
         sum = 1.0f / sum;
 
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) { mat[i] *= sum; }
 
-            mat[i] *= sum;
-
-        }
-
-        for (int i = 0; i < w * h * 3; i += 3) {
-
-            dst[i] = dst[i + 1] = dst[i + 2] = 0;
-
-        }
+        for (int i = 0; i < w * h * 3; i += 3) { dst[i] = dst[i + 1] = dst[i + 2] = 0; }
 
         for (int i = 0; i < size; i++) {
-
             int dx = i - rx;
 
             float val = mat[i];
 
             for (int j = 0; j < w; j++) {
-
                 int x = j + dx;
-                if (x < 0) {
-
-                    x = 0;
-
-                }
-                if (x >= w) {
-
-                    x = w - 1;
-
-                }
+                if (x < 0) { x = 0; }
+                if (x >= w) { x = w - 1; }
 
                 for (int k = 0; k < h; k++) {
-
                     int indexsrc = (k * w + j) * 3;
                     int indexdst = (k * w + x) * 3;
 
                     dst[indexdst] += (uint8_t)(val * src[indexsrc]);
                     dst[indexdst + 1] += (uint8_t)(val * src[indexsrc + 1]);
                     dst[indexdst + 2] += (uint8_t)(val * src[indexsrc + 2]);
-
                 }
-
             }
-
         }
 
         delete mat;
-
     }
 
     void blurGaussianY(int w, int h, uint8_t* src, uint8_t* dst, int ry) {
-
         int size = ry * 2 + 1;
 
         float* mat = new float[size];
@@ -123,69 +106,43 @@ namespace Effect {
         float sum = 0.0f;
 
         for (int i = 0; i < size; i++) {
-
             int y = i - ry;
             int y2 = y * y;
 
-            float val = ::expf(sigma2 * y2);
+            float val = expf(sigma2 * y2);
 
             mat[i] = val;
 
             sum += val;
-
         }
 
         sum = 1.0f / sum;
 
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) { mat[i] *= sum; }
 
-            mat[i] *= sum;
-
-        }
-
-        for (int i = 0; i < w * h * 3; i += 3) {
-
-            dst[i] = dst[i + 1] = dst[i + 2] = 0;
-
-        }
+        for (int i = 0; i < w * h * 3; i += 3) { dst[i] = dst[i + 1] = dst[i + 2] = 0; }
 
         for (int i = 0; i < size; i++) {
-
             int dy = i - ry;
 
             float val = mat[i];
 
             for (int j = 0; j < h; j++) {
-
                 int y = j + dy;
-                if (y < 0) {
-
-                    y = 0;
-
-                }
-                if (y >= h) {
-
-                    y = h - 1;
-
-                }
+                if (y < 0) { y = 0; }
+                if (y >= h) { y = h - 1; }
 
                 for (int k = 0; k < w; k++) {
-
                     int indexsrc = (j * w + k) * 3;
                     int indexdst = (y * w + k) * 3;
 
                     dst[indexdst] += (uint8_t)(val * src[indexsrc]);
                     dst[indexdst + 1] += (uint8_t)(val * src[indexsrc + 1]);
                     dst[indexdst + 2] += (uint8_t)(val * src[indexsrc + 2]);
-
                 }
-
             }
-
         }
 
         delete mat;
-
     }
-
 }

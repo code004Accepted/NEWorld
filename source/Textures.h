@@ -1,11 +1,29 @@
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #pragma once
 #include "Definitions.h"
 
 extern int BLOCKTEXTURE_SIZE, BLOCKTEXTURE_UNITSIZE, filter;
 const short BITMAP_ID = 0x4D42;
 
-namespace Textures{
-
+namespace Textures {
 #pragma pack(push)
 #pragma pack(1)
     struct TEXTURE_RGB {
@@ -35,9 +53,29 @@ namespace Textures{
 #pragma pack(pop)
 
     enum BlockTextureID {
-        ROCK, GRASS_TOP, GRASS_SIDE, DIRT, STONE, PLANK, WOOD_TOP, WOOD_SIDE, BEDROCK, LEAF,
-        GLASS, WATER, LAVA, GLOWSTONE, SAND, CEMENT, ICE, COAL, IRON, TNT, UNKNOWN
+        ROCK,
+        GRASS_TOP,
+        GRASS_SIDE,
+        DIRT,
+        STONE,
+        PLANK,
+        WOOD_TOP,
+        WOOD_SIDE,
+        BEDROCK,
+        LEAF,
+        GLASS,
+        WATER,
+        LAVA,
+        GLOWSTONE,
+        SAND,
+        CEMENT,
+        ICE,
+        COAL,
+        IRON,
+        TNT,
+        UNKNOWN
     };
+
     const int NULLBLOCK = 63;
 
     void Init();
@@ -55,5 +93,4 @@ namespace Textures{
     void SaveRGBImage(const std::string& filename, TEXTURE_RGB& image);
 
     void Build2DMipmaps(GLenum format, int w, int h, int level, const uint8_t* src);
-
 }

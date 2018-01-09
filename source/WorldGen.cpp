@@ -1,24 +1,40 @@
-﻿#include "WorldGen.h"
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "WorldGen.h"
 #include "Definitions.h"
 
 //Perlin Noise 2D
-namespace WorldGen{
+namespace WorldGen {
+    double perm[256];
+    int seed;
+    double NoiseScaleX = 64;
+    double NoiseScaleZ = 64;
+    int WaterLevel = 30;
 
-    double    perm[256];
-    int        seed;
-    double    NoiseScaleX = 64;
-    double    NoiseScaleZ = 64;
-    int        WaterLevel = 30;
-
-    void perlinNoiseInit(int mapseed){
+    void perlinNoiseInit(int mapseed) {
         fastSrand(mapseed);
-        for (int i = 0; i < 256; i++){
-            perm[i] = rnd() * 256.0;
-        }
+        for (double& i : perm) { i = rnd() * 256.0; }
         seed = mapseed;
     }
 
-    double SmoothedNoise(int x, int y){
+    double SmoothedNoise(int x, int y) {
         double corners, sides, center;
         corners = (Noise(x - 1, y - 1) + Noise(x + 1, y - 1) + Noise(x - 1, y + 1) + Noise(x + 1, y + 1)) / 8.0;
         sides = (Noise(x - 1, y) + Noise(x + 1, y) + Noise(x, y - 1) + Noise(x, y + 1)) / 4.0;
@@ -26,7 +42,7 @@ namespace WorldGen{
         return corners + sides + center;
     }
 
-    double InterpolatedNoise(double x, double y){
+    double InterpolatedNoise(double x, double y) {
         int int_X, int_Y;
         double fractional_X, fractional_Y, v1, v2, v3, v4, i1, i2;
         int_X = (int)floor(x); //不要问我为毛用floor，c++默认居然TM的是向零取整的
@@ -42,13 +58,13 @@ namespace WorldGen{
         return Interpolate(i1, i2, fractional_Y);
     }
 
-    double PerlinNoise2D(double x, double y){
+    double PerlinNoise2D(double x, double y) {
         double total = 0, frequency = 1, amplitude = 1;
-        for (int i = 0; i <= 4; i++){
-            total += InterpolatedNoise(x*frequency, y*frequency)*amplitude;
-            frequency *= 2; amplitude /= 2.0;
+        for (int i = 0; i <= 4; i++) {
+            total += InterpolatedNoise(x * frequency, y * frequency) * amplitude;
+            frequency *= 2;
+            amplitude /= 2.0;
         }
         return total;
     }
-
 }

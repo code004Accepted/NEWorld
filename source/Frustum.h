@@ -1,3 +1,22 @@
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #pragma once
 #include "Hitbox.h"
 
@@ -13,11 +32,12 @@ public:
         float xmax, ymax, zmax;
     };
 
-    inline float* getProjMatrix() { return proj; }
-    inline float* getModlMatrix() { return modl; }
+    float* getProjMatrix() { return proj; }
+    float* getModlMatrix() { return modl; }
 
     void LoadIdentity();
-    inline void MultMatrixTo(float* sum, float* a, float* b) {
+
+    void MultMatrixTo(float* sum, float* a, float* b) {
         sum[0] = a[0] * b[0] + a[1] * b[4] + a[2] * b[8] + a[3] * b[12];
         sum[1] = a[0] * b[1] + a[1] * b[5] + a[2] * b[9] + a[3] * b[13];
         sum[2] = a[0] * b[2] + a[1] * b[6] + a[2] * b[10] + a[3] * b[14];
@@ -35,14 +55,15 @@ public:
         sum[14] = a[12] * b[2] + a[13] * b[6] + a[14] * b[10] + a[15] * b[14];
         sum[15] = a[12] * b[3] + a[13] * b[7] + a[14] * b[11] + a[15] * b[15];
     }
+
     inline void MultMatrix(float* a, float* b);
-    
+
     void SetPerspective(float FOV, float aspect, float Znear, float Zfar);
     void SetOrtho(float left, float right, float top, float bottom, float Znear, float Zfar);
     void MultRotate(float angle, float x, float y, float z);
-    
+
     inline void normalize(int side);
-    
+
     void update();
     bool FrustumTest(const ChunkBox& aabb);
 };

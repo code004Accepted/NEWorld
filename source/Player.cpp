@@ -1,8 +1,27 @@
-﻿#include "Player.h"
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "Player.h"
 #include "World.h"
 #include <fstream>
 
-int Player::gamemode = GameMode::Survival;
+int Player::gamemode = Survival;
 bool Player::Glide;
 bool Player::Flying;
 bool Player::CrossWall;
@@ -54,24 +73,23 @@ void InitPosition() {
     Player::xposold = Player::xpos;
     Player::yposold = Player::ypos;
     Player::zposold = Player::zpos;
-    Player::cxt = World::getChunkPos((int)Player::xpos); Player::cxtl = Player::cxt;
-    Player::cyt = World::getChunkPos((int)Player::ypos); Player::cytl = Player::cyt;
-    Player::czt = World::getChunkPos((int)Player::zpos); Player::cztl = Player::czt;
+    Player::cxt = World::getChunkPos((int)Player::xpos);
+    Player::cxtl = Player::cxt;
+    Player::cyt = World::getChunkPos((int)Player::ypos);
+    Player::cytl = Player::cyt;
+    Player::czt = World::getChunkPos((int)Player::zpos);
+    Player::cztl = Player::czt;
 }
 
-void MoveHitbox(double x, double y, double z) {
-    Hitbox::MoveTo(Player::playerbox, x, y + 0.5, z);
-}
+void MoveHitbox(double x, double y, double z) { MoveTo(Player::playerbox, x, y + 0.5, z); }
 
-void updateHitbox() {
-    MoveHitbox(Player::xpos, Player::ypos, Player::zpos);
-}
+void updateHitbox() { MoveHitbox(Player::xpos, Player::ypos, Player::zpos); }
 
 void Player::init(double x, double y, double z) {
     xpos = x;
     ypos = y;
     zpos = z;
-    InitHitbox(Player::playerbox);
+    InitHitbox(playerbox);
     InitPosition();
     updateHitbox();
 }
@@ -81,16 +99,15 @@ void Player::spawn() {
     ypos = 60.0;
     zpos = 0.0;
     jump = 0.0;
-    InitHitbox(Player::playerbox);
+    InitHitbox(playerbox);
     InitPosition();
     updateHitbox();
     health = healthmax;
     memset(inventory, 0, sizeof(inventory));
     memset(inventoryAmount, 0, sizeof(inventoryAmount));
-    
+
     //总得加点物品吧
-    for (size_t i = 0; i < 255; i++)
-    {
+    for (size_t i = 0; i < 255; i++) {
         addItem(Blocks::ROCK);
         addItem(Blocks::GRASS);
         addItem(Blocks::DIRT);
@@ -115,66 +132,81 @@ void Player::spawn() {
 void Player::updatePosition() {
     inWater = World::inWater(playerbox);
     if (!Flying && !CrossWall && inWater) {
-        xa *= 0.6; ya *= 0.6; za *= 0.6;
+        xa *= 0.6;
+        ya *= 0.6;
+        za *= 0.6;
     }
     double xal = xa, yal = ya, zal = za;
 
     if (!CrossWall) {
         Hitboxes.clear();
-        Hitboxes = World::getHitboxes(Hitbox::Expand(playerbox, xa, ya, za));
+        Hitboxes = World::getHitboxes(Expand(playerbox, xa, ya, za));
         int num = Hitboxes.size();
         if (num > 0) {
-            for (int i = 0; i < num; i++) {
-                ya = Hitbox::maxMoveOnYclip(playerbox, Hitboxes[i], ya);
-            }
-            Hitbox::Move(playerbox, 0.0, ya, 0.0);
-            for (int i = 0; i < num; i++) {
-                xa = Hitbox::maxMoveOnXclip(playerbox, Hitboxes[i], xa);
-            }
-            Hitbox::Move(playerbox, xa, 0.0, 0.0);
-            for (int i = 0; i < num; i++) {
-                za = Hitbox::maxMoveOnZclip(playerbox, Hitboxes[i], za);
-            }
-            Hitbox::Move(playerbox, 0.0, 0.0, za);
+            for (int i = 0; i < num; i++) { ya = maxMoveOnYclip(playerbox, Hitboxes[i], ya); }
+            Move(playerbox, 0.0, ya, 0.0);
+            for (int i = 0; i < num; i++) { xa = maxMoveOnXclip(playerbox, Hitboxes[i], xa); }
+            Move(playerbox, xa, 0.0, 0.0);
+            for (int i = 0; i < num; i++) { za = maxMoveOnZclip(playerbox, Hitboxes[i], za); }
+            Move(playerbox, 0.0, 0.0, za);
         }
     }
     if (ya != yal && yal < 0.0) {
         OnGround = true;
-        Player::glidingEnergy = 0;
-        Player::glidingSpeed = 0;
-        Player::glidingNow = false;
-        if (yal < -0.4 && Player::gamemode == Player::Survival) {
-            Player::health += yal * Player::dropDamage;
-        }
+        glidingEnergy = 0;
+        glidingSpeed = 0;
+        glidingNow = false;
+        if (yal < -0.4 && gamemode == Survival) { health += yal * dropDamage; }
     }
     else OnGround = false;
     if (ya != yal && yal > 0.0) jump = 0.0;
-    if (xa != xal || za != zal) NearWall = true; else NearWall = false;
+    NearWall = xa != xal || za != zal;
 
     //消除浮点数精度带来的影响（查了好久的穿墙bug才发现是在这里有问题(╯‵□′)╯︵┻━┻）
     //  --qiaozhanrong
     xa = (double)((int)(xa * 100000)) / 100000.0;
     ya = (double)((int)(ya * 100000)) / 100000.0;
     za = (double)((int)(za * 100000)) / 100000.0;
-    
-    xd = xa; yd = ya; zd = za;
-    xpos += xa; ypos += ya; zpos += za;
-    xa *= 0.8; za *= 0.8;
+
+    xd = xa;
+    yd = ya;
+    zd = za;
+    xpos += xa;
+    ypos += ya;
+    zpos += za;
+    xa *= 0.8;
+    za *= 0.8;
     if (Flying || CrossWall) ya *= 0.8;
     if (OnGround) xa *= 0.7, ya = 0.0, za *= 0.7;
     updateHitbox();
-    
-    cxtl = cxt; cytl = cyt; cztl = czt;
-    cxt = World::getChunkPos((int)xpos); cyt = World::getChunkPos((int)ypos); czt = World::getChunkPos((int)zpos);
+
+    cxtl = cxt;
+    cytl = cyt;
+    cztl = czt;
+    cxt = World::getChunkPos((int)xpos);
+    cyt = World::getChunkPos((int)ypos);
+    czt = World::getChunkPos((int)zpos);
 }
 
 bool Player::putBlock(int x, int y, int z, Block blockname) {
     Hitbox::AABB blockbox;
     bool success = false;
-    blockbox.xmin = x - 0.5; blockbox.ymin = y - 0.5; blockbox.zmin = z - 0.5;
-    blockbox.xmax = x + 0.5; blockbox.ymax = y + 0.5; blockbox.zmax = z + 0.5;
-    if (((!Hitbox::Hit(playerbox, blockbox) || CrossWall || !BlockInfo(blockname).isSolid()) && 
-        !BlockInfo(World::getBlock(x, y, z)).isSolid())) {
+    blockbox.xmin = x - 0.5;
+    blockbox.ymin = y - 0.5;
+    blockbox.zmin = z - 0.5;
+    blockbox.xmax = x + 0.5;
+    blockbox.ymax = y + 0.5;
+    blockbox.zmax = z + 0.5;
+    if (((!Hit(playerbox, blockbox) || CrossWall || !BlockInfo(blockname)
+                .
+                isSolid()
+            )
+            &&
+            !
+            BlockInfo(World::getBlock(x, y, z)).
+            isSolid()
+        )
+    ) {
         World::setblock(x, y, z, blockname);
         success = true;
     }
@@ -249,10 +281,8 @@ bool Player::addItem(item itemname, short amount) {
                     inventoryAmount[i][j] += amount;
                     return true;
                 }
-                else {
-                    amount -= InvmaxStack - inventoryAmount[i][j];
-                    inventoryAmount[i][j] = InvmaxStack;
-                }
+                amount -= InvmaxStack - inventoryAmount[i][j];
+                inventoryAmount[i][j] = InvmaxStack;
             }
         }
     }
@@ -265,29 +295,26 @@ bool Player::addItem(item itemname, short amount) {
                     inventoryAmount[i][j] = amount;
                     return true;
                 }
-                else {
-                    inventoryAmount[i][j] = InvmaxStack;
-                    amount -= InvmaxStack;
-                }
+                inventoryAmount[i][j] = InvmaxStack;
+                amount -= InvmaxStack;
             }
         }
     }
     return false;
 }
 
-void Player::changeGameMode(int _gamemode){
-    Player::gamemode = _gamemode;
+void Player::changeGameMode(int _gamemode) {
+    gamemode = _gamemode;
     switch (_gamemode) {
     case Survival:
         Flying = false;
-        Player::jump = 0.0;
+        jump = 0.0;
         CrossWall = false;
         break;
 
     case Creative:
         Flying = true;
-        Player::jump = 0.0;
+        jump = 0.0;
         break;
     }
 }
-

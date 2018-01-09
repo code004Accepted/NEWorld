@@ -1,8 +1,26 @@
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "Globalization.h"
 #include <fstream>
 
 namespace Globalization {
-
     int count;
     std::string Cur_Lang = "zh_CN", Cur_Symbol = "", Cur_Name = "";
     std::map<int, Line> Lines;
@@ -16,11 +34,10 @@ namespace Globalization {
         }
         Lines.clear();
         Cur_Lang = lang;
-        f >> Cur_Symbol; f.get();
+        f >> Cur_Symbol;
+        f.get();
         std::getline(f, Cur_Name);
-        for (int i = 0; i < count; i++) {
-            std::getline(f, Lines[i].str);
-        }
+        for (int i = 0; i < count; i++) { std::getline(f, Lines[i].str); }
         f.close();
         return true;
     }
@@ -28,7 +45,8 @@ namespace Globalization {
     bool Load() {
         std::ifstream f("Lang/Keys.lk");
         if (f.bad()) return false;
-        f >> count; f.get();
+        f >> count;
+        f.get();
         for (int i = 0; i < count; i++) {
             std::string temp;
             std::getline(f, temp);
@@ -38,11 +56,7 @@ namespace Globalization {
         return LoadLang(Cur_Lang);
     }
 
-    std::string GetStrbyid(int id) {
-        return Lines[id].str;
-    }
+    std::string GetStrbyid(int id) { return Lines[id].str; }
 
-    std::string GetStrbyKey(const std::string& key) {
-        return Lines[keys[key]].str;
-    }
+    std::string GetStrbyKey(const std::string& key) { return Lines[keys[key]].str; }
 }

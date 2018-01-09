@@ -1,8 +1,8 @@
-#include <AL\al.h>
+#include <AL/al.h>
 
 // X-RAM Function pointer definitions
-typedef ALboolean (__cdecl *EAXSetBufferMode)(ALsizei n, ALuint *buffers, ALint value);
-typedef ALenum    (__cdecl *EAXGetBufferMode)(ALuint buffer, ALint *value);
+typedef ALboolean (__cdecl *EAXSetBufferMode)(ALsizei n, ALuint* buffers, ALint value);
+typedef ALenum (__cdecl *EAXGetBufferMode)(ALuint buffer, ALint* value);
 
 //////////////////////////////////////////////////////////////////////////////
 // Query for X-RAM extension

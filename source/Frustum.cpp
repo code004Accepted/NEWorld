@@ -1,3 +1,22 @@
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "Frustum.h"
 #define _USE_MATH_DEFINES
 #include <cmath>
@@ -9,8 +28,8 @@ void Frustum::LoadIdentity() {
     modl[0] = modl[5] = modl[10] = modl[15] = 1.0f;
 }
 
-inline void Frustum::MultMatrix(float * a, float * b) {
-    float sum[16]; 
+inline void Frustum::MultMatrix(float* a, float* b) {
+    float sum[16];
     MultMatrixTo(sum, a, b);
     std::copy_n(sum, 16, a);
 }
@@ -36,7 +55,9 @@ void Frustum::MultRotate(float angle, float x, float y, float z) {
     float m[16], sum[16];
     std::fill_n(m, 16, 0.0f);
     float length = sqrtf(x * x + y * y + z * z);
-    x /= length; y /= length; z /= length;
+    x /= length;
+    y /= length;
+    z /= length;
     float alpha = angle * (float)M_PI / 180.0f;
     float s = sin(alpha);
     float c = cos(alpha);
@@ -56,8 +77,12 @@ void Frustum::MultRotate(float angle, float x, float y, float z) {
 }
 
 inline void Frustum::normalize(int side) {
-    float magnitude = sqrtf(frus[side + 0] * frus[side + 0] + frus[side + 1] * frus[side + 1] + frus[side + 2] * frus[side + 2]);
-    frus[side + 0] /= magnitude; frus[side + 1] /= magnitude; frus[side + 2] /= magnitude; frus[side + 3] /= magnitude;
+    float magnitude = sqrtf(
+        frus[side + 0] * frus[side + 0] + frus[side + 1] * frus[side + 1] + frus[side + 2] * frus[side + 2]);
+    frus[side + 0] /= magnitude;
+    frus[side + 1] /= magnitude;
+    frus[side + 2] /= magnitude;
+    frus[side + 3] /= magnitude;
 }
 
 void Frustum::update() {

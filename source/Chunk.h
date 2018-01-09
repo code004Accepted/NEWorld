@@ -1,4 +1,23 @@
-﻿#pragma once
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#pragma once
 #include "Definitions.h"
 #include "Hitbox.h"
 #include "Blocks.h"
@@ -19,7 +38,7 @@ namespace World {
 
     void explode(int x, int y, int z, int r, Chunk* c);
 
-    class Chunk{
+    class Chunk {
     public:
         //竟然一直都没有构造函数/析构函数 还要手动调用Init...我受不了啦(╯‵□′)╯︵┻━┻ --Null
         //2333 --qiaozhanrong
@@ -35,31 +54,34 @@ namespace World {
 
         void load(bool initIfEmpty = true);
         void buildRender();
-        inline Block getBlock(int x, int y, int z) {
-            return mBlocks[(x << 8) ^ (y << 4) ^ z];
-        }
-        inline Brightness getBrightness(int x, int y, int z){
-            return mBrightness[(x << 8) ^ (y << 4) ^ z];
-        }
-        inline void setblock(int x, int y, int z, Block iblock) {
+
+        Block getBlock(int x, int y, int z) { return mBlocks[(x << 8) ^ (y << 4) ^ z]; }
+
+        Brightness getBrightness(int x, int y, int z) { return mBrightness[(x << 8) ^ (y << 4) ^ z]; }
+
+        void setblock(int x, int y, int z, Block iblock) {
             if (iblock == Blocks::TNT) {
-                World::explode(cx * 16 + x, cy * 16 + y, cz * 16 + z, 8, this);
+                explode(cx * 16 + x, cy * 16 + y, cz * 16 + z, 8, this);
                 return;
             }
             mBlocks[(x << 8) ^ (y << 4) ^ z] = iblock;
             mIsModified = true;
         }
-        inline void setbrightness(int x, int y, int z, Brightness ibrightness){
+
+        void setbrightness(int x, int y, int z, Brightness ibrightness) {
             mBrightness[(x << 8) ^ (y << 4) ^ z] = ibrightness;
             mIsModified = true;
         }
 
         static void setRelativeBase(double x, double y, double z, Frustum& frus) {
-            relBaseX = x; relBaseY = y; relBaseZ = z; TestFrustum = frus;
+            relBaseX = x;
+            relBaseY = y;
+            relBaseZ = z;
+            TestFrustum = frus;
         }
 
         Frustum::ChunkBox getRelativeAABB();
-        inline void calcVisible() { visible = TestFrustum.FrustumTest(getRelativeAABB()); }
+        void calcVisible() { visible = TestFrustum.FrustumTest(getRelativeAABB()); }
     private:
         Block mBlocks[4096];
         Brightness mBrightness[4096];
@@ -73,7 +95,8 @@ namespace World {
         void buildTerrain(bool initIfEmpty = true);
         void buildDetail();
         void build(bool initIfEmpty = true);
-        inline std::string getChunkPath() {
+
+        std::string getChunkPath() {
             std::stringstream ss;
             ss << "Worlds/" << worldname << "/chunks/chunk_" << cx << "_" << cy << "_" << cz;
             return ss.str();

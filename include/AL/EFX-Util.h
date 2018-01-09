@@ -17,132 +17,137 @@ extern "C" {
 
 #ifndef EAXVECTOR_DEFINED
 #define EAXVECTOR_DEFINED
-typedef struct _EAXVECTOR {
-    float x;
-    float y;
-    float z;
-} EAXVECTOR;
+
+    typedef struct _EAXVECTOR {
+        float x;
+        float y;
+        float z;
+    } EAXVECTOR;
 #endif
 
 #ifndef EAXREVERBPROPERTIES_DEFINED
 #define EAXREVERBPROPERTIES_DEFINED
-typedef struct _EAXREVERBPROPERTIES
-{
-    unsigned long ulEnvironment;
-    float flEnvironmentSize;
-    float flEnvironmentDiffusion;
-    long lRoom;
-    long lRoomHF;
-    long lRoomLF;
-    float flDecayTime;
-    float flDecayHFRatio;
-    float flDecayLFRatio;
-    long lReflections;
-    float flReflectionsDelay;
-    EAXVECTOR vReflectionsPan;
-    long lReverb;
-    float flReverbDelay;
-    EAXVECTOR vReverbPan;
-    float flEchoTime;
-    float flEchoDepth;
-    float flModulationTime;
-    float flModulationDepth;
-    float flAirAbsorptionHF;
-    float flHFReference;
-    float flLFReference;
-    float flRoomRolloffFactor;
-    unsigned long ulFlags;
-} EAXREVERBPROPERTIES, *LPEAXREVERBPROPERTIES;
+
+    typedef struct _EAXREVERBPROPERTIES {
+        unsigned long ulEnvironment;
+        float flEnvironmentSize;
+        float flEnvironmentDiffusion;
+        long lRoom;
+        long lRoomHF;
+        long lRoomLF;
+        float flDecayTime;
+        float flDecayHFRatio;
+        float flDecayLFRatio;
+        long lReflections;
+        float flReflectionsDelay;
+        EAXVECTOR vReflectionsPan;
+        long lReverb;
+        float flReverbDelay;
+        EAXVECTOR vReverbPan;
+        float flEchoTime;
+        float flEchoDepth;
+        float flModulationTime;
+        float flModulationDepth;
+        float flAirAbsorptionHF;
+        float flHFReference;
+        float flLFReference;
+        float flRoomRolloffFactor;
+        unsigned long ulFlags;
+    } EAXREVERBPROPERTIES, *LPEAXREVERBPROPERTIES;
 #endif
 
 #ifndef EFXEAXREVERBPROPERTIES_DEFINED
 #define EFXEAXREVERBPROPERTIES_DEFINED
-typedef struct
-{
-    float flDensity;
-    float flDiffusion;
-    float flGain;
-    float flGainHF;
-    float flGainLF;
-    float flDecayTime;
-    float flDecayHFRatio;
-    float flDecayLFRatio;
-    float flReflectionsGain;
-    float flReflectionsDelay;
-    float flReflectionsPan[3];
-    float flLateReverbGain;
-    float flLateReverbDelay;
-    float flLateReverbPan[3];
-    float flEchoTime;
-    float flEchoDepth;
-    float flModulationTime;
-    float flModulationDepth;
-    float flAirAbsorptionGainHF;
-    float flHFReference;
-    float flLFReference;
-    float flRoomRolloffFactor;
-    int    iDecayHFLimit;
-} EFXEAXREVERBPROPERTIES, *LPEFXEAXREVERBPROPERTIES;
+
+    typedef struct {
+        float flDensity;
+        float flDiffusion;
+        float flGain;
+        float flGainHF;
+        float flGainLF;
+        float flDecayTime;
+        float flDecayHFRatio;
+        float flDecayLFRatio;
+        float flReflectionsGain;
+        float flReflectionsDelay;
+        float flReflectionsPan[3];
+        float flLateReverbGain;
+        float flLateReverbDelay;
+        float flLateReverbPan[3];
+        float flEchoTime;
+        float flEchoDepth;
+        float flModulationTime;
+        float flModulationDepth;
+        float flAirAbsorptionGainHF;
+        float flHFReference;
+        float flLFReference;
+        float flRoomRolloffFactor;
+        int iDecayHFLimit;
+    } EFXEAXREVERBPROPERTIES, *LPEFXEAXREVERBPROPERTIES;
 #endif
 
 #ifndef EAXOBSTRUCTIONPROPERTIES_DEFINED
 #define EAXOBSTRUCTIONPROPERTIES_DEFINED
-typedef struct _EAXOBSTRUCTIONPROPERTIES
-{
-    long          lObstruction;
-    float         flObstructionLFRatio;
-} EAXOBSTRUCTIONPROPERTIES, *LPEAXOBSTRUCTIONPROPERTIES;
+
+    typedef struct _EAXOBSTRUCTIONPROPERTIES {
+        long lObstruction;
+        float flObstructionLFRatio;
+    } EAXOBSTRUCTIONPROPERTIES, *LPEAXOBSTRUCTIONPROPERTIES;
 #endif
 
 #ifndef EAXOCCLUSIONPROPERTIES_DEFINED
 #define EAXOCCLUSIONPROPERTIES_DEFINED
-typedef struct _EAXOCCLUSIONPROPERTIES
-{
-    long          lOcclusion;
-    float         flOcclusionLFRatio;
-    float         flOcclusionRoomRatio;
-    float         flOcclusionDirectRatio;
-} EAXOCCLUSIONPROPERTIES, *LPEAXOCCLUSIONPROPERTIES;
+
+    typedef struct _EAXOCCLUSIONPROPERTIES {
+        long lOcclusion;
+        float flOcclusionLFRatio;
+        float flOcclusionRoomRatio;
+        float flOcclusionDirectRatio;
+    } EAXOCCLUSIONPROPERTIES, *LPEAXOCCLUSIONPROPERTIES;
 #endif
 
 #ifndef EAXEXCLUSIONPROPERTIES_DEFINED
 #define EAXEXCLUSIONPROPERTIES_DEFINED
-typedef struct _EAXEXCLUSIONPROPERTIES
-{
-    long          lExclusion;
-    float         flExclusionLFRatio;
-} EAXEXCLUSIONPROPERTIES, *LPEAXEXCLUSIONPROPERTIES;
+
+    typedef struct _EAXEXCLUSIONPROPERTIES {
+        long lExclusion;
+        float flExclusionLFRatio;
+    } EAXEXCLUSIONPROPERTIES, *LPEAXEXCLUSIONPROPERTIES;
 #endif
 
 #ifndef EFXLOWPASSFILTER_DEFINED
 #define EFXLOWPASSFILTER_DEFINED
-typedef struct _EFXLOWPASSFILTER
-{
-    float        flGain;
-    float        flGainHF;
-} EFXLOWPASSFILTER, *LPEFXLOWPASSFILTER;
+
+    typedef struct _EFXLOWPASSFILTER {
+        float flGain;
+        float flGainHF;
+    } EFXLOWPASSFILTER, *LPEFXLOWPASSFILTER;
 #endif
 
 #ifdef EFXUTILDLL_EXPORTS
  #define EFX_API __declspec(dllexport)
 #else
- #define EFX_API
+#define EFX_API
 #endif
 
-EFX_API void __cdecl ConvertReverbParameters(EAXREVERBPROPERTIES *pEAXProp, EFXEAXREVERBPROPERTIES *pEFXEAXReverb);
-EFX_API void __cdecl ConvertObstructionParameters(EAXOBSTRUCTIONPROPERTIES *pObProp, EFXLOWPASSFILTER *pDirectLowPassFilter);
-EFX_API void __cdecl ConvertExclusionParameters(EAXEXCLUSIONPROPERTIES *pExProp, EFXLOWPASSFILTER *pSendLowPassFilter);
-EFX_API void __cdecl ConvertOcclusionParameters(EAXOCCLUSIONPROPERTIES *pOcProp, EFXLOWPASSFILTER *pDirectLowPassFilter, EFXLOWPASSFILTER *pSendLowPassFilter);
-EFX_API void __cdecl AdjustEnvironmentSize(EAXREVERBPROPERTIES *pEAXProp, float flEnvironmentSize);
+    EFX_API void __cdecl ConvertReverbParameters(EAXREVERBPROPERTIES* pEAXProp, EFXEAXREVERBPROPERTIES* pEFXEAXReverb);
+    EFX_API void __cdecl ConvertObstructionParameters(EAXOBSTRUCTIONPROPERTIES* pObProp,
+                                                      EFXLOWPASSFILTER* pDirectLowPassFilter);
+    EFX_API void __cdecl ConvertExclusionParameters(EAXEXCLUSIONPROPERTIES* pExProp,
+                                                    EFXLOWPASSFILTER* pSendLowPassFilter);
+    EFX_API void __cdecl ConvertOcclusionParameters(EAXOCCLUSIONPROPERTIES* pOcProp,
+                                                    EFXLOWPASSFILTER* pDirectLowPassFilter,
+                                                    EFXLOWPASSFILTER* pSendLowPassFilter);
+    EFX_API void __cdecl AdjustEnvironmentSize(EAXREVERBPROPERTIES* pEAXProp, float flEnvironmentSize);
 
-/***********************************************************************************************\
-*
-* EAX Reverb Presets in legacy format - use ConvertReverbParameters() to convert to
-* EFX EAX Reverb Presets for use with the OpenAL Effects Extension.
-*
-************************************************************************************************/
+    /***********************************************************************************************\
+    *
+    * EAX Reverb Presets in legacy format - use ConvertReverbParameters() to convert to
+    * EFX EAX Reverb Presets for use with the OpenAL Effects Extension.
+    *
+    ************************************************************************************************/
 
-//    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
+    //    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
 #define REVERB_PRESET_GENERIC \
     {0,        7.5f,    1.000f,    -1000,    -100,    0,        1.49f,    0.83f,    1.00f,    -2602,    0.007f,    0.00f,0.00f,0.00f,    200,    0.011f,        0.00f,0.00f,0.00f,    0.250f,    0.000f,    0.250f,    0.000f,    -5.0f,    5000.0f,    250.0f,    0.00f,    0x3f }
 #define REVERB_PRESET_PADDEDCELL \
@@ -197,9 +202,9 @@ EFX_API void __cdecl AdjustEnvironmentSize(EAXREVERBPROPERTIES *pEAXProp, float 
     {25,    1.0f,    0.500f,    -1000,    -151,    0,        7.56f,    0.91f,    1.00f,  -626,    0.020f, 0.00f,0.00f,0.00f,  774,    0.030f,        0.00f,0.00f,0.00f,    0.250f, 0.000f, 4.000f, 1.000f, -5.0f,  5000.0f,    250.0f, 0.00f,    0x1f }
 
 
-// CASTLE PRESETS
+    // CASTLE PRESETS
 
-//    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
+    //    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
 #define REVERB_PRESET_CASTLE_SMALLROOM \
     { 26,   8.3f,    0.890f,    -1000,    -800,    -2000,    1.22f,    0.83f,    0.31f,    -100,    0.022f,    0.00f,0.00f,0.00f,    600,    0.011f,        0.00f,0.00f,0.00f,    0.138f,    0.080f,    0.250f,    0.000f,    -5.0f,    5168.6f,    139.5f,  0.00f, 0x20 }
 #define REVERB_PRESET_CASTLE_SHORTPASSAGE \
@@ -220,9 +225,9 @@ EFX_API void __cdecl AdjustEnvironmentSize(EAXREVERBPROPERTIES *pEAXProp, float 
     { 26,   8.3f,    0.890f,    -1000,  -600,    -2000,  1.64f,    0.87f,    0.31f,  00,    0.007f, 0.00f,0.00f,0.00f,        300,    0.034f,        0.00f,0.00f,0.00f,    0.138f, 0.080f, 0.250f, 0.000f, -5.0f,    5168.6f,    139.5f,  0.00f, 0x20 }
 
 
-// FACTORY PRESETS
+    // FACTORY PRESETS
 
-//    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
+    //    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
 #define REVERB_PRESET_FACTORY_ALCOVE \
     { 26,   1.8f,    0.590f,  -1200, -200,   -600,    3.14f,    0.65f,    1.31f,  300,    0.010f, 0.00f,0.00f,0.00f,    000,    0.038f,        0.00f,0.00f,0.00f,    0.114f, 0.100f, 0.250f, 0.000f, -5.0f,  3762.6f,    362.5f,  0.00f, 0x20 }
 #define REVERB_PRESET_FACTORY_SHORTPASSAGE \
@@ -243,9 +248,9 @@ EFX_API void __cdecl AdjustEnvironmentSize(EAXREVERBPROPERTIES *pEAXProp, float 
     { 26,   1.8f,    0.820f,  -1000,    -200,   -600,    1.72f,    0.65f,    1.31f,  -300,    0.010f, 0.00f,0.00f,0.00f,    500,    0.024f,        0.00f,0.00f,0.00f,    0.119f, 0.070f, 0.250f, 0.000f, -5.0f,    3762.6f,    362.5f,  0.00f, 0x20 }
 
 
-// ICE PALACE PRESETS
+    // ICE PALACE PRESETS
 
-//    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
+    //    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
 #define REVERB_PRESET_ICEPALACE_ALCOVE \
     { 26,   2.7f,    0.840f, -1000,  -500,    -1100,  2.76f,    1.46f,    0.28f,  100,    0.010f, 0.00f,0.00f,0.00f,    -100,    0.030f,        0.00f,0.00f,0.00f,    0.161f, 0.090f, 0.250f, 0.000f,    -5.0f,    12428.5f,    99.6f,  0.00f,    0x20 }
 #define REVERB_PRESET_ICEPALACE_SHORTPASSAGE \
@@ -266,9 +271,9 @@ EFX_API void __cdecl AdjustEnvironmentSize(EAXREVERBPROPERTIES *pEAXProp, float 
     { 26,   2.7f,    0.840f, -1000,  -500,    -1100,  1.51f,    1.53f,    0.27f,    -100,    0.010f, 0.00f,0.00f,0.00f,    300,    0.011f,        0.00f,0.00f,0.00f,    0.164f, 0.140f, 0.250f, 0.000f, -5.0f,    12428.5f,    99.6f,  0.00f,    0x20 }
 
 
-// SPACE STATION PRESETS
+    // SPACE STATION PRESETS
 
-//    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
+    //    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
 #define REVERB_PRESET_SPACESTATION_ALCOVE \
     { 26,   1.5f,    0.780f, -1000,  -300,   -100,    1.16f,    0.81f,    0.55f,  300,    0.007f, 0.00f,0.00f,0.00f,    000,    0.018f,        0.00f,0.00f,0.00f,    0.192f, 0.210f, 0.250f, 0.000f,    -5.0f,  3316.1f,    458.2f,  0.00f, 0x20 }
 #define REVERB_PRESET_SPACESTATION_MEDIUMROOM \
@@ -287,9 +292,9 @@ EFX_API void __cdecl AdjustEnvironmentSize(EAXREVERBPROPERTIES *pEAXProp, float 
     { 26,   1.5f,    0.700f, -1000,  -300,   -100,    1.72f,    0.82f,    0.55f,    -200,    0.007f, 0.00f,0.00f,0.00f,    300,    0.013f,        0.00f,0.00f,0.00f,    0.188f, 0.260f, 0.250f, 0.000f, -5.0f,  3316.1f,    458.2f,  0.00f, 0x20 }
 
 
-// WOODEN GALLEON PRESETS
+    // WOODEN GALLEON PRESETS
 
-//    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
+    //    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
 #define REVERB_PRESET_WOODEN_ALCOVE \
     { 26,   7.5f,    1.000f, -1000,  -1800,  -1000,  1.22f,    0.62f,    0.91f,    100,    0.012f, 0.00f,0.00f,0.00f,    -300,    0.024f,        0.00f,0.00f,0.00f,    0.250f, 0.000f, 0.250f, 0.000f, -5.0f,  4705.0f,    99.6f,  0.00f,    0x3f }
 #define REVERB_PRESET_WOODEN_SHORTPASSAGE \
@@ -310,9 +315,9 @@ EFX_API void __cdecl AdjustEnvironmentSize(EAXREVERBPROPERTIES *pEAXProp, float 
     { 26,   7.5f,    0.650f, -1000,  -2200,  -1000,  1.79f,    0.35f,    0.79f,    -500,    0.123f, 0.00f,0.00f,0.00f,    -2000,    0.032f,        0.00f,0.00f,0.00f,    0.250f, 0.000f, 0.250f, 0.000f, -5.0f,  4705.0f,    99.6f,  0.00f,    0x3f }
 
 
-// SPORTS PRESETS
+    // SPORTS PRESETS
 
-//    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
+    //    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
 #define REVERB_PRESET_SPORT_EMPTYSTADIUM \
     { 26,   7.2f,    1.000f, -1000,  -700,   -200,    6.26f,    0.51f,    1.10f,  -2400,    0.183f, 0.00f,0.00f,0.00f,    -800,    0.038f,        0.00f,0.00f,0.00f,    0.250f, 0.000f, 0.250f, 0.000f, -5.0f,  5000.0f,    250.0f,  0.00f, 0x20 }
 #define REVERB_PRESET_SPORT_SQUASHCOURT \
@@ -329,9 +334,9 @@ EFX_API void __cdecl AdjustEnvironmentSize(EAXREVERBPROPERTIES *pEAXProp, float 
     { 26,   3.0f,    0.780f, -1000,   -500,   -600,    2.53f,    0.88f,    0.68f,  -1100,    0.230f, 0.00f,0.00f,0.00f,    -600,    0.063f,        0.00f,0.00f,0.00f,    0.250f, 0.200f, 0.250f, 0.000f, -5.0f,  5000.0f,    250.0f,  0.00f, 0x20 }
 
 
-// PREFAB PRESETS
+    // PREFAB PRESETS
 
-//    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
+    //    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
 #define REVERB_PRESET_PREFAB_WORKSHOP \
     { 26,   1.9f,    1.000f, -1000,  -1700,  -800,    0.76f,    1.00f,    1.00f,    0,        0.012f, 0.00f,0.00f,0.00f,    100,        0.012f,        0.00f,0.00f,0.00f,    0.250f, 0.000f, 0.250f, 0.000f, -5.0f,  5000.0f,    250.0f,  0.00f, 0x0 }
 #define REVERB_PRESET_PREFAB_SCHOOLROOM \
@@ -342,12 +347,12 @@ EFX_API void __cdecl AdjustEnvironmentSize(EAXREVERBPROPERTIES *pEAXProp, float 
     { 26,  80.3f,    0.820f, -1000,  -1900,  -1600,  1.38f,    0.38f,    0.35f,    -100,    0.024f, 0.00f,0.00f,-0.00f,    -400,    0.044f,        0.00f,0.00f,0.00f,    0.121f, 0.170f, 0.250f, 0.000f, -5.0f,  2854.4f,    107.5f,  0.00f, 0x0 }
 #define REVERB_PRESET_PREFAB_CARAVAN \
     { 26,   8.3f,    1.000f, -1000,  -2100,  -1800,  0.43f,    1.50f,    1.00f,  0,        0.012f, 0.00f,0.00f,0.00f,    600,    0.012f,        0.00f,0.00f,0.00f,    0.250f, 0.000f, 0.250f, 0.000f, -5.0f,  5000.0f,    250.0f,  0.00f, 0x1f }
-            // for US developers, a caravan is the same as a trailer =o)
+    // for US developers, a caravan is the same as a trailer =o)
 
 
-// DOME AND PIPE PRESETS
+    // DOME AND PIPE PRESETS
 
-//    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
+    //    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
 #define REVERB_PRESET_DOME_TOMB \
     { 26,  51.8f,    0.790f, -1000,  -900,    -1300,  4.18f,    0.21f,    0.10f,  -825,    0.030f, 0.00f,0.00f,0.00f,    450,    0.022f,        0.00f,0.00f,0.00f,    0.177f, 0.190f, 0.250f, 0.000f,    -5.0f,  2854.4f,    20.0f,  0.00f,    0x0 }
 #define REVERB_PRESET_PIPE_SMALL \
@@ -362,9 +367,9 @@ EFX_API void __cdecl AdjustEnvironmentSize(EAXREVERBPROPERTIES *pEAXProp, float 
     { 26,   1.3f,    0.910f, -1000,  -700,    -1100,  6.81f,    0.18f,    0.10f,  -300,    0.010f, 0.00f,0.00f,0.00f,    00,        0.022f,        0.00f,0.00f,0.00f,    0.250f, 0.000f, 0.250f, 0.000f, -5.0f,  2854.4f,    20.0f,  0.00f,    0x0 }
 
 
-// OUTDOORS PRESETS
+    // OUTDOORS PRESETS
 
-//    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
+    //    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
 #define REVERB_PRESET_OUTDOORS_BACKYARD \
     { 26,  80.3f,    0.450f,    -1000,  -1200,  -600,    1.12f,    0.34f,    0.46f,  -700,    0.069f, 0.00f,0.00f,-0.00f,    -300,    0.023f,        0.00f,0.00f,0.00f,    0.218f, 0.340f, 0.250f, 0.000f,    -5.0f,  4399.1f,    242.9f,  0.00f, 0x0 }
 #define REVERB_PRESET_OUTDOORS_ROLLINGPLAINS \
@@ -377,9 +382,9 @@ EFX_API void __cdecl AdjustEnvironmentSize(EAXREVERBPROPERTIES *pEAXProp, float 
     { 26,  80.3f,    0.280f,    -1000,  -3100,    -1600,  2.88f,    0.26f,    0.35f,  -1700,    0.263f, 0.00f,0.00f,-0.00f,    -800,    0.100f,        0.00f,0.00f,0.00f,    0.250f, 0.340f, 0.250f, 0.000f, -5.0f,  2854.4f,    107.5f,  0.00f, 0x0 }
 
 
-// MOOD PRESETS
+    // MOOD PRESETS
 
-//    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
+    //    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
 #define REVERB_PRESET_MOOD_HEAVEN \
     { 26,  19.6f,    0.940f,  -1000, -200,   -700,    5.04f,    1.12f,    0.56f,  -1230,    0.020f, 0.00f,0.00f,0.00f,    200,    0.029f,        0.00f,0.00f,0.00f,    0.250f, 0.080f, 2.742f, 0.050f, -2.0f,  5000.0f,    250.0f,  0.00f, 0x3f }
 #define REVERB_PRESET_MOOD_HELL \
@@ -388,9 +393,9 @@ EFX_API void __cdecl AdjustEnvironmentSize(EAXREVERBPROPERTIES *pEAXProp, float 
     { 26,   8.0f,    0.850f,  -1000, -400,   -900,    4.06f,    0.82f,    0.56f,  -2800,    0.000f, 0.00f,0.00f,0.00f,    100,    0.000f,        0.00f,0.00f,0.00f,    0.250f, 0.000f, 0.474f, 0.450f, -10.0f,  5000.0f,    250.0f,  0.00f, 0x0 }
 
 
-// DRIVING SIMULATION PRESETS
+    // DRIVING SIMULATION PRESETS
 
-//    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
+    //    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
 #define REVERB_PRESET_DRIVING_COMMENTATOR \
     { 26,   3.0f,    0.000f, -1000,  -500,   -600,    2.42f,    0.88f,    0.68f,  -1400,    0.093f, 0.00f,0.00f,0.00f,    -1200,    0.017f,        0.00f,0.00f,0.00f,    0.250f, 1.000f, 0.250f, 0.000f, -10.0f,  5000.0f,    250.0f,  0.00f, 0x20 }
 #define REVERB_PRESET_DRIVING_PITGARAGE \
@@ -409,9 +414,9 @@ EFX_API void __cdecl AdjustEnvironmentSize(EAXREVERBPROPERTIES *pEAXProp, float 
     { 26,   3.1f,    0.810f, -1000,   -800,    -100,    3.42f,    0.94f,    1.31f,  -300,    0.051f, 0.00f,0.00f,0.00f,  -300,    0.047f,        0.00f,0.00f,0.00f,    0.214f, 0.050f, 0.250f, 0.000f, -5.0f,  5000.0f,    155.3f,  0.00f, 0x20 }
 
 
-// CITY PRESETS
+    // CITY PRESETS
 
-//    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
+    //    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
 #define REVERB_PRESET_CITY_STREETS \
     { 26,   3.0f,    0.780f, -1000,  -300,   -100,    1.79f,    1.12f,    0.91f,  -1100,    0.046f, 0.00f,0.00f,0.00f,    -1400,    0.028f,        0.00f,0.00f,0.00f,    0.250f, 0.200f, 0.250f, 0.000f, -5.0f,  5000.0f,    250.0f,  0.00f, 0x20 }
 #define REVERB_PRESET_CITY_SUBWAY \
@@ -426,9 +431,9 @@ EFX_API void __cdecl AdjustEnvironmentSize(EAXREVERBPROPERTIES *pEAXProp, float 
     { 26,   3.0f,    0.690f, -1000,  -200,   -100,    3.28f,    1.17f,    0.91f,  -700,    0.044f, 0.00f,0.00f,0.00f,    -1100,    0.024f,        0.00f,0.00f,0.00f,    0.250f, 0.200f, 0.250f, 0.000f, -3.0f,  5000.0f,    250.0f,  0.00f, 0x20 }
 
 
-// MISC ROOMS
+    // MISC ROOMS
 
-//    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
+    //    Env        Size    Diffus    Room    RoomHF    RoomLF    DecTm    DcHF    DcLF    Refl    RefDel    Ref Pan                Revb    RevDel        Rev Pan                EchTm    EchDp    ModTm    ModDp    AirAbs    HFRef        LFRef    RRlOff    FLAGS
 #define REVERB_PRESET_DUSTYROOM  \
     { 26,   1.8f,    0.560f,    -1000,    -200,    -300,    1.79f,    0.38f,    0.21f,    -600,    0.002f,    0.00f,0.00f,0.00f,    200,    0.006f,        0.00f,0.00f,0.00f,    0.202f, 0.050f, 0.250f, 0.000f, -10.0f,  13046.0f,    163.3f,    0.00f,    0x20 }
 #define REVERB_PRESET_CHAPEL \

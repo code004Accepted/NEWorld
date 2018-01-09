@@ -1,3 +1,22 @@
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "TextRenderer.h"
 #include "Textures.h"
 
@@ -13,7 +32,7 @@ namespace TextRenderer {
     float r = 0.0f, g = 0.0f, b = 0.0f, a = 1.0f;
     bool useUnicodeASCIIFont;
 
-    void BuildFont(int w, int h){
+    void BuildFont(int w, int h) {
         ww = w;
         wh = h;
         Font = Textures::LoadFontTexture("Fonts/ASCII.bmp");
@@ -21,8 +40,7 @@ namespace TextRenderer {
         float cx, cy;
         gbe = glGenLists(256);
         glBindTexture(GL_TEXTURE_2D, Font);
-        for (gloop = 0; gloop < 256; gloop++){
-
+        for (gloop = 0; gloop < 256; gloop++) {
             cx = (float)(gloop % 16) / 16.0f;
             cy = (float)(gloop / 16) / 16.0f;
 
@@ -39,7 +57,6 @@ namespace TextRenderer {
             glEnd();
             glTranslated(10.0, 0.0, 0.0);
             glEndList();
-
         }
 
         if (FT_Init_FreeType(&library)) {
@@ -52,21 +69,24 @@ namespace TextRenderer {
             //assert(false);
         }
         slot = fontface->glyph;
-
     }
 
     void resize() {
         if (FT_Set_Pixel_Sizes(fontface, 16 * stretch, 16 * stretch)) {
             //assert(false);
         }
-        for (int i = 0; i < 63356; i++) if (chars[i].aval) {
-            chars[i].aval = false;
-            glDeleteTextures(1, &chars[i].tex);
-        }
+        for (int i = 0; i < 63356; i++)
+            if (chars[i].aval) {
+                chars[i].aval = false;
+                glDeleteTextures(1, &chars[i].tex);
+            }
     }
 
-    void setFontColor(float r_, float g_, float b_, float a_){
-        r = r_; g = g_; b = b_; a = a_;
+    void setFontColor(float r_, float g_, float b_, float a_) {
+        r = r_;
+        g = g_;
+        b = b_;
+        a = a_;
     }
 
     void loadchar(unsigned int uc) {
@@ -85,7 +105,8 @@ namespace TextRenderer {
         for (unsigned int i = 0; i < bitmap->rows; i++) {
             for (unsigned int j = 0; j < bitmap->width; j++) {
                 Tex[(i * wid + j) * 4 + 0] = Tex[(i * wid + j) * 4 + 1] = Tex[(i * wid + j) * 4 + 2] = 255U;
-                Tex[(i * wid + j) * 4 + 3] = *Texsrc; Texsrc++;
+                Tex[(i * wid + j) * 4 + 3] = *Texsrc;
+                Texsrc++;
             }
         }
         glGenTextures(1, &chars[uc].tex);
@@ -102,19 +123,19 @@ namespace TextRenderer {
         chars[uc].ypos = slot->bitmap_top;
     }
 
-    void MBToWC(const char* lpcszStr, wchar_t*& lpwszStr, int dwSize){
+    void MBToWC(const char* lpcszStr, wchar_t*& lpwszStr, int dwSize) {
         lpwszStr = (wchar_t*)malloc(dwSize);
         memset(lpwszStr, 0, dwSize);
-        int iSize = (MByteToWChar(lpwszStr, lpcszStr, strlen(lpcszStr)) + 1)*sizeof(wchar_t);
+        int iSize = (MByteToWChar(lpwszStr, lpcszStr, strlen(lpcszStr)) + 1) * sizeof(wchar_t);
         lpwszStr = (wchar_t*)realloc(lpwszStr, iSize);
     }
 
-    int getStrWidth(const std::string& s){
+    int getStrWidth(const std::string& s) {
         UnicodeChar c;
         int uc, res = 0;
         wchar_t* wstr = nullptr;
-        MBToWC(s.c_str(), wstr, s.length()+128);
-        for (unsigned int k = 0; k < wstrlen(wstr); k++){
+        MBToWC(s.c_str(), wstr, s.length() + 128);
+        for (unsigned int k = 0; k < wstrlen(wstr); k++) {
             uc = wstr[k];
             c = chars[uc];
             if (!c.aval) {
@@ -127,17 +148,16 @@ namespace TextRenderer {
         return res;
     }
 
-    void renderString(int x, int y, const std::string& glstring){
+    void renderString(int x, int y, const std::string& glstring) {
         UnicodeChar c;
         int uc;
         int span = 0;
         double wid = pow(2, ceil(log2(32 * stretch)));
         wchar_t* wstr = nullptr;
-        MBToWC(glstring.c_str(), wstr, glstring.length()+128);
+        MBToWC(glstring.c_str(), wstr, glstring.length() + 128);
 
         glEnable(GL_TEXTURE_2D);
         for (unsigned int k = 0; k < wstrlen(wstr); k++) {
-
             uc = wstr[k];
             c = chars[uc];
             if (uc == (int)'\n') {
@@ -158,7 +178,7 @@ namespace TextRenderer {
             glTexCoord2d(0.0, 0.0);
             UIVertex(c.xpos / stretch, 15 - c.ypos / stretch);
             glTexCoord2d(c.width / wid, 0.0);
-            UIVertex(c.xpos / stretch + c.width / stretch, 15- c.ypos / stretch);
+            UIVertex(c.xpos / stretch + c.width / stretch, 15 - c.ypos / stretch);
             glTexCoord2d(c.width / wid, c.height / wid);
             UIVertex(c.xpos / stretch + c.width / stretch, 15 + c.height / stretch - c.ypos / stretch);
             glTexCoord2d(0.0, c.height / wid);
@@ -200,5 +220,4 @@ namespace TextRenderer {
         glCallLists((GLsizei)glstring.length(), GL_UNSIGNED_BYTE, glstring.c_str());
         glPopMatrix();
     }
-
 }

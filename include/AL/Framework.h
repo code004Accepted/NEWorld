@@ -22,7 +22,7 @@ ALboolean ALFWInitOpenAL();
 ALboolean ALFWShutdownOpenAL();
 
 // File loading functions
-ALboolean ALFWLoadWaveToBuffer(const char *szWaveFile, ALuint uiBufferID, ALenum eXRAMBufferMode = 0);
+ALboolean ALFWLoadWaveToBuffer(const char* szWaveFile, ALuint uiBufferID, ALenum eXRAMBufferMode = 0);
 
 // Extension Queries 
 ALboolean ALFWIsXRAMSupported();
@@ -30,8 +30,8 @@ ALboolean ALFWIsEFXSupported();
 
 
 // Utilities
-ALvoid ALFWprintf( const ALchar * x, ... );
-ALchar *ALFWaddMediaPath(const ALchar *filename);
+ALvoid ALFWprintf(const ALchar* x, ...);
+ALchar* ALFWaddMediaPath(const ALchar* filename);
 ALint ALFWKeyPress(void);
 
 // EFX Extension function pointer variables
@@ -77,8 +77,8 @@ extern LPALGETAUXILIARYEFFECTSLOTFV alGetAuxiliaryEffectSlotfv;
 
 // XRAM Extension function pointer variables and enum values
 
-typedef ALboolean (__cdecl *LPEAXSETBUFFERMODE)(ALsizei n, ALuint *buffers, ALint value);
-typedef ALenum    (__cdecl *LPEAXGETBUFFERMODE)(ALuint buffer, ALint *value);
+typedef ALboolean (__cdecl *LPEAXSETBUFFERMODE)(ALsizei n, ALuint* buffers, ALint value);
+typedef ALenum (__cdecl *LPEAXGETBUFFERMODE)(ALuint buffer, ALint* value);
 
 extern LPEAXSETBUFFERMODE eaxSetBufferMode;
 extern LPEAXGETBUFFERMODE eaxGetBufferMode;

@@ -1,4 +1,23 @@
-﻿#include "Textures.h"
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "Textures.h"
 #include "Items.h"
 #include "Blocks.h"
 #include <fstream>
@@ -6,7 +25,6 @@
 int BLOCKTEXTURE_SIZE, BLOCKTEXTURE_UNITSIZE, BLOCKTEXTURE_UNITS;
 
 namespace Textures {
-
     void Init() {
         BLOCKTEXTURE_SIZE = 256;
         BLOCKTEXTURE_UNITSIZE = 32;
@@ -73,21 +91,20 @@ namespace Textures {
     double getTexcoordX(item item, uint8_t side) {
         if (isBlock(item)) //如果为方块
             return (getTextureIndex(item, side) & 7) / 8.0;
-        else
-            return NULLBLOCK;
+        return NULLBLOCK;
     }
-    
+
     double getTexcoordY(item item, uint8_t side) {
         if (isBlock(item)) //如果为方块
             return (getTextureIndex(item, side) >> 3) / 8.0;
-        else
-            return NULLBLOCK;
+        return NULLBLOCK;
     }
 
     void LoadRGBImage(TEXTURE_RGB& tex, const std::string& Filename) {
         unsigned int ind = 0;
         TEXTURE_RGB& bitmap = tex; //返回位图
-        bitmap.buffer = nullptr; bitmap.sizeX = bitmap.sizeY = 0;
+        bitmap.buffer = nullptr;
+        bitmap.sizeX = bitmap.sizeY = 0;
         std::ifstream bmpfile(Filename, std::ios::binary | std::ios::in); //位图文件（二进制）
         if (!bmpfile.is_open()) {
             printf("[console][Warning] Cannot load %s\n", Filename.c_str());
@@ -95,14 +112,14 @@ namespace Textures {
         }
         BITMAPINFOHEADER bih; //各种关于位图的参数
         BITMAPFILEHEADER bfh; //各种关于文件的参数
-                              //开始读取
+        //开始读取
         bmpfile.read((char*)&bfh, sizeof(BITMAPFILEHEADER));
         bmpfile.read((char*)&bih, sizeof(BITMAPINFOHEADER));
         bitmap.sizeX = bih.biWidth;
         bitmap.sizeY = bih.biHeight;
         bitmap.buffer = std::unique_ptr<uint8_t[]>(new unsigned char[bitmap.sizeX * bitmap.sizeY * 3]);
         //¶ÁÈ¡Êý¾Ý
-        bmpfile.read((char*)bitmap.buffer.get(), bitmap.sizeX*bitmap.sizeY * 3);
+        bmpfile.read((char*)bitmap.buffer.get(), bitmap.sizeX * bitmap.sizeY * 3);
         bmpfile.close();
         //ºÏ²¢Óë×ª»»
         for (unsigned int i = 0; i < bitmap.sizeX * bitmap.sizeY; i++) {
@@ -117,23 +134,28 @@ namespace Textures {
     void LoadRGBAImage(TEXTURE_RGBA& tex, const std::string& Filename, const std::string& MkFilename) {
         unsigned char *rgb = nullptr, *a = nullptr;
         unsigned int ind = 0;
-        bool noMaskFile = (MkFilename == "");
+        bool noMaskFile = (MkFilename.empty());
         TEXTURE_RGBA& bitmap = tex; //·µ»ØÎ»Í¼
-        bitmap.buffer = nullptr; bitmap.sizeX = bitmap.sizeY = 0;
+        bitmap.buffer = nullptr;
+        bitmap.sizeX = bitmap.sizeY = 0;
         std::ifstream bmpfile(Filename, std::ios::binary | std::ios::in); //Î»Í¼ÎÄ¼þ£¨¶þ½øÖÆ£©
         std::ifstream maskfile;
         if (!noMaskFile)maskfile.open(MkFilename, std::ios::binary | std::ios::in); //ÕÚÕÖÎ»Í¼ÎÄ¼þ£¨¶þ½øÖÆ£©
         if (!bmpfile.is_open()) {
-            std::stringstream ss; ss << "Cannot load bitmap " << Filename;
-            DebugWarning(ss.str()); return;
+            std::stringstream ss;
+            ss << "Cannot load bitmap " << Filename;
+            DebugWarning(ss.str());
+            return;
         }
         if (!noMaskFile && !maskfile.is_open()) {
-            std::stringstream ss; ss << "Cannot load bitmap " << MkFilename;
-            DebugWarning(ss.str()); return;
+            std::stringstream ss;
+            ss << "Cannot load bitmap " << MkFilename;
+            DebugWarning(ss.str());
+            return;
         }
         BITMAPFILEHEADER bfh; //¸÷ÖÖ¹ØÓÚÎÄ¼þµÄ²ÎÊý
         BITMAPINFOHEADER bih; //¸÷ÖÖ¹ØÓÚÎ»Í¼µÄ²ÎÊý
-                              //¿ªÊ¼¶ÁÈ¡
+        //¿ªÊ¼¶ÁÈ¡
         if (!noMaskFile) {
             maskfile.read((char*)&bfh, sizeof(BITMAPFILEHEADER)); //ÕâÁ½¸öÊÇÕ¼Î»maskÎÄ¼þµÄ
             maskfile.read((char*)&bih, sizeof(BITMAPINFOHEADER)); //µ½ÁËºóÃæmask¿ÉÒÔÖ±½Ó´ÓÑÕÉ«²¿·Ö¿ªÊ¼¶ÁÈ¡
@@ -145,11 +167,11 @@ namespace Textures {
         bitmap.buffer = std::unique_ptr<uint8_t[]>(new unsigned char[bitmap.sizeX * bitmap.sizeY * 4]);
         //¶ÁÈ¡Êý¾Ý
         rgb = new unsigned char[bitmap.sizeX * bitmap.sizeY * 3];
-        bmpfile.read((char*)rgb, bitmap.sizeX*bitmap.sizeY * 3);
+        bmpfile.read((char*)rgb, bitmap.sizeX * bitmap.sizeY * 3);
         bmpfile.close();
         if (!noMaskFile) {
-            a = new unsigned char[bitmap.sizeX*bitmap.sizeY * 3];
-            maskfile.read((char*)a, bitmap.sizeX*bitmap.sizeY * 3);
+            a = new unsigned char[bitmap.sizeX * bitmap.sizeY * 3];
+            maskfile.read((char*)a, bitmap.sizeX * bitmap.sizeY * 3);
             maskfile.close();
         }
         //ºÏ²¢Óë×ª»»
@@ -176,7 +198,7 @@ namespace Textures {
         Build2DMipmaps(GL_RGB, image.sizeX, image.sizeY, (int)log2(image.sizeX), image.buffer.get());
         return ret;
     }
-    
+
     TextureID LoadFontTexture(const std::string& Filename) {
         TEXTURE_RGBA Texture;
         TEXTURE_RGB image;
@@ -192,17 +214,23 @@ namespace Textures {
         }
         ip = image.buffer.get();
         tp = Texture.buffer.get();
-        for (unsigned int i = 0; i != image.sizeX*image.sizeY; i++) {
-            *tp = 255; tp++;
-            *tp = 255; tp++;
-            *tp = 255; tp++;
-            *tp = 255 - *ip; tp++; ip += 3;
+        for (unsigned int i = 0; i != image.sizeX * image.sizeY; i++) {
+            *tp = 255;
+            tp++;
+            *tp = 255;
+            tp++;
+            *tp = 255;
+            tp++;
+            *tp = 255 - *ip;
+            tp++;
+            ip += 3;
         }
         glGenTextures(1, &ret);
         glBindTexture(GL_TEXTURE_2D, ret);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Texture.sizeX, Texture.sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, Texture.buffer.get());
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Texture.sizeX, Texture.sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                     Texture.buffer.get());
         return ret;
     }
 
@@ -219,7 +247,7 @@ namespace Textures {
     }
 
     TextureID LoadBlock3DTexture(const std::string& Filename, const std::string& MkFilename) {
-        int sz = BLOCKTEXTURE_UNITSIZE, cnt = BLOCKTEXTURE_UNITS*  BLOCKTEXTURE_UNITS;
+        int sz = BLOCKTEXTURE_UNITSIZE, cnt = BLOCKTEXTURE_UNITS * BLOCKTEXTURE_UNITS;
         uint8_t *src, *cur;
         glDisable(GL_TEXTURE_2D);
         glEnable(GL_TEXTURE_3D);
@@ -242,11 +270,11 @@ namespace Textures {
     void SaveRGBImage(const std::string& filename, TEXTURE_RGB& image) {
         BITMAPFILEHEADER bitmapfileheader;
         BITMAPINFOHEADER bitmapinfoheader;
-        bitmapfileheader.bfSize = image.sizeX*image.sizeY * 3 + 54;
+        bitmapfileheader.bfSize = image.sizeX * image.sizeY * 3 + 54;
         bitmapinfoheader.biWidth = image.sizeX;
         bitmapinfoheader.biHeight = image.sizeY;
-        bitmapinfoheader.biSizeImage = image.sizeX*image.sizeY * 3;
-        for (unsigned int i = 0; i != image.sizeX*image.sizeY * 3; i += 3) {
+        bitmapinfoheader.biSizeImage = image.sizeX * image.sizeY * 3;
+        for (unsigned int i = 0; i != image.sizeX * image.sizeY * 3; i += 3) {
             uint8_t t = image.buffer.get()[i];
             image.buffer.get()[i] = image.buffer.get()[i + 2];
             image.buffer.get()[i + 2] = t;
@@ -254,7 +282,7 @@ namespace Textures {
         std::ofstream ofs(filename, std::ios::out | std::ios::binary);
         ofs.write((char*)&bitmapfileheader, sizeof(bitmapfileheader));
         ofs.write((char*)&bitmapinfoheader, sizeof(bitmapinfoheader));
-        ofs.write((char*)image.buffer.get(), sizeof(uint8_t)*image.sizeX*image.sizeY * 3);
+        ofs.write((char*)image.buffer.get(), sizeof(uint8_t) * image.sizeX * image.sizeY * 3);
         ofs.close();
     }
 
@@ -262,8 +290,8 @@ namespace Textures {
         int sum = 0, scale = 1, cur_w = 0, cur_h = 0, cc = 0;
         if (format == GL_RGBA) cc = 4;
         else if (format == GL_RGB) cc = 3;
-        uint8_t *cur = new uint8_t[w*h*cc];
-        memset(cur, 0, w*h*cc);
+        uint8_t* cur = new uint8_t[w * h * cc];
+        memset(cur, 0, w * h * cc);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, level);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_LOD, 0);
@@ -271,19 +299,22 @@ namespace Textures {
         glTexEnvf(GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, 0.0f);
         glTexImage2D(GL_TEXTURE_2D, 0, format, w, h, 0, format, GL_UNSIGNED_BYTE, src);
         for (int i = 1; i <= level; i++) {
-            scale <<= 1; cur_w = w / scale; cur_h = h / scale;
-            for (int y = 0; y < cur_h; y++) for (int x = 0; x < cur_w; x++) {
-                for (int col = 0; col < cc; col++) {
-                    sum = 0;
-                    for (int yy = 0; yy < scale; yy++) for (int xx = 0; xx < scale; xx++) {
-                        sum += src[((y * scale + yy) * w + x * scale + xx) * cc + col];
+            scale <<= 1;
+            cur_w = w / scale;
+            cur_h = h / scale;
+            for (int y = 0; y < cur_h; y++)
+                for (int x = 0; x < cur_w; x++) {
+                    for (int col = 0; col < cc; col++) {
+                        sum = 0;
+                        for (int yy = 0; yy < scale; yy++)
+                            for (int xx = 0; xx < scale; xx++) {
+                                sum += src[((y * scale + yy) * w + x * scale + xx) * cc + col];
+                            }
+                        cur[(y * cur_w + x) * cc + col] = (uint8_t)(sum / (scale * scale));
                     }
-                    cur[(y * cur_w + x) * cc + col] = (uint8_t)(sum / (scale*scale));
                 }
-            }
             glTexImage2D(GL_TEXTURE_2D, i, format, cur_w, cur_h, 0, format, GL_UNSIGNED_BYTE, cur);
         }
         delete[] cur;
     }
-    
 }

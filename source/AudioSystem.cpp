@@ -1,17 +1,37 @@
-﻿#include "AudioSystem.h"
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "AudioSystem.h"
 #include <thread>
+
 namespace AudioSystem {
     ALDevice Device;
     //Gain
-    ALfloat BGMGain =0.1f;//背景音乐
-    ALfloat SoundGain = 0.17f;//音效
+    ALfloat BGMGain = 0.1f; //背景音乐
+    ALfloat SoundGain = 0.17f; //音效
     //Set
-    ALenum DopplerModel = AL_INVERSE_DISTANCE_CLAMPED;//设置OpenAL的距离模型
-    ALfloat DopplerFactor = 1.0f;//多普勒因子
-    ALfloat SpeedOfSound = Air_SpeedOfSound;//声速
+    ALenum DopplerModel = AL_INVERSE_DISTANCE_CLAMPED; //设置OpenAL的距离模型
+    ALfloat DopplerFactor = 1.0f; //多普勒因子
+    ALfloat SpeedOfSound = Air_SpeedOfSound; //声速
     //Update
-    bool FallBefore = false;//OnGround
-    bool DownWaterBefore = false;//InWater
+    bool FallBefore = false; //OnGround
+    bool DownWaterBefore = false; //InWater
     int BGMNum = 0;
     //Buffer
     ALuint BGM[10];
@@ -27,9 +47,10 @@ namespace AudioSystem {
     ALuint SFall = -1;
     ALuint SBlockClick = -1;
     ALuint SDownWater = -1;
+
     void Init() {
         //初始化设备
-        ALDeviceList *DL = Device.GetALDeviceList();
+        ALDeviceList* DL = Device.GetALDeviceList();
         Device.InitAL(DL->GetDeviceName(DL->GetDefaultDevice()));
         delete DL;
         //开启所有功能
@@ -38,16 +59,10 @@ namespace AudioSystem {
         alEnable(AL_SPEED_OF_SOUND);
         //背景音乐
         char BGMName[256];
-        for (size_t i = 0; i < 10; i++)
-        {
-            BGM[i] = -1;
-        }
-        for (size_t i = 0; i < 10; i++)
-        {
+        for (unsigned int& i : BGM) { i = -1; }
+        for (size_t i = 0; i < 10; i++) {
             sprintf_s(BGMName, "Audio\\BGM%d.wav", i);
-            if (Device.load(BGMName, &BGM[BGMNum])) {
-                BGMNum++;
-            }
+            if (Device.load(BGMName, &BGM[BGMNum])) { BGMNum++; }
         }
         //行走and跑步声音
         if (!Device.load("Audio\\Run.wav", &Run))Run = -1;
@@ -62,18 +77,19 @@ namespace AudioSystem {
         //播放BGM
         if (BGMNum) {
             int size = GetTickCount64() % BGMNum;
-            ALfloat Pos[] = { 0.0,0.0,0.0 };
-            ALfloat Vel[] = { 0.0,0.0,0.0 };
+            ALfloat Pos[] = {0.0, 0.0, 0.0};
+            ALfloat Vel[] = {0.0, 0.0, 0.0};
             SBGM = Device.Play(BGM[size], false, BGMGain, Pos, Vel);
         }
     }
-    void Update(ALfloat PlayerPos[3],bool BFall, bool BBlockClick, ALfloat BlockPos[3], int BRun,bool BDownWater) {
+
+    void Update(ALfloat PlayerPos[3], bool BFall, bool BBlockClick, ALfloat BlockPos[3], int BRun, bool BDownWater) {
         //设置全局常量
         alDopplerFactor(DopplerFactor);
         alDistanceModel(DopplerModel);
         alSpeedOfSound(SpeedOfSound);
         //更新音量
-        if (SBGM != -1)alSourcef(SBGM,AL_GAIN,BGMGain);
+        if (SBGM != -1)alSourcef(SBGM,AL_GAIN, BGMGain);
         if (SRun != -1)alSourcef(SRun, AL_GAIN, SoundGain);
         if (SClick != -1)alSourcef(SClick, AL_GAIN, SoundGain);
         if (SFall != -1)alSourcef(SFall, AL_GAIN, SoundGain);
@@ -88,89 +104,74 @@ namespace AudioSystem {
         if (SDownWater != -1)EFX::set(SDownWater);
         //更新玩家位置
         PlayerPos[1] += 0.74;
-        ALfloat Vel[] = { 0.0,0.0,0.0 };
-        ALfloat Ori[] = { 0.0,0.0,-1.0, 0.0,1.0,0.0 };
+        ALfloat Vel[] = {0.0, 0.0, 0.0};
+        ALfloat Ori[] = {0.0, 0.0, -1.0, 0.0, 1.0, 0.0};
         Device.Updatelistener(PlayerPos, Vel, Ori);
         //更新BGM位置
         ALint state;
         alGetSourcei(SBGM, AL_SOURCE_STATE, &state);
-        if (state == AL_STOPPED)
-        {
+        if (state == AL_STOPPED) {
             Device.Stop(SBGM);
             int size = GetTickCount64() % BGMNum;
-            ALfloat Pos[] = { 0.0,0.0,0.0 };
-            ALfloat Vel[] = { 0.0,0.0,0.0 };
+            ALfloat Pos[] = {0.0, 0.0, 0.0};
+            ALfloat Vel[] = {0.0, 0.0, 0.0};
             SBGM = Device.Play(BGM[size], false, BGMGain, Pos, Vel);
         }
         Device.Updatesource(SBGM, PlayerPos, Vel);
         //下落
         PlayerPos[1] -= 1.54;
-        if (BFall != FallBefore)
-        {
-            if (BFall) {
-                SFall = Device.Play(Fall, false, SoundGain, PlayerPos, Vel);
-            }
+        if (BFall != FallBefore) {
+            if (BFall) { SFall = Device.Play(Fall, false, SoundGain, PlayerPos, Vel); }
             FallBefore = BFall;
         }
-        else
-        {
-            if(SFall!=-1)Device.Stop(SFall);
+        else {
+            if (SFall != -1)Device.Stop(SFall);
             SFall = -1;
         }
         //击打方块
-        if (BBlockClick)
-        {
-            if (SBlockClick==-1) {
-                SBlockClick = Device.Play(BlockClick, true, SoundGain, BlockPos, Vel);
-            }
+        if (BBlockClick) {
+            if (SBlockClick == -1) { SBlockClick = Device.Play(BlockClick, true, SoundGain, BlockPos, Vel); }
         }
-        else
-        {
-            if(SBlockClick!=-1)Device.Stop(SBlockClick);
+        else {
+            if (SBlockClick != -1)Device.Stop(SBlockClick);
             SBlockClick = -1;
         }
         //奔跑
-        if ((BRun!=0)&&BFall)
-        {
-            if (SRun == -1)
-            {
-                SRun = Device.Play(Run, true, SoundGain, PlayerPos, Vel);
-            }
+        if ((BRun != 0) && BFall) {
+            if (SRun == -1) { SRun = Device.Play(Run, true, SoundGain, PlayerPos, Vel); }
             Device.Updatesource(SRun, PlayerPos, Vel);
-            alSourcef(SRun, AL_PITCH, BRun*0.5f);
+            alSourcef(SRun, AL_PITCH, BRun * 0.5f);
         }
-        else
-        {
-            if(SRun!=-1)Device.Stop(SRun);
+        else {
+            if (SRun != -1)Device.Stop(SRun);
             SRun = -1;
         }
         //下水
-        if (BDownWater != DownWaterBefore)
-        {
+        if (BDownWater != DownWaterBefore) {
             if (SDownWater == -1)SDownWater = Device.Play(DownWater, false, SoundGain, PlayerPos, Vel);
             DownWaterBefore = BDownWater;
         }
-        else
-        {
+        else {
             if (SDownWater != -1) {
                 ALint state;
                 alGetSourcei(SDownWater, AL_SOURCE_STATE, &state);
-                if (state == AL_STOPPED)
-                {
+                if (state == AL_STOPPED) {
                     Device.Stop(SDownWater);
                     SDownWater = -1;
                 }
             }
         }
     }
+
     void ClickEvent() {
-        ALfloat Pos[] = { 0.0,0.0,0.0 };
-        ALfloat Vel[] = { 0.0,0.0,0.0 };
+        ALfloat Pos[] = {0.0, 0.0, 0.0};
+        ALfloat Vel[] = {0.0, 0.0, 0.0};
         SClick = Device.Play(Click, false, SoundGain, Pos, Vel);
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
         Device.Stop(SClick);
         SClick = -1;
     }
+
     void UnInit() {
         if (SBGM != -1)Device.Stop(SBGM);
         if (SRun != -1)Device.Stop(SRun);
@@ -179,10 +180,7 @@ namespace AudioSystem {
         if (SBlockClick != -1)Device.Stop(SBlockClick);
         if (SDownWater != -1)Device.Stop(SDownWater);
 
-        for (size_t i = 0; i < 10; i++)
-        {
-            if (BGM[i] != -1)Device.unload(BGM[i]);
-        }
+        for (unsigned int i : BGM) { if (i != -1)Device.unload(i); }
         if (Run != -1)Device.unload(Run);
         if (Click != -1)Device.unload(Click);
         if (Fall != -1)Device.unload(Fall);

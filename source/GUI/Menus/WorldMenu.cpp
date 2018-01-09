@@ -1,4 +1,23 @@
-﻿#include "Menus.h"
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "Menus.h"
 #include "World.h"
 #include "Textures.h"
 #include "GameView.h"
@@ -6,11 +25,11 @@
 #include <fstream>
 
 namespace Menus {
-    class WorldMenu :public GUI::Form {
+    class WorldMenu : public GUI::Form {
     private:
-        int leftp = static_cast<int>(windowwidth / 2.0 / stretch  - 200);
+        int leftp = static_cast<int>(windowwidth / 2.0 / stretch - 200);
         int midp = static_cast<int>(windowwidth / 2.0 / stretch);
-        int rightp = static_cast<int>(windowwidth / 2.0 / stretch+ 200);
+        int rightp = static_cast<int>(windowwidth / 2.0 / stretch + 200);
         int downp = static_cast<int>(windowheight / stretch - 20);
         bool refresh = true;
         int selected = 0, mouseon;
@@ -22,7 +41,8 @@ namespace Menus {
         GUI::label title;
         GUI::vscroll vscroll;
         GUI::button enterbtn, deletebtn, backbtn;
-        void onLoad() {
+
+        void onLoad() override {
             title = GUI::label(GetStrbyKey("NEWorld.worlds.caption"), -225, 225, 20, 36, 0.5, 0.5, 0.0, 0.0);
             vscroll = GUI::vscroll(100, 0, 275, 295, 36, -20, 0.5, 0.5, 0.0, 1.0);
             enterbtn = GUI::button(GetStrbyKey("NEWorld.worlds.enter"), -250, -10, -80, -56, 0.5, 0.5, 1.0, 1.0);
@@ -34,12 +54,12 @@ namespace Menus {
             deletebtn.enabled = false;
             vscroll.defaultv = true;
         }
-        void onUpdate() {
 
+        void onUpdate() override {
             AudioSystem::SpeedOfSound = AudioSystem::Air_SpeedOfSound;
             EFX::EAXprop = Generic;
             EFX::UpdateEAXprop();
-            float Pos[] = { 0.0f,0.0f,0.0f };
+            float Pos[] = {0.0f, 0.0f, 0.0f};
             AudioSystem::Update(Pos, false, false, Pos, false, false);
 
 
@@ -49,18 +69,18 @@ namespace Menus {
             rightp = static_cast<int>(windowwidth / 2.0 / stretch + 250);
             downp = static_cast<int>(windowheight / stretch - 20);
 
-            vscroll.barheight = (downp - 72 - 48)*(downp - 36 - 40) / (64 * worldcount + 64);
+            vscroll.barheight = (downp - 72 - 48) * (downp - 36 - 40) / (64 * worldcount + 64);
             if (vscroll.barheight > downp - 36 - 40) {
                 vscroll.enabled = false;
                 vscroll.barheight = downp - 36 - 40;
             }
             else vscroll.enabled = true;
 
-            trs = vscroll.barpos*(64 * worldcount + 64) / (downp - 36 - 40);
+            trs = vscroll.barpos * (64 * worldcount + 64) / (downp - 36 - 40);
             mouseon = -1;
             if (mx >= midp - 250 && mx <= midp + 250 && my >= 48 && my <= downp - 72) {
                 for (int i = 0; i < worldcount; i++) {
-                    if (my >= 48 + i * 64 - trs&&my <= 48 + i * 64 + 60 - trs) {
+                    if (my >= 48 + i * 64 - trs && my <= 48 + i * 64 + 60 - trs) {
                         if (mb == 1 && mbl == 0) {
                             chosenWorldName = worldnames[i];
                             selected = i;
@@ -68,7 +88,7 @@ namespace Menus {
                         mouseon = i;
                     }
                 }
-                if (my >= 48 + worldcount * 64 - trs&&my <= 48 + worldcount * 64 + 60 - trs) {
+                if (my >= 48 + worldcount * 64 - trs && my <= 48 + worldcount * 64 + 60 - trs) {
                     if (mb == 0 && mbl == 1) {
                         createworldmenu();
                         refresh = true;
@@ -103,7 +123,7 @@ namespace Menus {
                 //查找所有世界存档
                 Textures::TEXTURE_RGB tmb;
                 for (auto&& x : filesystem::directory_iterator("Worlds/")) {
-                    if (filesystem::is_directory(x.path())) {
+                    if (is_directory(x.path())) {
                         worldnames.push_back(x.path().filename().string());
                         auto thumbName = x.path().string() + "/Thumbnail.bmp";
                         texSizeX.push_back(0);
@@ -112,20 +132,22 @@ namespace Menus {
                             thumbnails.push_back(Textures::LoadRGBTexture(thumbName));
                             texSizeX[texSizeX.size() - 1] = tmb.sizeX;
                             texSizeY[texSizeY.size() - 1] = tmb.sizeY;
-                        } 
+                        }
                         else
                             thumbnails.push_back(0);
                     }
                 }
                 refresh = false;
             }
-            enterbtn.enabled = chosenWorldName != "";
-            deletebtn.enabled = chosenWorldName != "";
+            enterbtn.enabled = !chosenWorldName.empty();
+            deletebtn.enabled = !chosenWorldName.empty();
             if (backbtn.clicked) GUI::PopPage();
         }
-        void onRender() {
+
+        void onRender() override {
             glEnable(GL_SCISSOR_TEST);
-            glScissor(0, windowheight - static_cast<int>((downp - 72) * stretch), windowwidth, static_cast<int>((downp - 72 - 48 + 1) * stretch));
+            glScissor(0, windowheight - static_cast<int>((downp - 72) * stretch), windowwidth,
+                      static_cast<int>((downp - 72 - 48 + 1) * stretch));
             glTranslatef(0.0f, (float)-trs, 0.0f);
             for (int i = 0; i < worldcount; i++) {
                 int xmin, xmax, ymin, ymax;
@@ -166,7 +188,7 @@ namespace Menus {
                     glTexCoord2f(0.5f - w / 2, 0.5f - h / 2), UIVertex(midp - 250, 48 + i * 64 + 60);
                     glEnd();
                 }
-                glColor4f(GUI::FgR*0.9f, GUI::FgG*0.9f, GUI::FgB*0.9f, 0.9f);
+                glColor4f(GUI::FgR * 0.9f, GUI::FgG * 0.9f, GUI::FgB * 0.9f, 0.9f);
                 glDisable(GL_TEXTURE_2D);
                 glLineWidth(1.0);
                 glBegin(GL_LINE_LOOP);
@@ -185,18 +207,21 @@ namespace Menus {
                     UIVertex(midp - 250, 48 + i * 64 + 60);
                     glEnd();
                 }
-                TextRenderer::renderString(static_cast<int>(windowwidth / stretch - TextRenderer::getStrWidth(worldnames[i])) / 2, (140 + i * 128) / 2, worldnames[i]);
+                TextRenderer::renderString(
+                    static_cast<int>(windowwidth / stretch - TextRenderer::getStrWidth(worldnames[i])) / 2,
+                    (140 + i * 128) / 2, worldnames[i]);
             }
             int i = worldcount;
             glDisable(GL_TEXTURE_2D);
-            if (mouseon == i) glColor4f(0.5f, 0.5f, 0.5f, GUI::FgA); else glColor4f(GUI::FgR, GUI::FgG, GUI::FgB, GUI::FgA);
+            if (mouseon == i) glColor4f(0.5f, 0.5f, 0.5f, GUI::FgA);
+            else glColor4f(GUI::FgR, GUI::FgG, GUI::FgB, GUI::FgA);
             glBegin(GL_QUADS);
             UIVertex(midp - 250, 48 + i * 64);
             UIVertex(midp + 250, 48 + i * 64);
             UIVertex(midp + 250, 48 + i * 64 + 60);
             UIVertex(midp - 250, 48 + i * 64 + 60);
             glEnd();
-            glColor4f(GUI::FgR*0.9f, GUI::FgG*0.9f, GUI::FgB*0.9f, 0.9f);
+            glColor4f(GUI::FgR * 0.9f, GUI::FgG * 0.9f, GUI::FgB * 0.9f, 0.9f);
             glDisable(GL_TEXTURE_2D);
             glLineWidth(1.0);
             glBegin(GL_LINE_LOOP);
@@ -205,10 +230,13 @@ namespace Menus {
             UIVertex(midp + 250, 48 + i * 64 + 60);
             UIVertex(midp - 250, 48 + i * 64 + 60);
             glEnd();
-            TextRenderer::renderString(static_cast<int>(windowwidth / stretch - TextRenderer::getStrWidth(GetStrbyKey("NEWorld.worlds.new"))) / 2,
+            TextRenderer::renderString(
+                static_cast<int>(windowwidth / stretch - TextRenderer::getStrWidth(GetStrbyKey("NEWorld.worlds.new"))) /
+                2,
                 (140 + i * 128) / 2, GetStrbyKey("NEWorld.worlds.new"));
             glDisable(GL_SCISSOR_TEST);
         }
     };
-    void worldmenu() { GUI::PushPage(new WorldMenu); }
+
+    void worldmenu() { PushPage(new WorldMenu); }
 }

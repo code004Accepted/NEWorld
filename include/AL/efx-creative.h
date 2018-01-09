@@ -11,14 +11,14 @@ extern "C" {
 #endif
 
 
-/**
- * Effect object definitions to be used with alEffect functions.
- *
- * Effect parameter value definitions, ranges, and defaults
- * appear farther down in this file.
- */
+    /**
+     * Effect object definitions to be used with alEffect functions.
+     *
+     * Effect parameter value definitions, ranges, and defaults
+     * appear farther down in this file.
+     */
 
-/* AL EAXReverb effect parameters. */
+    /* AL EAXReverb effect parameters. */
 #define AL_EAXREVERB_DENSITY                               0x0001
 #define AL_EAXREVERB_DIFFUSION                             0x0002
 #define AL_EAXREVERB_GAIN                                  0x0003
@@ -37,24 +37,23 @@ extern "C" {
 #define AL_EAXREVERB_ECHO_DEPTH                            0x0010
 #define AL_EAXREVERB_MODULATION_TIME                       0x0011
 #define AL_EAXREVERB_MODULATION_DEPTH                      0x0012
-#define AL_EAXREVERB_AIR_ABSORPTION_GAINHF                 0x0013 
-#define AL_EAXREVERB_HFREFERENCE                           0x0014 
-#define AL_EAXREVERB_LFREFERENCE                           0x0015 
+#define AL_EAXREVERB_AIR_ABSORPTION_GAINHF                 0x0013
+#define AL_EAXREVERB_HFREFERENCE                           0x0014
+#define AL_EAXREVERB_LFREFERENCE                           0x0015
 #define AL_EAXREVERB_ROOM_ROLLOFF_FACTOR                   0x0016
 #define AL_EAXREVERB_DECAY_HFLIMIT                         0x0017
 
-/* Effect type definitions to be used with AL_EFFECT_TYPE. */
+    /* Effect type definitions to be used with AL_EFFECT_TYPE. */
 #define AL_EFFECT_EAXREVERB                                0x8000
 
 
+    /**********************************************************
+    * Effect parameter structures, value definitions, ranges and defaults.
+    */
 
- /**********************************************************
- * Effect parameter structures, value definitions, ranges and defaults.
- */
-
-/**
- * AL reverb effect parameter ranges and defaults
- */
+    /**
+     * AL reverb effect parameter ranges and defaults
+     */
 #define AL_EAXREVERB_MIN_DENSITY                           0.0f
 #define AL_EAXREVERB_MAX_DENSITY                           1.0f
 #define AL_EAXREVERB_DEFAULT_DENSITY                       1.0f
@@ -145,7 +144,7 @@ extern "C" {
 
 
 #ifdef __cplusplus
-}  /* extern "C" */
+} /* extern "C" */
 #endif
 
 #endif /* __efxcreative_h_ */

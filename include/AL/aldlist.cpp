@@ -23,20 +23,19 @@
  */
 
 #include "aldlist.h"
-#include <windows.h>
+#include <Windows.h>
 #include "alc.h"
 
 
 /* 
  * Init call
  */
-ALDeviceList::ALDeviceList()
-{
-    ALDEVICEINFO    ALDeviceInfo;
-    char *devices;
+ALDeviceList::ALDeviceList() {
+    ALDEVICEINFO ALDeviceInfo;
+    char* devices;
     int index;
-    const char *defaultDeviceName;
-    const char *actualDeviceName;
+    const char* defaultDeviceName;
+    const char* actualDeviceName;
 
     // DeviceInfo std::vector stores, for each enumerated device, it's device name, selection status, spec version #, and extension support
     vDeviceInfo.empty();
@@ -52,28 +51,26 @@ ALDeviceList::ALDeviceList()
             index = 0;
             // go through device list (each device terminated with a single nullptr, list terminated with double nullptr)
             while (*devices != 0) {
-                if (strcmp(defaultDeviceName, devices) == 0) {
-                    defaultDeviceIndex = index;
-                }
-                ALCdevice *device = ALFunction.alcOpenDevice(devices);
+                if (strcmp(defaultDeviceName, devices) == 0) { defaultDeviceIndex = index; }
+                ALCdevice* device = ALFunction.alcOpenDevice(devices);
                 if (device) {
-                    ALCcontext *context = ALFunction.alcCreateContext(device, nullptr);
+                    ALCcontext* context = ALFunction.alcCreateContext(device, nullptr);
                     if (context) {
                         ALFunction.alcMakeContextCurrent(context);
                         // if new actual device name isn't already in the list, then add it...
                         actualDeviceName = ALFunction.alcGetString(device, ALC_DEVICE_SPECIFIER);
                         bool bNewName = true;
                         for (int i = 0; i < GetNumDevices(); i++) {
-                            if (strcmp(GetDeviceName(i), actualDeviceName) == 0) {
-                                bNewName = false;
-                            }
+                            if (strcmp(GetDeviceName(i), actualDeviceName) == 0) { bNewName = false; }
                         }
                         if ((bNewName) && (actualDeviceName != nullptr) && (strlen(actualDeviceName) > 0)) {
                             memset(&ALDeviceInfo, 0, sizeof(ALDEVICEINFO));
                             ALDeviceInfo.bSelected = true;
                             ALDeviceInfo.strDeviceName = actualDeviceName;
-                            ALFunction.alcGetIntegerv(device, ALC_MAJOR_VERSION, sizeof(int), &ALDeviceInfo.iMajorVersion);
-                            ALFunction.alcGetIntegerv(device, ALC_MINOR_VERSION, sizeof(int), &ALDeviceInfo.iMinorVersion);
+                            ALFunction.alcGetIntegerv(device, ALC_MAJOR_VERSION, sizeof(int),
+                                                      &ALDeviceInfo.iMajorVersion);
+                            ALFunction.alcGetIntegerv(device, ALC_MINOR_VERSION, sizeof(int),
+                                                      &ALDeviceInfo.iMinorVersion);
 
                             ALDeviceInfo.pvstrExtensions = new std::vector<std::string>;
 
@@ -91,7 +88,7 @@ ALDeviceList::ALDeviceList()
                                 ALDeviceInfo.pvstrExtensions->push_back("AL_EXT_LINEAR_DISTANCE");
                             if (ALFunction.alIsExtensionPresent("AL_EXT_EXPONENT_DISTANCE") == AL_TRUE)
                                 ALDeviceInfo.pvstrExtensions->push_back("AL_EXT_EXPONENT_DISTANCE");
-                            
+
                             if (ALFunction.alIsExtensionPresent("EAX2.0") == AL_TRUE)
                                 ALDeviceInfo.pvstrExtensions->push_back("EAX2.0");
                             if (ALFunction.alIsExtensionPresent("EAX3.0") == AL_TRUE)
@@ -126,12 +123,11 @@ ALDeviceList::ALDeviceList()
 /* 
  * Exit call
  */
-ALDeviceList::~ALDeviceList()
-{
-    for (unsigned int i = 0; i < vDeviceInfo.size(); i++) {
-        if (vDeviceInfo[i].pvstrExtensions) {
-            vDeviceInfo[i].pvstrExtensions->empty();
-            delete vDeviceInfo[i].pvstrExtensions;
+ALDeviceList::~ALDeviceList() {
+    for (auto& i : vDeviceInfo) {
+        if (i.pvstrExtensions) {
+            i.pvstrExtensions->empty();
+            delete i.pvstrExtensions;
         }
     }
 
@@ -143,60 +139,50 @@ ALDeviceList::~ALDeviceList()
 /*
  * Returns the number of devices in the complete device list
  */
-int ALDeviceList::GetNumDevices()
-{
-    return (int)vDeviceInfo.size();    
-}
+int ALDeviceList::GetNumDevices() { return (int)vDeviceInfo.size(); }
 
 /* 
  * Returns the device name at an index in the complete device list
  */
-char * ALDeviceList::GetDeviceName(int index)
-{
+char* ALDeviceList::GetDeviceName(int index) {
     if (index < GetNumDevices())
         return (char *)vDeviceInfo[index].strDeviceName.c_str();
-    else
-        return nullptr;
+    return nullptr;
 }
 
 /*
  * Returns the major and minor version numbers for a device at a specified index in the complete list
  */
-void ALDeviceList::GetDeviceVersion(int index, int *major, int *minor)
-{
+void ALDeviceList::GetDeviceVersion(int index, int* major, int* minor) {
     if (index < GetNumDevices()) {
         if (major)
             *major = vDeviceInfo[index].iMajorVersion;
         if (minor)
             *minor = vDeviceInfo[index].iMinorVersion;
     }
-    return;
 }
 
 /*
  * Returns the maximum number of Sources that can be generate on the given device
  */
-unsigned int ALDeviceList::GetMaxNumSources(int index)
-{
+unsigned int ALDeviceList::GetMaxNumSources(int index) {
     if (index < GetNumDevices())
         return vDeviceInfo[index].uiSourceCount;
-    else
-        return 0;
+    return 0;
 }
 
 /*
  * Checks if the extension is supported on the given device
  */
-bool ALDeviceList::IsExtensionSupported(int index, char *szExtName)
-{
+bool ALDeviceList::IsExtensionSupported(int index, char* szExtName) {
     bool bReturn = false;
 
     if (index < GetNumDevices()) {
-        for (unsigned int i = 0; i < vDeviceInfo[index].pvstrExtensions->size(); i++) {
-            if (!_stricmp(vDeviceInfo[index].pvstrExtensions->at(i).c_str(), szExtName)) {
+        for (auto& pvstrExtension : *vDeviceInfo[index].pvstrExtensions) {
+            if (!_stricmp(pvstrExtension.c_str(), szExtName)) {
                 bReturn = true;
                 break;
-            }                
+            }
         }
     }
 
@@ -206,82 +192,64 @@ bool ALDeviceList::IsExtensionSupported(int index, char *szExtName)
 /*
  * returns the index of the default device in the complete device list
  */
-int ALDeviceList::GetDefaultDevice()
-{
-    return defaultDeviceIndex;
-}
+int ALDeviceList::GetDefaultDevice() { return defaultDeviceIndex; }
 
 /* 
  * Deselects devices which don't have the specified minimum version
  */
-void ALDeviceList::FilterDevicesMinVer(int major, int minor)
-{
+void ALDeviceList::FilterDevicesMinVer(int major, int minor) {
     int dMajor, dMinor;
     for (unsigned int i = 0; i < vDeviceInfo.size(); i++) {
         GetDeviceVersion(i, &dMajor, &dMinor);
-        if ((dMajor < major) || ((dMajor == major) && (dMinor < minor))) {
-            vDeviceInfo[i].bSelected = false;
-        }
+        if ((dMajor < major) || ((dMajor == major) && (dMinor < minor))) { vDeviceInfo[i].bSelected = false; }
     }
 }
 
 /* 
  * Deselects devices which don't have the specified maximum version
  */
-void ALDeviceList::FilterDevicesMaxVer(int major, int minor)
-{
+void ALDeviceList::FilterDevicesMaxVer(int major, int minor) {
     int dMajor, dMinor;
     for (unsigned int i = 0; i < vDeviceInfo.size(); i++) {
         GetDeviceVersion(i, &dMajor, &dMinor);
-        if ((dMajor > major) || ((dMajor == major) && (dMinor > minor))) {
-            vDeviceInfo[i].bSelected = false;
-        }
+        if ((dMajor > major) || ((dMajor == major) && (dMinor > minor))) { vDeviceInfo[i].bSelected = false; }
     }
 }
 
 /*
  * Deselects device which don't support the given extension name
  */
-void ALDeviceList::FilterDevicesExtension(char *szExtName)
-{
+void ALDeviceList::FilterDevicesExtension(char* szExtName) {
     bool bFound;
 
-    for (unsigned int i = 0; i < vDeviceInfo.size(); i++) {
+    for (auto& i : vDeviceInfo) {
         bFound = false;
-        for (unsigned int j = 0; j < vDeviceInfo[i].pvstrExtensions->size(); j++) {
-            if (!_stricmp(vDeviceInfo[i].pvstrExtensions->at(j).c_str(), szExtName)) {
+        for (unsigned int j = 0; j < i.pvstrExtensions->size(); j++) {
+            if (!_stricmp(i.pvstrExtensions->at(j).c_str(), szExtName)) {
                 bFound = true;
                 break;
             }
         }
         if (!bFound)
-            vDeviceInfo[i].bSelected = false;
+            i.bSelected = false;
     }
 }
 
 /*
  * Resets all filtering, such that all devices are in the list
  */
-void ALDeviceList::ResetFilters()
-{
-    for (int i = 0; i < GetNumDevices(); i++) {
-        vDeviceInfo[i].bSelected = true;
-    }
+void ALDeviceList::ResetFilters() {
+    for (int i = 0; i < GetNumDevices(); i++) { vDeviceInfo[i].bSelected = true; }
     filterIndex = 0;
 }
 
 /*
  * Gets index of first filtered device
  */
-int ALDeviceList::GetFirstFilteredDevice()
-{
+int ALDeviceList::GetFirstFilteredDevice() {
     int i;
 
-    for (i = 0; i < GetNumDevices(); i++) {
-        if (vDeviceInfo[i].bSelected == true) {
-            break;
-        }
-    }
+    for (i = 0; i < GetNumDevices(); i++) { if (vDeviceInfo[i].bSelected) { break; } }
     filterIndex = i + 1;
     return i;
 }
@@ -289,15 +257,10 @@ int ALDeviceList::GetFirstFilteredDevice()
 /*
  * Gets index of next filtered device
  */
-int ALDeviceList::GetNextFilteredDevice()
-{
+int ALDeviceList::GetNextFilteredDevice() {
     int i;
 
-    for (i = filterIndex; i < GetNumDevices(); i++) {
-        if (vDeviceInfo[i].bSelected == true) {
-            break;
-        }
-    }
+    for (i = filterIndex; i < GetNumDevices(); i++) { if (vDeviceInfo[i].bSelected) { break; } }
     filterIndex = i + 1;
     return i;
 }
@@ -305,8 +268,7 @@ int ALDeviceList::GetNextFilteredDevice()
 /*
  * Internal function to detemine max number of Sources that can be generated
  */
-unsigned int ALDeviceList::GetMaxNumSources()
-{
+unsigned int ALDeviceList::GetMaxNumSources() {
     ALuint uiSources[256];
     unsigned int iSourceCount = 0;
 
@@ -314,8 +276,7 @@ unsigned int ALDeviceList::GetMaxNumSources()
     ALFunction.alGetError();
 
     // Generate up to 256 Sources, checking for any errors
-    for (iSourceCount = 0; iSourceCount < 256; iSourceCount++)
-    {
+    for (iSourceCount = 0; iSourceCount < 256; iSourceCount++) {
         ALFunction.alGenSources(1, &uiSources[iSourceCount]);
         if (ALFunction.alGetError() != AL_NO_ERROR)
             break;
@@ -323,12 +284,8 @@ unsigned int ALDeviceList::GetMaxNumSources()
 
     // Release the Sources
     ALFunction.alDeleteSources(iSourceCount, uiSources);
-    if (ALFunction.alGetError() != AL_NO_ERROR)
-    {
-        for (unsigned int i = 0; i < 256; i++)
-        {
-            ALFunction.alDeleteSources(1, &uiSources[i]);
-        }
+    if (ALFunction.alGetError() != AL_NO_ERROR) {
+        for (unsigned int& uiSource : uiSources) { ALFunction.alDeleteSources(1, &uiSource); }
     }
 
     return iSourceCount;

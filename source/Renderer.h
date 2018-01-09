@@ -1,14 +1,36 @@
-﻿#pragma once
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#pragma once
 #include "Definitions.h"
 #include "Frustum.h"
 #include "Shader.h"
 
-namespace Renderer{
+namespace Renderer {
     //我猜你肯定不敢看Renderer.cpp  --qiaozhanrong
     //猜对了  --Null
 
     enum {
-        MainShader, MergeFaceShader, ShadowShader, DepthShader
+        MainShader,
+        MergeFaceShader,
+        ShadowShader,
+        DepthShader
     };
 
     const int ArraySize = 2621440;
@@ -38,9 +60,10 @@ namespace Renderer{
     inline void Color3d(double r, double g, double b) { Color3f((float)r, (float)g, (float)b); }
     inline void Color4d(double r, double g, double b, double a) { Color4f((float)r, (float)g, (float)b, (float)a); }
 
-    inline void Quad(float *geomentry) {
+    inline void Quad(float* geomentry) {
         //这样做貌似提升不了性能吧。。。 --qiaozhanrong
-        memcpy(VA, geomentry, size*sizeof(float)); VA += size;
+        memcpy(VA, geomentry, size * sizeof(float));
+        VA += size;
         Vertexes += 4;
     }
 
@@ -48,10 +71,12 @@ namespace Renderer{
     void renderbuffer(VBOID buffer, vtxCount vtxs, int tc, int cc, int ac = 0);
 
     void initShaders();
+
     inline void bindShader(int shaderID) {
         shaders[shaderID].bind();
         ActiveShader = shaderID;
     }
+
     void destroyShaders();
     void EnableShaders();
     void DisableShaders();

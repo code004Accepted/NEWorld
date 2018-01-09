@@ -1,4 +1,23 @@
-﻿#include "Setup.h"
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "Setup.h"
 #include "GUI.h"
 #include "Definitions.h"
 #include "Textures.h"
@@ -18,10 +37,14 @@ void splashScreen() {
         glBindTexture(GL_TEXTURE_2D, splTex);
         glColor4f((float)i / 256, (float)i / 256, (float)i / 256, 1.0);
         glBegin(GL_QUADS);
-        glTexCoord2f(0.0, 1.0); glVertex2i(-1, 1);
-        glTexCoord2f(850.0f / 1024.0f, 1.0); glVertex2i(1, 1);
-        glTexCoord2f(850.0f / 1024.0f, 1.0 - 480.0f / 1024.0f); glVertex2i(1, -1);
-        glTexCoord2f(0.0, 1.0 - 480.0f / 1024.0f); glVertex2i(-1, -1);
+        glTexCoord2f(0.0, 1.0);
+        glVertex2i(-1, 1);
+        glTexCoord2f(850.0f / 1024.0f, 1.0);
+        glVertex2i(1, 1);
+        glTexCoord2f(850.0f / 1024.0f, 1.0 - 480.0f / 1024.0f);
+        glVertex2i(1, -1);
+        glTexCoord2f(0.0, 1.0 - 480.0f / 1024.0f);
+        glVertex2i(-1, -1);
         glEnd();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
@@ -48,7 +71,6 @@ void createWindow() {
 }
 
 void setupScreen() {
-
     //获取OpenGL版本
     GLVersionMajor = glfwGetWindowAttrib(MainWindow, GLFW_CONTEXT_VERSION_MAJOR);
     GLVersionMinor = glfwGetWindowAttrib(MainWindow, GLFW_CONTEXT_VERSION_MINOR);
@@ -91,7 +113,7 @@ void setupScreen() {
 }
 
 void setupNormalFog() {
-    float fogColor[4] = { skycolorR, skycolorG, skycolorB, 1.0f };
+    float fogColor[4] = {skycolorR, skycolorG, skycolorB, 1.0f};
     glEnable(GL_FOG);
     glFogi(GL_FOG_MODE, GL_LINEAR);
     glFogfv(GL_FOG_COLOR, fogColor);
@@ -112,7 +134,8 @@ void loadTextures() {
         tex_mainmenu[i] = Textures::LoadRGBTexture(ss.str());
     }
 
-    DefaultSkin = Textures::LoadRGBATexture("Textures/Player/skin_xiaoqiao.bmp", "Textures/Player/skinmask_xiaoqiao.bmp");
+    DefaultSkin = Textures::LoadRGBATexture("Textures/Player/skin_xiaoqiao.bmp",
+                                            "Textures/Player/skinmask_xiaoqiao.bmp");
 
     for (int gloop = 1; gloop <= 10; gloop++) {
         std::string path = "Textures/blocks/destroy_" + itos(gloop) + ".bmp";
@@ -120,20 +143,21 @@ void loadTextures() {
     }
 
     BlockTextures = Textures::LoadRGBATexture("Textures/blocks/Terrain.bmp", "Textures/blocks/Terrainmask.bmp");
-    BlockTextures3D = Textures::LoadBlock3DTexture("Textures/blocks/Terrain3D.bmp", "Textures/blocks/Terrain3Dmask.bmp");
+    BlockTextures3D = Textures::
+        LoadBlock3DTexture("Textures/blocks/Terrain3D.bmp", "Textures/blocks/Terrain3Dmask.bmp");
     loadItemsTextures();
 }
 
-void WindowSizeFunc(GLFWwindow * win, int width, int height) {
-    if (width<640) width = 640;
-    if (height<360) height = 360;
+void WindowSizeFunc(GLFWwindow* win, int width, int height) {
+    if (width < 640) width = 640;
+    if (height < 360) height = 360;
     windowwidth = width;
     windowheight = height > 0 ? height : 1;
     glfwSetWindowSize(win, width, height);
     setupScreen();
 }
 
-void MouseButtonFunc(GLFWwindow *, int button, int action, int) {
+void MouseButtonFunc(GLFWwindow*, int button, int action, int) {
     mb = 0;
     if (action == GLFW_PRESS) {
         if (button == GLFW_MOUSE_BUTTON_LEFT)mb += 1;
@@ -143,16 +167,14 @@ void MouseButtonFunc(GLFWwindow *, int button, int action, int) {
     else mb = 0;
 }
 
-void CharInputFunc(GLFWwindow *, unsigned int c) {
+void CharInputFunc(GLFWwindow*, unsigned int c) {
     if (c >= 128) {
-        wchar_t pwszUnicode[2] = { c, 0 };
-        char pszMultiByte[6] = { 0 };
+        wchar_t pwszUnicode[2] = {c, 0};
+        char pszMultiByte[6] = {0};
         WCharToMByte(pszMultiByte, pwszUnicode, 6);
         inputstr += pszMultiByte;
     }
     else inputstr += (char)c;
 }
 
-void MouseScrollFunc(GLFWwindow *, double, double yoffset) {
-    mw += (int)yoffset;
-}
+void MouseScrollFunc(GLFWwindow*, double, double yoffset) { mw += (int)yoffset; }

@@ -23,14 +23,14 @@
  */
 
 // Win32 version of the Creative Labs OpenAL 1.1 Framework for samples
-#include<windows.h>
+#include<Windows.h>
 #include<stdio.h>
 
 #include "Framework.h"
 #include "CWaves.h"
 #include "aldlist.h"
 
-static CWaves *g_pWaveLoader = nullptr;
+static CWaves* g_pWaveLoader = nullptr;
 
 // Imported EFX functions
 
@@ -86,15 +86,10 @@ ALenum eXRAMAccessible = 0;
 
 
 // Initialization and enumeration
-void ALFWInit()
-{
-    g_pWaveLoader = new CWaves();
-}
+void ALFWInit() { g_pWaveLoader = new CWaves(); }
 
-void ALFWShutdown()
-{
-    if (g_pWaveLoader)
-    {
+void ALFWShutdown() {
+    if (g_pWaveLoader) {
         delete g_pWaveLoader;
         g_pWaveLoader = nullptr;
     }
@@ -103,40 +98,35 @@ void ALFWShutdown()
     ALchar ch = _getch();
 }
 
-ALboolean ALFWInitOpenAL()
-{
-    ALDeviceList *pDeviceList = nullptr;
-    ALCcontext *pContext = nullptr;
-    ALCdevice *pDevice = nullptr;
+ALboolean ALFWInitOpenAL() {
+    ALDeviceList* pDeviceList = nullptr;
+    ALCcontext* pContext = nullptr;
+    ALCdevice* pDevice = nullptr;
     ALint i;
     ALboolean bReturn = AL_FALSE;
 
     pDeviceList = new ALDeviceList();
-    if ((pDeviceList) && (pDeviceList->GetNumDevices()))
-    {
+    if ((pDeviceList) && (pDeviceList->GetNumDevices())) {
         ALFWprintf("\nSelect OpenAL Device:\n");
-        for (i = 0; i < pDeviceList->GetNumDevices(); i++) 
-            ALFWprintf("%d. %s%s\n", i + 1, pDeviceList->GetDeviceName(i), i == pDeviceList->GetDefaultDevice() ? "(DEFAULT)" : "");
-    
+        for (i = 0; i < pDeviceList->GetNumDevices(); i++)
+            ALFWprintf("%d. %s%s\n", i + 1, pDeviceList->GetDeviceName(i),
+                       i == pDeviceList->GetDefaultDevice() ? "(DEFAULT)" : "");
+
         do {
             ALchar ch = _getch();
             i = atoi(&ch);
-        } while ((i < 1) || (i > pDeviceList->GetNumDevices()));
+        }
+        while ((i < 1) || (i > pDeviceList->GetNumDevices()));
 
         pDevice = alcOpenDevice(pDeviceList->GetDeviceName(i - 1));
-        if (pDevice)
-        {
+        if (pDevice) {
             pContext = alcCreateContext(pDevice, nullptr);
-            if (pContext)
-            {
+            if (pContext) {
                 ALFWprintf("\nOpened %s Device\n", alcGetString(pDevice, ALC_DEVICE_SPECIFIER));
                 alcMakeContextCurrent(pContext);
                 bReturn = AL_TRUE;
             }
-            else
-            {
-                alcCloseDevice(pDevice);
-            }
+            else { alcCloseDevice(pDevice); }
         }
 
         delete pDeviceList;
@@ -145,14 +135,13 @@ ALboolean ALFWInitOpenAL()
     return bReturn;
 }
 
-ALboolean ALFWShutdownOpenAL()
-{
-    ALCcontext *pContext;
-    ALCdevice *pDevice;
+ALboolean ALFWShutdownOpenAL() {
+    ALCcontext* pContext;
+    ALCdevice* pDevice;
 
     pContext = alcGetCurrentContext();
     pDevice = alcGetContextsDevice(pContext);
-    
+
     alcMakeContextCurrent(nullptr);
     alcDestroyContext(pContext);
     alcCloseDevice(pDevice);
@@ -160,24 +149,21 @@ ALboolean ALFWShutdownOpenAL()
     return AL_TRUE;
 }
 
-ALboolean ALFWLoadWaveToBuffer(const char *szWaveFile, ALuint uiBufferID, ALenum eXRAMBufferMode)
-{
-    WAVEID            WaveID;
-    ALint            iDataSize, iFrequency;
-    ALenum            eBufferFormat;
-    ALchar            *pData;
-    ALboolean        bReturn;
+ALboolean ALFWLoadWaveToBuffer(const char* szWaveFile, ALuint uiBufferID, ALenum eXRAMBufferMode) {
+    WAVEID WaveID;
+    ALint iDataSize, iFrequency;
+    ALenum eBufferFormat;
+    ALchar* pData;
+    ALboolean bReturn;
 
     bReturn = AL_FALSE;
-    if (g_pWaveLoader)
-    {
-        if (SUCCEEDED(g_pWaveLoader->LoadWaveFile(szWaveFile, &WaveID)))
-        {
+    if (g_pWaveLoader) {
+        if (SUCCEEDED(g_pWaveLoader->LoadWaveFile(szWaveFile, &WaveID))) {
             if ((SUCCEEDED(g_pWaveLoader->GetWaveSize(WaveID, (unsigned long*)&iDataSize))) &&
                 (SUCCEEDED(g_pWaveLoader->GetWaveData(WaveID, (void**)&pData))) &&
                 (SUCCEEDED(g_pWaveLoader->GetWaveFrequency(WaveID, (unsigned long*)&iFrequency))) &&
-                (SUCCEEDED(g_pWaveLoader->GetWaveALBufferFormat(WaveID, &alGetEnumValue, (unsigned long*)&eBufferFormat))))
-            {
+                (SUCCEEDED(g_pWaveLoader->GetWaveALBufferFormat(WaveID, &alGetEnumValue, (unsigned long*)&eBufferFormat)
+                ))) {
                 // Set XRAM Mode (if application)
                 if (eaxSetBufferMode && eXRAMBufferMode)
                     eaxSetBufferMode(1, &uiBufferID, eXRAMBufferMode);
@@ -195,40 +181,32 @@ ALboolean ALFWLoadWaveToBuffer(const char *szWaveFile, ALuint uiBufferID, ALenum
     return bReturn;
 }
 
-void ALFWprintf( const char* x, ... )
-{
+void ALFWprintf(const char* x, ...) {
     va_list args;
     va_start( args, x );
-    vprintf( x, args ); 
+    vprintf(x, args);
     va_end( args );
 }
 
 ALchar fullPath[_MAX_PATH];
-ALchar *ALFWaddMediaPath(const ALchar *filename)
-{
+ALchar* ALFWaddMediaPath(const ALchar* filename) {
     sprintf_s(fullPath, "%s%s", "..\\..\\Media\\", filename);
     return fullPath;
 }
 
-ALint ALFWKeyPress(void)
-{
-    return _kbhit();
-}
+ALint ALFWKeyPress(void) { return _kbhit(); }
 
 // Extension Queries
 
-ALboolean ALFWIsXRAMSupported()
-{
+ALboolean ALFWIsXRAMSupported() {
     ALboolean bXRAM = AL_FALSE;
-    
-    if (alIsExtensionPresent("EAX-RAM") == AL_TRUE)
-    {
+
+    if (alIsExtensionPresent("EAX-RAM") == AL_TRUE) {
         // Get X-RAM Function pointers
         eaxSetBufferMode = (EAXSetBufferMode)alGetProcAddress("EAXSetBufferMode");
         eaxGetBufferMode = (EAXGetBufferMode)alGetProcAddress("EAXGetBufferMode");
 
-        if (eaxSetBufferMode && eaxGetBufferMode)
-        {
+        if (eaxSetBufferMode && eaxGetBufferMode) {
             eXRAMSize = alGetEnumValue("AL_EAX_RAM_SIZE");
             eXRAMFree = alGetEnumValue("AL_EAX_RAM_FREE");
             eXRAMAuto = alGetEnumValue("AL_STORAGE_AUTOMATIC");
@@ -243,21 +221,19 @@ ALboolean ALFWIsXRAMSupported()
     return bXRAM;
 }
 
-ALboolean ALFWIsEFXSupported()
-{
-    ALCdevice *pDevice = nullptr;
-    ALCcontext *pContext = nullptr;
+ALboolean ALFWIsEFXSupported() {
+    ALCdevice* pDevice = nullptr;
+    ALCcontext* pContext = nullptr;
     ALboolean bEFXSupport = AL_FALSE;
 
     pContext = alcGetCurrentContext();
     pDevice = alcGetContextsDevice(pContext);
 
-    if (alcIsExtensionPresent(pDevice, (ALCchar*)ALC_EXT_EFX_NAME))
-    {
+    if (alcIsExtensionPresent(pDevice, (ALCchar*)ALC_EXT_EFX_NAME)) {
         // Get function pointers
         alGenEffects = (LPALGENEFFECTS)alGetProcAddress("alGenEffects");
-        alDeleteEffects = (LPALDELETEEFFECTS )alGetProcAddress("alDeleteEffects");
-        alIsEffect = (LPALISEFFECT )alGetProcAddress("alIsEffect");
+        alDeleteEffects = (LPALDELETEEFFECTS)alGetProcAddress("alDeleteEffects");
+        alIsEffect = (LPALISEFFECT)alGetProcAddress("alIsEffect");
         alEffecti = (LPALEFFECTI)alGetProcAddress("alEffecti");
         alEffectiv = (LPALEFFECTIV)alGetProcAddress("alEffectiv");
         alEffectf = (LPALEFFECTF)alGetProcAddress("alEffectf");
@@ -273,10 +249,10 @@ ALboolean ALFWIsEFXSupported()
         alFilteriv = (LPALFILTERIV)alGetProcAddress("alFilteriv");
         alFilterf = (LPALFILTERF)alGetProcAddress("alFilterf");
         alFilterfv = (LPALFILTERFV)alGetProcAddress("alFilterfv");
-        alGetFilteri = (LPALGETFILTERI )alGetProcAddress("alGetFilteri");
-        alGetFilteriv= (LPALGETFILTERIV )alGetProcAddress("alGetFilteriv");
-        alGetFilterf = (LPALGETFILTERF )alGetProcAddress("alGetFilterf");
-        alGetFilterfv= (LPALGETFILTERFV )alGetProcAddress("alGetFilterfv");
+        alGetFilteri = (LPALGETFILTERI)alGetProcAddress("alGetFilteri");
+        alGetFilteriv = (LPALGETFILTERIV)alGetProcAddress("alGetFilteriv");
+        alGetFilterf = (LPALGETFILTERF)alGetProcAddress("alGetFilterf");
+        alGetFilterfv = (LPALGETFILTERFV)alGetProcAddress("alGetFilterfv");
         alGenAuxiliaryEffectSlots = (LPALGENAUXILIARYEFFECTSLOTS)alGetProcAddress("alGenAuxiliaryEffectSlots");
         alDeleteAuxiliaryEffectSlots = (LPALDELETEAUXILIARYEFFECTSLOTS)alGetProcAddress("alDeleteAuxiliaryEffectSlots");
         alIsAuxiliaryEffectSlot = (LPALISAUXILIARYEFFECTSLOT)alGetProcAddress("alIsAuxiliaryEffectSlot");
@@ -289,11 +265,11 @@ ALboolean ALFWIsEFXSupported()
         alGetAuxiliaryEffectSlotf = (LPALGETAUXILIARYEFFECTSLOTF)alGetProcAddress("alGetAuxiliaryEffectSlotf");
         alGetAuxiliaryEffectSlotfv = (LPALGETAUXILIARYEFFECTSLOTFV)alGetProcAddress("alGetAuxiliaryEffectSlotfv");
 
-        if (alGenEffects &&    alDeleteEffects && alIsEffect && alEffecti && alEffectiv &&    alEffectf &&
-            alEffectfv && alGetEffecti && alGetEffectiv && alGetEffectf && alGetEffectfv &&    alGenFilters &&
-            alDeleteFilters && alIsFilter && alFilteri && alFilteriv &&    alFilterf && alFilterfv &&
-            alGetFilteri &&    alGetFilteriv && alGetFilterf && alGetFilterfv && alGenAuxiliaryEffectSlots &&
-            alDeleteAuxiliaryEffectSlots &&    alIsAuxiliaryEffectSlot && alAuxiliaryEffectSloti &&
+        if (alGenEffects && alDeleteEffects && alIsEffect && alEffecti && alEffectiv && alEffectf &&
+            alEffectfv && alGetEffecti && alGetEffectiv && alGetEffectf && alGetEffectfv && alGenFilters &&
+            alDeleteFilters && alIsFilter && alFilteri && alFilteriv && alFilterf && alFilterfv &&
+            alGetFilteri && alGetFilteriv && alGetFilterf && alGetFilterfv && alGenAuxiliaryEffectSlots &&
+            alDeleteAuxiliaryEffectSlots && alIsAuxiliaryEffectSlot && alAuxiliaryEffectSloti &&
             alAuxiliaryEffectSlotiv && alAuxiliaryEffectSlotf && alAuxiliaryEffectSlotfv &&
             alGetAuxiliaryEffectSloti && alGetAuxiliaryEffectSlotiv && alGetAuxiliaryEffectSlotf &&
             alGetAuxiliaryEffectSlotfv)

@@ -1,3 +1,22 @@
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "Chunk.h"
 #include "WorldGen.h"
 #include "World.h"
@@ -16,11 +35,12 @@ namespace Renderer {
 }
 
 namespace World {
-
     struct HMapManager {
         int H[16][16];
         int low, high;
-        HMapManager() {};
+
+        HMapManager() { };
+
         HMapManager(int cx, int cz) {
             int l = MAXINT, hi = WorldGen::WaterLevel, h;
             for (int x = 0; x < 16; ++x) {
@@ -31,20 +51,19 @@ namespace World {
                     H[x][z] = h;
                 }
             }
-            low = (l - 21) / 16, high = (hi + 16) / 16; 
+            low = (l - 21) / 16, high = (hi + 16) / 16;
         }
     };
 
     double Chunk::relBaseX, Chunk::relBaseY, Chunk::relBaseZ;
     Frustum Chunk::TestFrustum;
 
-    Chunk::Chunk(int cxi, int cyi, int czi, ChunkID idi) : cx(cxi), cy(cyi), cz(czi), id(idi),
-        mIsModified(false), mIsEmpty(false), mIsUpdated(false), mIsRenderBuilt(false), mIsDetailGenerated(false), loadAnim(0.0), vertexes{ 0 }, vbuffer{ 0 } {
-        mAABB = getBaseAABB();
-    }
+    Chunk::Chunk(int cxi, int cyi, int czi, ChunkID idi) : cx(cxi), cy(cyi), cz(czi), mIsEmpty(false),
+                                                           mIsUpdated(false), mIsRenderBuilt(false), mIsModified(false),
+                                                           mIsDetailGenerated(false), id(idi), vertexes{0}, vbuffer{0},
+                                                           loadAnim(0.0) { mAABB = getBaseAABB(); }
 
-    Chunk::~Chunk()
-    {
+    Chunk::~Chunk() {
         unloadedChunksCount++;
         SaveToFile();
         destroyRender();
@@ -84,8 +103,12 @@ namespace World {
         if (cy < cur.low) {
             std::fill_n(mBlocks, 4096, Blocks::ROCK);
             std::fill_n(mBrightness, 4096, BrightnessMin);
-            if (cy == 0) for (int x = 0; x < 16; x++) for (int z = 0; z < 16; z++) mBlocks[x * 256 + z] = Blocks::BEDROCK;
-            mIsEmpty = false; 
+            if (cy == 0)
+                for (int x = 0; x < 16; x++)
+                    for (int z = 0; z < 16; z++)
+                        mBlocks[x * 256 + z] = Blocks::
+                            BEDROCK;
+            mIsEmpty = false;
             return;
         }
 
@@ -111,20 +134,26 @@ namespace World {
                     if (h >= 0 && h < 16) mBlocks[(h << 4) + base] = Blocks::GRASS;
                     //Dirt layer
                     maxh = std::min(std::max(0, h), 16);
-                    for (int y = std::min(std::max(0, h - 5), 16); y < maxh; ++y) mBlocks[(y << 4) + base] = Blocks::DIRT;
+                    for (int y = std::min(std::max(0, h - 5), 16); y < maxh; ++y)
+                        mBlocks[(y << 4) + base] = Blocks::
+                            DIRT;
                 }
                 else {
                     //Sand layer
                     maxh = std::min(std::max(0, h + 1), 16);
-                    for (int y = std::min(std::max(0, h - 5), 16); y < maxh; ++y) mBlocks[(y << 4) + base] = Blocks::SAND;
+                    for (int y = std::min(std::max(0, h - 5), 16); y < maxh; ++y)
+                        mBlocks[(y << 4) + base] = Blocks::
+                            SAND;
                     //Water layer
-                    minh = std::min(std::max(0, h + 1), 16); maxh = std::min(std::max(0, wh + 1), 16);
+                    minh = std::min(std::max(0, h + 1), 16);
+                    maxh = std::min(std::max(0, wh + 1), 16);
                     cur_br = BrightnessMax - (WorldGen::WaterLevel - (maxh - 1 + (cy << 4))) * 2;
                     if (cur_br < BrightnessMin) cur_br = BrightnessMin;
                     for (int y = maxh - 1; y >= minh; --y) {
                         mBlocks[(y << 4) + base] = Blocks::WATER;
                         mBrightness[(y << 4) + base] = (Brightness)cur_br;
-                        cur_br -= 2; if (cur_br < BrightnessMin) cur_br = BrightnessMin;
+                        cur_br -= 2;
+                        if (cur_br < BrightnessMin) cur_br = BrightnessMin;
                     }
                 }
                 //Rock layer
@@ -158,15 +187,15 @@ namespace World {
 
     void Chunk::build(bool initIfEmpty) {
         buildTerrain(initIfEmpty);
-        if (!mIsEmpty) 
+        if (!mIsEmpty)
             buildDetail();
         mIsModified = false;
     }
 
     void Chunk::load(bool initIfEmpty) {
-        if (!LoadFromFile()) 
+        if (!LoadFromFile())
             build(initIfEmpty);
-        if (!mIsEmpty) 
+        if (!mIsEmpty)
             mIsUpdated = true;
     }
 
@@ -180,7 +209,7 @@ namespace World {
         return openChunkFile;
     }
 
-    void Chunk::SaveToFile(){
+    void Chunk::SaveToFile() {
         if (mIsModified) {
             std::ofstream file(getChunkPath(), std::ios::out | std::ios::binary);
             file.write((char*)mBlocks, 4096 * sizeof(Block));
@@ -197,7 +226,7 @@ namespace World {
                     if (x && y && z)
                         if (!chunkLoaded(cx + x, cy + y, cz + z))
                             return;
-        
+
         rebuiltChunks++;
         updatedChunks++;
 
@@ -205,12 +234,12 @@ namespace World {
             mIsRenderBuilt = true;
             loadAnim = cy * 16.0f + 16.0f;
         }
-        
-        if (MergeFace) 
+
+        if (MergeFace)
             ChunkRenderer::MergeFaceRender(this);
-        else 
+        else
             ChunkRenderer::RenderChunk(this);
-        if (Renderer::AdvancedRender) 
+        if (Renderer::AdvancedRender)
             ChunkRenderer::RenderDepthModel(this);
 
         mIsUpdated = false;
@@ -226,7 +255,7 @@ namespace World {
         mIsRenderBuilt = false;
     }
 
-    Hitbox::AABB Chunk::getBaseAABB(){
+    Hitbox::AABB Chunk::getBaseAABB() {
         Hitbox::AABB ret;
         ret.xmin = cx * 16 - 0.5;
         ret.ymin = cy * 16 - 0.5;
@@ -247,5 +276,4 @@ namespace World {
         ret.zmax = (float)(mAABB.zmax - relBaseZ);
         return ret;
     }
-    
 }

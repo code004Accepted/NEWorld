@@ -1,4 +1,23 @@
-﻿#include "World.h"
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "World.h"
 #include "Textures.h"
 #include "Renderer.h"
 #include "WorldGen.h"
@@ -7,9 +26,8 @@
 #include <algorithm>
 
 namespace World {
-
     std::string worldname;
-    Brightness skylight = 15;         //Sky light level
+    Brightness skylight = 15; //Sky light level
     Chunk* EmptyChunkPtr = (Chunk*)~0;
     unsigned int EmptyBuffer;
 
@@ -35,7 +53,8 @@ namespace World {
         std::stringstream ss;
         ss << "Worlds/" << worldname << "/";
         _mkdir(ss.str().c_str());
-        ss.clear(); ss.str("");
+        ss.clear();
+        ss.str("");
         ss << "Worlds/" << worldname << "/chunks";
         _mkdir(ss.str().c_str());
         EmptyChunkPtr = (Chunk*)~0;
@@ -59,7 +78,7 @@ namespace World {
 
     Chunk* AddChunk(int x, int y, int z) {
         ChunkID cid;
-        cid = getChunkID(x, y, z);  //Chunk ID
+        cid = getChunkID(x, y, z); //Chunk ID
         std::pair<int, int> pos = binary_search_chunks(chunks, loadedChunks, cid);
         if (loadedChunks > 0 && chunks[pos.second]->id == cid) {
             printf("[Console][Error]");
@@ -68,9 +87,7 @@ namespace World {
         }
 
         ExpandChunkArray(1);
-        for (int i = loadedChunks - 1; i >= pos.first + 1; i--) {
-            chunks[i] = chunks[i - 1];
-        }
+        for (int i = loadedChunks - 1; i >= pos.first + 1; i--) { chunks[i] = chunks[i - 1]; }
         chunks[pos.first] = new Chunk(x, y, z, cid);
         cpCacheID = cid;
         cpCachePtr = chunks[pos.first];
@@ -79,7 +96,7 @@ namespace World {
     }
 
     void DeleteChunk(int x, int y, int z) {
-        int index = World::getChunkPtrIndex(x, y, z);
+        int index = getChunkPtrIndex(x, y, z);
         delete chunks[index];
         for (int i = index; i < loadedChunks - 1; i++)
             chunks[i] = chunks[i + 1];
@@ -98,29 +115,26 @@ namespace World {
     Chunk* getChunkPtr(int x, int y, int z) {
         ChunkID cid = getChunkID(x, y, z);
         if (cpCacheID == cid && cpCachePtr != nullptr) return cpCachePtr;
-        else {
-            Chunk* ret = cpArray.get(x, y, z);
-            if (ret != nullptr) {
+        Chunk* ret = cpArray.get(x, y, z);
+        if (ret != nullptr) {
+            cpCacheID = cid;
+            cpCachePtr = ret;
+            return ret;
+        }
+        if (loadedChunks > 0) {
+            std::pair<int, int> pos = binary_search_chunks(chunks, loadedChunks, cid);
+            if (chunks[pos.second]->id == cid) {
+                ret = chunks[pos.second];
                 cpCacheID = cid;
                 cpCachePtr = ret;
+                cpArray.set(x, y, z, chunks[pos.second]);
                 return ret;
-            }
-            if (loadedChunks > 0) {
-                std::pair<int, int> pos = binary_search_chunks(chunks, loadedChunks, cid);
-                if (chunks[pos.second]->id == cid) {
-                    ret = chunks[pos.second];
-                    cpCacheID = cid;
-                    cpCachePtr = ret;
-                    cpArray.set(x, y, z, chunks[pos.second]);
-                    return ret;
-                }
             }
         }
         return nullptr;
     }
 
     void ExpandChunkArray(int cc) {
-
         loadedChunks += cc;
         if (loadedChunks > chunkArraySize) {
             if (chunkArraySize < 1024) chunkArraySize = 1024;
@@ -135,34 +149,36 @@ namespace World {
         }
     }
 
-    void ReduceChunkArray(int cc) {
-        loadedChunks -= cc;
-    }
+    void ReduceChunkArray(int cc) { loadedChunks -= cc; }
 
     void renderblock(int x, int y, int z, Chunk* chunkptr) {
-
         double colors, color1, color2, color3, color4, tcx, tcy, size, EPS = 0.0;
         int cx = chunkptr->cx, cy = chunkptr->cy, cz = chunkptr->cz;
         int gx = cx * 16 + x, gy = cy * 16 + y, gz = cz * 16 + z;
-        Block blk[7] = { chunkptr->getBlock(x,y,z) ,
+        Block blk[7] = {
+            chunkptr->getBlock(x, y, z),
             z < 15 ? chunkptr->getBlock(x, y, z + 1) : getBlock(gx, gy, gz + 1, Blocks::ROCK),
-            z>0 ? chunkptr->getBlock(x, y, z - 1) : getBlock(gx, gy, gz - 1, Blocks::ROCK),
+            z > 0 ? chunkptr->getBlock(x, y, z - 1) : getBlock(gx, gy, gz - 1, Blocks::ROCK),
             x < 15 ? chunkptr->getBlock(x + 1, y, z) : getBlock(gx + 1, gy, gz, Blocks::ROCK),
-            x>0 ? chunkptr->getBlock(x - 1, y, z) : getBlock(gx - 1, gy, gz, Blocks::ROCK),
+            x > 0 ? chunkptr->getBlock(x - 1, y, z) : getBlock(gx - 1, gy, gz, Blocks::ROCK),
             y < 15 ? chunkptr->getBlock(x, y + 1, z) : getBlock(gx, gy + 1, gz, Blocks::ROCK),
-            y>0 ? chunkptr->getBlock(x, y - 1, z) : getBlock(gx, gy - 1, gz, Blocks::ROCK) };
+            y > 0 ? chunkptr->getBlock(x, y - 1, z) : getBlock(gx, gy - 1, gz, Blocks::ROCK)
+        };
 
-        Brightness brt[7] = { chunkptr->getBrightness(x,y,z) ,
-            z < 15 ? chunkptr->getBrightness(x,y,z + 1) : getBrightness(gx,gy,gz + 1),
-            z>0 ? chunkptr->getBrightness(x,y,z - 1) : getBrightness(gx,gy,gz - 1),
-            x < 15 ? chunkptr->getBrightness(x + 1,y,z) : getBrightness(gx + 1,gy,gz),
-            x>0 ? chunkptr->getBrightness(x - 1,y,z) : getBrightness(gx - 1,gy,gz),
-            y < 15 ? chunkptr->getBrightness(x,y + 1,z) : getBrightness(gx,gy + 1,gz),
-            y>0 ? chunkptr->getBrightness(x,y - 1,z) : getBrightness(gx,gy - 1,gz) };
+        Brightness brt[7] = {
+            chunkptr->getBrightness(x, y, z),
+            z < 15 ? chunkptr->getBrightness(x, y, z + 1) : getBrightness(gx, gy, gz + 1),
+            z > 0 ? chunkptr->getBrightness(x, y, z - 1) : getBrightness(gx, gy, gz - 1),
+            x < 15 ? chunkptr->getBrightness(x + 1, y, z) : getBrightness(gx + 1, gy, gz),
+            x > 0 ? chunkptr->getBrightness(x - 1, y, z) : getBrightness(gx - 1, gy, gz),
+            y < 15 ? chunkptr->getBrightness(x, y + 1, z) : getBrightness(gx, gy + 1, gz),
+            y > 0 ? chunkptr->getBrightness(x, y - 1, z) : getBrightness(gx, gy - 1, gz)
+        };
 
         size = 1 / 8.0f - EPS;
 
-        if (NiceGrass && blk[0] == Blocks::GRASS && getBlock(gx, gy - 1, gz + 1, Blocks::ROCK, chunkptr) == Blocks::GRASS) {
+        if (NiceGrass && blk[0] == Blocks::GRASS && getBlock(gx, gy - 1, gz + 1, Blocks::ROCK, chunkptr) == Blocks::
+            GRASS) {
             tcx = Textures::getTexcoordX(blk[0], 1) + EPS;
             tcy = Textures::getTexcoordY(blk[0], 1) + EPS;
         }
@@ -172,16 +188,30 @@ namespace World {
         }
 
         // Front Face
-        if (!(BlockInfo(blk[1]).isOpaque() || (blk[1] == blk[0] && BlockInfo(blk[0]).isOpaque() == false)) || blk[0] == Blocks::LEAF) {
-
+        if (!(BlockInfo(blk[1])
+                .
+                isOpaque() || (blk[1] == blk[0] &&
+                    !BlockInfo(blk[0]). isOpaque()
+                )
+            )
+            ||
+            blk[0] == Blocks::LEAF
+        ) {
             colors = brt[1];
-            color1 = colors; color2 = colors; color3 = colors; color4 = colors;
+            color1 = colors;
+            color2 = colors;
+            color3 = colors;
+            color4 = colors;
 
             if (blk[0] != Blocks::GLOWSTONE && SmoothLighting) {
-                color1 = (colors + getBrightness(gx, gy - 1, gz + 1) + getBrightness(gx - 1, gy, gz + 1) + getBrightness(gx - 1, gy - 1, gz + 1)) / 4.0;
-                color2 = (colors + getBrightness(gx, gy - 1, gz + 1) + getBrightness(gx + 1, gy, gz + 1) + getBrightness(gx + 1, gy - 1, gz + 1)) / 4.0;
-                color3 = (colors + getBrightness(gx, gy + 1, gz + 1) + getBrightness(gx + 1, gy, gz + 1) + getBrightness(gx + 1, gy + 1, gz + 1)) / 4.0;
-                color4 = (colors + getBrightness(gx, gy + 1, gz + 1) + getBrightness(gx - 1, gy, gz + 1) + getBrightness(gx - 1, gy + 1, gz + 1)) / 4.0;
+                color1 = (colors + getBrightness(gx, gy - 1, gz + 1) + getBrightness(gx - 1, gy, gz + 1) +
+                    getBrightness(gx - 1, gy - 1, gz + 1)) / 4.0;
+                color2 = (colors + getBrightness(gx, gy - 1, gz + 1) + getBrightness(gx + 1, gy, gz + 1) +
+                    getBrightness(gx + 1, gy - 1, gz + 1)) / 4.0;
+                color3 = (colors + getBrightness(gx, gy + 1, gz + 1) + getBrightness(gx + 1, gy, gz + 1) +
+                    getBrightness(gx + 1, gy + 1, gz + 1)) / 4.0;
+                color4 = (colors + getBrightness(gx, gy + 1, gz + 1) + getBrightness(gx - 1, gy, gz + 1) +
+                    getBrightness(gx - 1, gy + 1, gz + 1)) / 4.0;
             }
 
             color1 /= BrightnessMax;
@@ -197,17 +227,21 @@ namespace World {
 
             if (Renderer::AdvancedRender) Renderer::Attrib1f(0.0f);
             Renderer::Color3d(color1, color1, color1);
-            Renderer::TexCoord2d(tcx, tcy); Renderer::Vertex3d(-0.5 + x, -0.5 + y, 0.5 + z);
+            Renderer::TexCoord2d(tcx, tcy);
+            Renderer::Vertex3d(-0.5 + x, -0.5 + y, 0.5 + z);
             Renderer::Color3d(color2, color2, color2);
-            Renderer::TexCoord2d(tcx + size, tcy); Renderer::Vertex3d(0.5 + x, -0.5 + y, 0.5 + z);
+            Renderer::TexCoord2d(tcx + size, tcy);
+            Renderer::Vertex3d(0.5 + x, -0.5 + y, 0.5 + z);
             Renderer::Color3d(color3, color3, color3);
-            Renderer::TexCoord2d(tcx + size, tcy + size); Renderer::Vertex3d(0.5 + x, 0.5 + y, 0.5 + z);
+            Renderer::TexCoord2d(tcx + size, tcy + size);
+            Renderer::Vertex3d(0.5 + x, 0.5 + y, 0.5 + z);
             Renderer::Color3d(color4, color4, color4);
-            Renderer::TexCoord2d(tcx, tcy + size); Renderer::Vertex3d(-0.5 + x, 0.5 + y, 0.5 + z);
-
+            Renderer::TexCoord2d(tcx, tcy + size);
+            Renderer::Vertex3d(-0.5 + x, 0.5 + y, 0.5 + z);
         }
 
-        if (NiceGrass && blk[0] == Blocks::GRASS && getBlock(gx, gy - 1, gz - 1, Blocks::ROCK, chunkptr) == Blocks::GRASS) {
+        if (NiceGrass && blk[0] == Blocks::GRASS && getBlock(gx, gy - 1, gz - 1, Blocks::ROCK, chunkptr) == Blocks::
+            GRASS) {
             tcx = Textures::getTexcoordX(blk[0], 1) + EPS;
             tcy = Textures::getTexcoordY(blk[0], 1) + EPS;
         }
@@ -217,16 +251,30 @@ namespace World {
         }
 
         // Back Face
-        if (!(BlockInfo(blk[2]).isOpaque() || (blk[2] == blk[0] && BlockInfo(blk[0]).isOpaque() == false)) || blk[0] == Blocks::LEAF) {
-
+        if (!(BlockInfo(blk[2])
+                .
+                isOpaque() || (blk[2] == blk[0] &&
+                    !BlockInfo(blk[0]). isOpaque()
+                )
+            )
+            ||
+            blk[0] == Blocks::LEAF
+        ) {
             colors = brt[2];
-            color1 = colors; color2 = colors; color3 = colors; color4 = colors;
+            color1 = colors;
+            color2 = colors;
+            color3 = colors;
+            color4 = colors;
 
             if (blk[0] != Blocks::GLOWSTONE && SmoothLighting) {
-                color1 = (colors + getBrightness(gx, gy - 1, gz - 1) + getBrightness(gx - 1, gy, gz - 1) + getBrightness(gx - 1, gy - 1, gz - 1)) / 4.0;
-                color2 = (colors + getBrightness(gx, gy + 1, gz - 1) + getBrightness(gx - 1, gy, gz - 1) + getBrightness(gx - 1, gy + 1, gz - 1)) / 4.0;
-                color3 = (colors + getBrightness(gx, gy + 1, gz - 1) + getBrightness(gx + 1, gy, gz - 1) + getBrightness(gx + 1, gy + 1, gz - 1)) / 4.0;
-                color4 = (colors + getBrightness(gx, gy - 1, gz - 1) + getBrightness(gx + 1, gy, gz - 1) + getBrightness(gx + 1, gy - 1, gz - 1)) / 4.0;
+                color1 = (colors + getBrightness(gx, gy - 1, gz - 1) + getBrightness(gx - 1, gy, gz - 1) +
+                    getBrightness(gx - 1, gy - 1, gz - 1)) / 4.0;
+                color2 = (colors + getBrightness(gx, gy + 1, gz - 1) + getBrightness(gx - 1, gy, gz - 1) +
+                    getBrightness(gx - 1, gy + 1, gz - 1)) / 4.0;
+                color3 = (colors + getBrightness(gx, gy + 1, gz - 1) + getBrightness(gx + 1, gy, gz - 1) +
+                    getBrightness(gx + 1, gy + 1, gz - 1)) / 4.0;
+                color4 = (colors + getBrightness(gx, gy - 1, gz - 1) + getBrightness(gx + 1, gy, gz - 1) +
+                    getBrightness(gx + 1, gy - 1, gz - 1)) / 4.0;
             }
 
             color1 /= BrightnessMax;
@@ -242,17 +290,21 @@ namespace World {
 
             if (Renderer::AdvancedRender) Renderer::Attrib1f(1.0f);
             Renderer::Color3d(color1, color1, color1);
-            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 0.0); Renderer::Vertex3d(-0.5 + x, -0.5 + y, -0.5 + z);
+            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 0.0);
+            Renderer::Vertex3d(-0.5 + x, -0.5 + y, -0.5 + z);
             Renderer::Color3d(color2, color2, color2);
-            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 1.0); Renderer::Vertex3d(-0.5 + x, 0.5 + y, -0.5 + z);
+            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 1.0);
+            Renderer::Vertex3d(-0.5 + x, 0.5 + y, -0.5 + z);
             Renderer::Color3d(color3, color3, color3);
-            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 1.0); Renderer::Vertex3d(0.5 + x, 0.5 + y, -0.5 + z);
+            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 1.0);
+            Renderer::Vertex3d(0.5 + x, 0.5 + y, -0.5 + z);
             Renderer::Color3d(color4, color4, color4);
-            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 0.0); Renderer::Vertex3d(0.5 + x, -0.5 + y, -0.5 + z);
-
+            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 0.0);
+            Renderer::Vertex3d(0.5 + x, -0.5 + y, -0.5 + z);
         }
 
-        if (NiceGrass && blk[0] == Blocks::GRASS && getBlock(gx + 1, gy - 1, gz, Blocks::ROCK, chunkptr) == Blocks::GRASS) {
+        if (NiceGrass && blk[0] == Blocks::GRASS && getBlock(gx + 1, gy - 1, gz, Blocks::ROCK, chunkptr) == Blocks::
+            GRASS) {
             tcx = Textures::getTexcoordX(blk[0], 1) + EPS;
             tcy = Textures::getTexcoordY(blk[0], 1) + EPS;
         }
@@ -262,16 +314,31 @@ namespace World {
         }
 
         // Right face
-        if (!(BlockInfo(blk[3]).isOpaque() || (blk[3] == blk[0] && !BlockInfo(blk[0]).isOpaque())) || blk[0] == Blocks::LEAF) {
-
+        if (!(BlockInfo(blk[3])
+                .
+                isOpaque() || (blk[3] == blk[0] && !
+                    BlockInfo(blk[0]).
+                    isOpaque()
+                )
+            )
+            ||
+            blk[0] == Blocks::LEAF
+        ) {
             colors = brt[3];
-            color1 = colors; color2 = colors; color3 = colors; color4 = colors;
+            color1 = colors;
+            color2 = colors;
+            color3 = colors;
+            color4 = colors;
 
             if (blk[0] != Blocks::GLOWSTONE && SmoothLighting) {
-                color1 = (colors + getBrightness(gx + 1, gy - 1, gz) + getBrightness(gx + 1, gy, gz - 1) + getBrightness(gx + 1, gy - 1, gz - 1)) / 4.0;
-                color2 = (colors + getBrightness(gx + 1, gy + 1, gz) + getBrightness(gx + 1, gy, gz - 1) + getBrightness(gx + 1, gy + 1, gz - 1)) / 4.0;
-                color3 = (colors + getBrightness(gx + 1, gy + 1, gz) + getBrightness(gx + 1, gy, gz + 1) + getBrightness(gx + 1, gy + 1, gz + 1)) / 4.0;
-                color4 = (colors + getBrightness(gx + 1, gy - 1, gz) + getBrightness(gx + 1, gy, gz + 1) + getBrightness(gx + 1, gy - 1, gz + 1)) / 4.0;
+                color1 = (colors + getBrightness(gx + 1, gy - 1, gz) + getBrightness(gx + 1, gy, gz - 1) +
+                    getBrightness(gx + 1, gy - 1, gz - 1)) / 4.0;
+                color2 = (colors + getBrightness(gx + 1, gy + 1, gz) + getBrightness(gx + 1, gy, gz - 1) +
+                    getBrightness(gx + 1, gy + 1, gz - 1)) / 4.0;
+                color3 = (colors + getBrightness(gx + 1, gy + 1, gz) + getBrightness(gx + 1, gy, gz + 1) +
+                    getBrightness(gx + 1, gy + 1, gz + 1)) / 4.0;
+                color4 = (colors + getBrightness(gx + 1, gy - 1, gz) + getBrightness(gx + 1, gy, gz + 1) +
+                    getBrightness(gx + 1, gy - 1, gz + 1)) / 4.0;
             }
 
             color1 /= BrightnessMax;
@@ -287,17 +354,21 @@ namespace World {
 
             if (Renderer::AdvancedRender) Renderer::Attrib1f(2.0f);
             Renderer::Color3d(color1, color1, color1);
-            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 0.0); Renderer::Vertex3d(0.5 + x, -0.5 + y, -0.5 + z);
+            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 0.0);
+            Renderer::Vertex3d(0.5 + x, -0.5 + y, -0.5 + z);
             Renderer::Color3d(color2, color2, color2);
-            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 1.0); Renderer::Vertex3d(0.5 + x, 0.5 + y, -0.5 + z);
+            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 1.0);
+            Renderer::Vertex3d(0.5 + x, 0.5 + y, -0.5 + z);
             Renderer::Color3d(color3, color3, color3);
-            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 1.0); Renderer::Vertex3d(0.5 + x, 0.5 + y, 0.5 + z);
+            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 1.0);
+            Renderer::Vertex3d(0.5 + x, 0.5 + y, 0.5 + z);
             Renderer::Color3d(color4, color4, color4);
-            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 0.0); Renderer::Vertex3d(0.5 + x, -0.5 + y, 0.5 + z);
-
+            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 0.0);
+            Renderer::Vertex3d(0.5 + x, -0.5 + y, 0.5 + z);
         }
 
-        if (NiceGrass && blk[0] == Blocks::GRASS && getBlock(gx - 1, gy - 1, gz, Blocks::ROCK, chunkptr) == Blocks::GRASS) {
+        if (NiceGrass && blk[0] == Blocks::GRASS && getBlock(gx - 1, gy - 1, gz, Blocks::ROCK, chunkptr) == Blocks::
+            GRASS) {
             tcx = Textures::getTexcoordX(blk[0], 1) + EPS;
             tcy = Textures::getTexcoordY(blk[0], 1) + EPS;
         }
@@ -307,16 +378,30 @@ namespace World {
         }
 
         // Left Face
-        if (!(BlockInfo(blk[4]).isOpaque() || (blk[4] == blk[0] && BlockInfo(blk[0]).isOpaque() == false)) || blk[0] == Blocks::LEAF) {
-
+        if (!(BlockInfo(blk[4])
+                .
+                isOpaque() || (blk[4] == blk[0] &&
+                    !BlockInfo(blk[0]). isOpaque()
+                )
+            )
+            ||
+            blk[0] == Blocks::LEAF
+        ) {
             colors = brt[4];
-            color1 = colors; color2 = colors; color3 = colors; color4 = colors;
+            color1 = colors;
+            color2 = colors;
+            color3 = colors;
+            color4 = colors;
 
             if (blk[0] != Blocks::GLOWSTONE && SmoothLighting) {
-                color1 = (colors + getBrightness(gx - 1, gy - 1, gz) + getBrightness(gx - 1, gy, gz - 1) + getBrightness(gx - 1, gy - 1, gz - 1)) / 4.0;
-                color2 = (colors + getBrightness(gx - 1, gy - 1, gz) + getBrightness(gx - 1, gy, gz + 1) + getBrightness(gx - 1, gy - 1, gz + 1)) / 4.0;
-                color3 = (colors + getBrightness(gx - 1, gy + 1, gz) + getBrightness(gx - 1, gy, gz + 1) + getBrightness(gx - 1, gy + 1, gz + 1)) / 4.0;
-                color4 = (colors + getBrightness(gx - 1, gy + 1, gz) + getBrightness(gx - 1, gy, gz - 1) + getBrightness(gx - 1, gy + 1, gz - 1)) / 4.0;
+                color1 = (colors + getBrightness(gx - 1, gy - 1, gz) + getBrightness(gx - 1, gy, gz - 1) +
+                    getBrightness(gx - 1, gy - 1, gz - 1)) / 4.0;
+                color2 = (colors + getBrightness(gx - 1, gy - 1, gz) + getBrightness(gx - 1, gy, gz + 1) +
+                    getBrightness(gx - 1, gy - 1, gz + 1)) / 4.0;
+                color3 = (colors + getBrightness(gx - 1, gy + 1, gz) + getBrightness(gx - 1, gy, gz + 1) +
+                    getBrightness(gx - 1, gy + 1, gz + 1)) / 4.0;
+                color4 = (colors + getBrightness(gx - 1, gy + 1, gz) + getBrightness(gx - 1, gy, gz - 1) +
+                    getBrightness(gx - 1, gy + 1, gz - 1)) / 4.0;
             }
 
             color1 /= BrightnessMax;
@@ -332,30 +417,47 @@ namespace World {
 
             if (Renderer::AdvancedRender) Renderer::Attrib1f(3.0f);
             Renderer::Color3d(color1, color1, color1);
-            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 0.0); Renderer::Vertex3d(-0.5 + x, -0.5 + y, -0.5 + z);
+            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 0.0);
+            Renderer::Vertex3d(-0.5 + x, -0.5 + y, -0.5 + z);
             Renderer::Color3d(color2, color2, color2);
-            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 0.0); Renderer::Vertex3d(-0.5 + x, -0.5 + y, 0.5 + z);
+            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 0.0);
+            Renderer::Vertex3d(-0.5 + x, -0.5 + y, 0.5 + z);
             Renderer::Color3d(color3, color3, color3);
-            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 1.0); Renderer::Vertex3d(-0.5 + x, 0.5 + y, 0.5 + z);
+            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 1.0);
+            Renderer::Vertex3d(-0.5 + x, 0.5 + y, 0.5 + z);
             Renderer::Color3d(color4, color4, color4);
-            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 1.0); Renderer::Vertex3d(-0.5 + x, 0.5 + y, -0.5 + z);
-
+            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 1.0);
+            Renderer::Vertex3d(-0.5 + x, 0.5 + y, -0.5 + z);
         }
 
         tcx = Textures::getTexcoordX(blk[0], 1);
         tcy = Textures::getTexcoordY(blk[0], 1);
 
         // Top Face
-        if (!(BlockInfo(blk[5]).isOpaque() || (blk[5] == blk[0] && BlockInfo(blk[0]).isOpaque() == false)) || blk[0] == Blocks::LEAF) {
-
+        if (!(BlockInfo(blk[5])
+                .
+                isOpaque() || (blk[5] == blk[0] &&
+                    !BlockInfo(blk[0]). isOpaque()
+                )
+            )
+            ||
+            blk[0] == Blocks::LEAF
+        ) {
             colors = brt[5];
-            color1 = colors; color2 = colors; color3 = colors; color4 = colors;
+            color1 = colors;
+            color2 = colors;
+            color3 = colors;
+            color4 = colors;
 
             if (blk[0] != Blocks::GLOWSTONE && SmoothLighting) {
-                color1 = (color1 + getBrightness(gx, gy + 1, gz - 1) + getBrightness(gx - 1, gy + 1, gz) + getBrightness(gx - 1, gy + 1, gz - 1)) / 4.0;
-                color2 = (color2 + getBrightness(gx, gy + 1, gz + 1) + getBrightness(gx - 1, gy + 1, gz) + getBrightness(gx - 1, gy + 1, gz + 1)) / 4.0;
-                color3 = (color3 + getBrightness(gx, gy + 1, gz + 1) + getBrightness(gx + 1, gy + 1, gz) + getBrightness(gx + 1, gy + 1, gz + 1)) / 4.0;
-                color4 = (color4 + getBrightness(gx, gy + 1, gz - 1) + getBrightness(gx + 1, gy + 1, gz) + getBrightness(gx + 1, gy + 1, gz - 1)) / 4.0;
+                color1 = (color1 + getBrightness(gx, gy + 1, gz - 1) + getBrightness(gx - 1, gy + 1, gz) +
+                    getBrightness(gx - 1, gy + 1, gz - 1)) / 4.0;
+                color2 = (color2 + getBrightness(gx, gy + 1, gz + 1) + getBrightness(gx - 1, gy + 1, gz) +
+                    getBrightness(gx - 1, gy + 1, gz + 1)) / 4.0;
+                color3 = (color3 + getBrightness(gx, gy + 1, gz + 1) + getBrightness(gx + 1, gy + 1, gz) +
+                    getBrightness(gx + 1, gy + 1, gz + 1)) / 4.0;
+                color4 = (color4 + getBrightness(gx, gy + 1, gz - 1) + getBrightness(gx + 1, gy + 1, gz) +
+                    getBrightness(gx + 1, gy + 1, gz - 1)) / 4.0;
             }
 
             color1 /= BrightnessMax;
@@ -365,30 +467,47 @@ namespace World {
 
             if (Renderer::AdvancedRender) Renderer::Attrib1f(4.0f);
             Renderer::Color3d(color1, color1, color1);
-            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 1.0); Renderer::Vertex3d(-0.5 + x, 0.5 + y, -0.5 + z);
+            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 1.0);
+            Renderer::Vertex3d(-0.5 + x, 0.5 + y, -0.5 + z);
             Renderer::Color3d(color2, color2, color2);
-            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 0.0); Renderer::Vertex3d(-0.5 + x, 0.5 + y, 0.5 + z);
+            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 0.0);
+            Renderer::Vertex3d(-0.5 + x, 0.5 + y, 0.5 + z);
             Renderer::Color3d(color3, color3, color3);
-            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 0.0); Renderer::Vertex3d(0.5 + x, 0.5 + y, 0.5 + z);
+            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 0.0);
+            Renderer::Vertex3d(0.5 + x, 0.5 + y, 0.5 + z);
             Renderer::Color3d(color4, color4, color4);
-            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 1.0); Renderer::Vertex3d(0.5 + x, 0.5 + y, -0.5 + z);
-
+            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 1.0);
+            Renderer::Vertex3d(0.5 + x, 0.5 + y, -0.5 + z);
         }
 
         tcx = Textures::getTexcoordX(blk[0], 3);
         tcy = Textures::getTexcoordY(blk[0], 3);
 
         // Bottom Face
-        if (!(BlockInfo(blk[6]).isOpaque() || (blk[6] == blk[0] && BlockInfo(blk[0]).isOpaque() == false)) || blk[0] == Blocks::LEAF) {
-
+        if (!(BlockInfo(blk[6])
+                .
+                isOpaque() || (blk[6] == blk[0] &&
+                    !BlockInfo(blk[0]). isOpaque()
+                )
+            )
+            ||
+            blk[0] == Blocks::LEAF
+        ) {
             colors = brt[6];
-            color1 = colors; color2 = colors; color3 = colors; color4 = colors;
+            color1 = colors;
+            color2 = colors;
+            color3 = colors;
+            color4 = colors;
 
             if (blk[0] != Blocks::GLOWSTONE && SmoothLighting) {
-                color1 = (colors + getBrightness(gx, gy - 1, gz - 1) + getBrightness(gx - 1, gy - 1, gz) + getBrightness(gx - 1, gy - 1, gz - 1)) / 4.0;
-                color2 = (colors + getBrightness(gx, gy - 1, gz - 1) + getBrightness(gx + 1, gy - 1, gz) + getBrightness(gx + 1, gy - 1, gz - 1)) / 4.0;
-                color3 = (colors + getBrightness(gx, gy - 1, gz + 1) + getBrightness(gx + 1, gy - 1, gz) + getBrightness(gx + 1, gy - 1, gz + 1)) / 4.0;
-                color4 = (colors + getBrightness(gx, gy - 1, gz + 1) + getBrightness(gx - 1, gy - 1, gz) + getBrightness(gx - 1, gy - 1, gz + 1)) / 4.0;
+                color1 = (colors + getBrightness(gx, gy - 1, gz - 1) + getBrightness(gx - 1, gy - 1, gz) +
+                    getBrightness(gx - 1, gy - 1, gz - 1)) / 4.0;
+                color2 = (colors + getBrightness(gx, gy - 1, gz - 1) + getBrightness(gx + 1, gy - 1, gz) +
+                    getBrightness(gx + 1, gy - 1, gz - 1)) / 4.0;
+                color3 = (colors + getBrightness(gx, gy - 1, gz + 1) + getBrightness(gx + 1, gy - 1, gz) +
+                    getBrightness(gx + 1, gy - 1, gz + 1)) / 4.0;
+                color4 = (colors + getBrightness(gx, gy - 1, gz + 1) + getBrightness(gx - 1, gy - 1, gz) +
+                    getBrightness(gx - 1, gy - 1, gz + 1)) / 4.0;
             }
 
             color1 /= BrightnessMax;
@@ -398,14 +517,17 @@ namespace World {
 
             if (Renderer::AdvancedRender) Renderer::Attrib1f(5.0f);
             Renderer::Color3d(color1, color1, color1);
-            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 1.0); Renderer::Vertex3d(-0.5 + x, -0.5 + y, -0.5 + z);
+            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 1.0);
+            Renderer::Vertex3d(-0.5 + x, -0.5 + y, -0.5 + z);
             Renderer::Color3d(color2, color2, color2);
-            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 1.0); Renderer::Vertex3d(0.5 + x, -0.5 + y, -0.5 + z);
+            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 1.0);
+            Renderer::Vertex3d(0.5 + x, -0.5 + y, -0.5 + z);
             Renderer::Color3d(color3, color3, color3);
-            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 0.0); Renderer::Vertex3d(0.5 + x, -0.5 + y, 0.5 + z);
+            Renderer::TexCoord2d(tcx + size * 0.0, tcy + size * 0.0);
+            Renderer::Vertex3d(0.5 + x, -0.5 + y, 0.5 + z);
             Renderer::Color3d(color4, color4, color4);
-            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 0.0); Renderer::Vertex3d(-0.5 + x, -0.5 + y, 0.5 + z);
-
+            Renderer::TexCoord2d(tcx + size * 1.0, tcy + size * 0.0);
+            Renderer::Vertex3d(-0.5 + x, -0.5 + y, 0.5 + z);
         }
     }
 
@@ -417,11 +539,17 @@ namespace World {
         for (int a = int(box.xmin + 0.5) - 1; a <= int(box.xmax + 0.5) + 1; a++) {
             for (int b = int(box.ymin + 0.5) - 1; b <= int(box.ymax + 0.5) + 1; b++) {
                 for (int c = int(box.zmin + 0.5) - 1; c <= int(box.zmax + 0.5) + 1; c++) {
-                    if (BlockInfo(getBlock(a, b, c)).isSolid()) {
-                        blockbox.xmin = a - 0.5; blockbox.xmax = a + 0.5;
-                        blockbox.ymin = b - 0.5; blockbox.ymax = b + 0.5;
-                        blockbox.zmin = c - 0.5; blockbox.zmax = c + 0.5;
-                        if (Hitbox::Hit(box, blockbox)) Hitboxes.push_back(blockbox);
+                    if (BlockInfo(getBlock(a, b, c))
+                        .
+                        isSolid()
+                    ) {
+                        blockbox.xmin = a - 0.5;
+                        blockbox.xmax = a + 0.5;
+                        blockbox.ymin = b - 0.5;
+                        blockbox.ymax = b + 0.5;
+                        blockbox.zmin = c - 0.5;
+                        blockbox.zmax = c + 0.5;
+                        if (Hit(box, blockbox)) Hitboxes.push_back(blockbox);
                     }
                 }
             }
@@ -441,7 +569,7 @@ namespace World {
                         blockbox.ymax = b + 0.5;
                         blockbox.zmin = c - 0.5;
                         blockbox.zmax = c + 0.5;
-                        if (Hitbox::Hit(box, blockbox)) return true;
+                        if (Hit(box, blockbox)) return true;
                     }
                 }
             }
@@ -466,71 +594,75 @@ namespace World {
 
         Chunk* cptr = getChunkPtr(cx, cy, cz);
         if (cptr != nullptr) {
-
             if (cptr == EmptyChunkPtr) {
-                cptr = World::AddChunk(cx, cy, cz);
-                cptr->load(); cptr->mIsEmpty = false;
+                cptr = AddChunk(cx, cy, cz);
+                cptr->load();
+                cptr->mIsEmpty = false;
             }
             Brightness oldbrightness = cptr->getBrightness(bx, by, bz);
             bool skylighted = true;
             int yi, cyi;
-            yi = y + 1; cyi = getChunkPos(yi);
+            yi = y + 1;
+            cyi = getChunkPos(yi);
             if (y < 0) skylighted = false;
             else {
                 while (chunkLoaded(cx, cyi + 1, cz) && skylighted) {
-                    if (BlockInfo(getBlock(x, yi, z)).isOpaque() || getBlock(x, yi, z) == Blocks::WATER) {
-                        skylighted = false;
-                    }
-                    yi++; cyi = getChunkPos(yi);
+                    if (BlockInfo(getBlock(x, yi, z))
+                        .
+                        isOpaque() || getBlock(x, yi, z) == Blocks::WATER
+                    ) { skylighted = false; }
+                    yi++;
+                    cyi = getChunkPos(yi);
                 }
             }
 
-            if (!BlockInfo(getBlock(x, y, z)).isOpaque()) {
-
+            if (!BlockInfo(getBlock(x, y, z))
+                .
+                isOpaque()
+            ) {
                 Brightness br;
                 int maxbrightness;
-                Block blks[7] = { 0,
-                    getBlock(x, y, z + 1),    //Front face
-                    getBlock(x, y, z - 1),    //Back face
-                    getBlock(x + 1, y, z),    //Right face
-                    getBlock(x - 1, y, z),    //Left face
-                    getBlock(x, y + 1, z),    //Top face
-                    getBlock(x, y - 1, z) };  //Bottom face
-                Brightness brts[7] = { 0,
-                    getBrightness(x, y, z + 1),    //Front face
-                    getBrightness(x, y, z - 1),    //Back face
-                    getBrightness(x + 1, y, z),    //Right face
-                    getBrightness(x - 1, y, z),    //Left face
-                    getBrightness(x, y + 1, z),    //Top face
-                    getBrightness(x, y - 1, z) };  //Bottom face
+                Block blks[7] = {
+                    0,
+                    getBlock(x, y, z + 1), //Front face
+                    getBlock(x, y, z - 1), //Back face
+                    getBlock(x + 1, y, z), //Right face
+                    getBlock(x - 1, y, z), //Left face
+                    getBlock(x, y + 1, z), //Top face
+                    getBlock(x, y - 1, z)
+                }; //Bottom face
+                Brightness brts[7] = {
+                    0,
+                    getBrightness(x, y, z + 1), //Front face
+                    getBrightness(x, y, z - 1), //Back face
+                    getBrightness(x + 1, y, z), //Right face
+                    getBrightness(x - 1, y, z), //Left face
+                    getBrightness(x, y + 1, z), //Top face
+                    getBrightness(x, y - 1, z)
+                }; //Bottom face
                 maxbrightness = 1;
-                for (int i = 2; i <= 6; i++) {
-                    if (brts[maxbrightness] < brts[i]) maxbrightness = i;
-                }
+                for (int i = 2; i <= 6; i++) { if (brts[maxbrightness] < brts[i]) maxbrightness = i; }
                 br = brts[maxbrightness];
                 if (blks[maxbrightness] == Blocks::WATER) {
-                    if (br - 2 < BrightnessMin) br = BrightnessMin; else br -= 2;
+                    if (br - 2 < BrightnessMin) br = BrightnessMin;
+                    else br -= 2;
                 }
                 else {
-                    if (br - 1 < BrightnessMin) br = BrightnessMin; else br--;
+                    if (br - 1 < BrightnessMin) br = BrightnessMin;
+                    else br--;
                 }
 
-                if (skylighted) {
-                    if (br < skylight) br = skylight;
-                }
+                if (skylighted) { if (br < skylight) br = skylight; }
                 if (br < BrightnessMin) br = BrightnessMin;
                 //Set brightness
                 cptr->setbrightness(bx, by, bz, br);
-
             }
             else {
-
                 //Opaque block
                 cptr->setbrightness(bx, by, bz, 0);
                 if (getBlock(x, y, z) == Blocks::GLOWSTONE || getBlock(x, y, z) == Blocks::LAVA) {
                     cptr->setbrightness(bx, by, bz, BrightnessMax);
                 }
-
             }
 
             if (oldbrightness != cptr->getBrightness(bx, by, bz)) updated = true;
@@ -551,7 +683,6 @@ namespace World {
             if (by == 0) setChunkUpdated(cx, cy - 1, cz, true);
             if (bz == 15) setChunkUpdated(cx, cy, cz + 1, true);
             if (bz == 0) setChunkUpdated(cx, cy, cz - 1, true);
-
         }
     }
 
@@ -570,14 +701,17 @@ namespace World {
         int cx = getChunkPos(x), cy = getChunkPos(y), cz = getChunkPos(z);
         if (!ci || cx != ci->cx || cy != ci->cy || cz != ci->cz)
             ci = getChunkPtr(cx, cy, cz);
-        if (ci == EmptyChunkPtr) if (cy < 0) return BrightnessMin; else return skylight;
+        if (ci == EmptyChunkPtr) {
+            if (cy < 0) return BrightnessMin;
+            return skylight;
+        }
         if (ci != nullptr)return ci->getBrightness(getBlockPos(x), getBlockPos(y), getBlockPos(z));
         return skylight;
     }
 
     void setblock(int x, int y, int z, Block Blockname, Chunk* cptr) {
         //设置方块
-        int    cx = getChunkPos(x), cy = getChunkPos(y), cz = getChunkPos(z);
+        int cx = getChunkPos(x), cy = getChunkPos(y), cz = getChunkPos(z);
         int bx = getBlockPos(x), by = getBlockPos(y), bz = getBlockPos(z);
 
         if (cptr != nullptr && cptr != EmptyChunkPtr &&
@@ -604,9 +738,7 @@ namespace World {
         int bx = getBlockPos(x), by = getBlockPos(y), bz = getBlockPos(z);
 
         if (cptr != nullptr && cptr != EmptyChunkPtr &&
-            cx == cptr->cx && cy == cptr->cy && cz == cptr->cz) {
-            cptr->setbrightness(bx, by, bz, Brightness);
-        }
+            cx == cptr->cx && cy == cptr->cy && cz == cptr->cz) { cptr->setbrightness(bx, by, bz, Brightness); }
         Chunk* i = getChunkPtr(cx, cy, cz);
         if (i == EmptyChunkPtr) {
             Chunk* cp = AddChunk(cx, cy, cz);
@@ -614,9 +746,7 @@ namespace World {
             cp->mIsEmpty = false;
             i = cp;
         }
-        if (i != nullptr) {
-            i->setbrightness(bx, by, bz, Brightness);
-        }
+        if (i != nullptr) { i->setbrightness(bx, by, bz, Brightness); }
     }
 
     void picktree(int x, int y, int z) {
@@ -624,9 +754,9 @@ namespace World {
         else pickleaf();
         for (int j = 1; j <= 10; j++) {
             Particles::throwParticle(getBlock(x, y, z),
-                float(x + rnd() - 0.5f), float(y + rnd() - 0.2f), float(z + rnd() - 0.5f),
-                float(rnd()*0.2f - 0.1f), float(rnd()*0.2f - 0.1f), float(rnd()*0.2f - 0.1f),
-                float(rnd()*0.02 + 0.03), int(rnd() * 60) + 30);
+                                     float(x + rnd() - 0.5f), float(y + rnd() - 0.2f), float(z + rnd() - 0.5f),
+                                     float(rnd() * 0.2f - 0.1f), float(rnd() * 0.2f - 0.1f), float(rnd() * 0.2f - 0.1f),
+                                     float(rnd() * 0.02 + 0.03), int(rnd() * 60) + 30);
         }
         setblock(x, y, z, Blocks::AIR);
         //上
@@ -714,7 +844,7 @@ namespace World {
                         yd = cy * 16 + 7 - ypos;
                         zd = cz * 16 + 7 - zpos;
                         distsqr = xd * xd + yd * yd + zd * zd;
-                        chunkLoadList.insert(distsqr, { cx, cy, cz });
+                        chunkLoadList.insert(distsqr, {cx, cy, cz});
                     }
     }
 
@@ -724,7 +854,6 @@ namespace World {
     }
 
     void destroyAllChunks() {
-
         for (int i = 0; i != loadedChunks; i++)
             if (!chunks[i]->mIsEmpty)
                 delete chunks[i];
@@ -760,42 +889,38 @@ namespace World {
         //设置泥土
         setblock(x, y, z, Blocks::DIRT);
         //设置树干
-        int h = 0;//高度
-                  //测算泥土数量
-        int Dirt = 0;//泥土数
+        int h = 0; //高度
+        //测算泥土数量
+        int Dirt = 0; //泥土数
         for (int ix = x - 4; ix < x + 4; ix++) {
             for (int iy = y - 4; iy < y; iy++) {
-                for (int iz = z - 4; iz < z + 4; iz++) {
-                    if (getBlock(ix, iy, iz) == Blocks::DIRT)Dirt++;
-                }
+                for (int iz = z - 4; iz < z + 4; iz++) { if (getBlock(ix, iy, iz) == Blocks::DIRT)Dirt++; }
             }
         }
         //测算最高高度
         for (int i = y + 1; i < y + 16; i++) {
             if (getBlock(x, i, z) == Blocks::AIR) { h++; }
-            else { break; };
+            else { break; }
         }
         //取最小值
         h = std::min(h, static_cast<int>(Dirt * 15 / 268 * 0.8));
         if (h < 7)return;
         //开始生成树干
-        for (int i = y + 1; i < y + h + 1; i++) {
-            setblock(x, i, z, Blocks::WOOD);
-        }
+        for (int i = y + 1; i < y + h + 1; i++) { setblock(x, i, z, Blocks::WOOD); }
         //设置树叶及枝杈
         //计算树叶起始生成高度
-        int leafh = int(double(h)*0.618) + 1;//黄金分割比大法好！！！
-        int distancen2 = int(double((h - leafh + 1)*(h - leafh + 1))) + 1;
-        for (int iy = y + leafh; iy < y + int(double(h)*1.382) + 2; iy++) {
+        int leafh = int(double(h) * 0.618) + 1; //黄金分割比大法好！！！
+        int distancen2 = int(double((h - leafh + 1) * (h - leafh + 1))) + 1;
+        for (int iy = y + leafh; iy < y + int(double(h) * 1.382) + 2; iy++) {
             for (int ix = x - 6; ix < x + 6; ix++) {
                 for (int iz = z - 6; iz < z + 6; iz++) {
                     int distancen = Distancen(ix, iy, iz, x, y + leafh + 1, z);
-                    if ((getBlock(ix, iy, iz) == Blocks::AIR) && (distancen <distancen2)) {
-                        if ((distancen <= distancen2 / 9))//生成枝杈
+                    if ((getBlock(ix, iy, iz) == Blocks::AIR) && (distancen < distancen2)) {
+                        if ((distancen <= distancen2 / 9)) //生成枝杈
                         {
                             setblock(ix, iy, iz, Blocks::WOOD);
                         }
-                        else//生成树叶
+                        else //生成树叶
                         {
                             setblock(ix, iy, iz, Blocks::LEAF);
                         }
@@ -803,7 +928,6 @@ namespace World {
                 }
             }
         }
-
     }
 
     void explode(int x, int y, int z, int r, Chunk* c) {
@@ -811,16 +935,18 @@ namespace World {
         for (int fx = x - r - 1; fx < x + r + 1; fx++) {
             for (int fy = y - r - 1; fy < y + r + 1; fy++) {
                 for (int fz = z - r - 1; fz < z + r + 1; fz++) {
-                    int distsqr = (fx - x)*(fx - x) + (fy - y)*(fy - y) + (fz - z)*(fz - z);
+                    int distsqr = (fx - x) * (fx - x) + (fy - y) * (fy - y) + (fz - z) * (fz - z);
                     if (distsqr <= maxdistsqr * 0.75 ||
-                        distsqr <= maxdistsqr && rnd() >(distsqr - maxdistsqr * 0.6) / (maxdistsqr*0.4)) {
-                        Block e = World::getBlock(fx, fy, fz);
+                        distsqr <= maxdistsqr && rnd() > (distsqr - maxdistsqr * 0.6) / (maxdistsqr * 0.4)) {
+                        Block e = getBlock(fx, fy, fz);
                         if (e == Blocks::AIR) continue;
                         for (int j = 1; j <= 12; j++) {
                             Particles::throwParticle(e,
-                                float(fx + rnd() - 0.5f), float(fy + rnd() - 0.2f), float(fz + rnd() - 0.5f),
-                                float(rnd()*0.2f - 0.1f), float(rnd()*0.2f - 0.1f), float(rnd()*0.2f - 0.1f),
-                                float(rnd()*0.02 + 0.03), int(rnd() * 60) + 30);
+                                                     float(fx + rnd() - 0.5f), float(fy + rnd() - 0.2f),
+                                                     float(fz + rnd() - 0.5f),
+                                                     float(rnd() * 0.2f - 0.1f), float(rnd() * 0.2f - 0.1f),
+                                                     float(rnd() * 0.2f - 0.1f),
+                                                     float(rnd() * 0.02 + 0.03), int(rnd() * 60) + 30);
                         }
                         setblock(fx, fy, fz, Blocks::AIR, c);
                     }

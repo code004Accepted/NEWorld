@@ -8,33 +8,29 @@ extern "C" {
 
 #define ALC_EXT_EFX_NAME                                   "ALC_EXT_EFX"
 
-/**
- * Context definitions to be used with alcCreateContext.
- * These values must be unique and not conflict with other 
- * al context values.
- */
+    /**
+     * Context definitions to be used with alcCreateContext.
+     * These values must be unique and not conflict with other 
+     * al context values.
+     */
 #define ALC_EFX_MAJOR_VERSION                              0x20001
 #define ALC_EFX_MINOR_VERSION                              0x20002
 #define ALC_MAX_AUXILIARY_SENDS                            0x20003
 
 
-
-
-/**
- * Listener definitions to be used with alListener functions.
- * These values must be unique and not conflict with other 
- * al listener values.
- */
+    /**
+     * Listener definitions to be used with alListener functions.
+     * These values must be unique and not conflict with other 
+     * al listener values.
+     */
 #define AL_METERS_PER_UNIT                                 0x20004
 
 
-
-
-/**
- * Source definitions to be used with alSource functions.
- * These values must be unique and not conflict with other 
- * al source values.
- */
+    /**
+     * Source definitions to be used with alSource functions.
+     * These values must be unique and not conflict with other 
+     * al source values.
+     */
 #define AL_DIRECT_FILTER                                   0x20005
 #define AL_AUXILIARY_SEND_FILTER                           0x20006
 #define AL_AIR_ABSORPTION_FACTOR                           0x20007
@@ -45,16 +41,14 @@ extern "C" {
 #define AL_AUXILIARY_SEND_FILTER_GAINHF_AUTO               0x2000C
 
 
+    /**
+     * Effect object definitions to be used with alEffect functions.
+     *
+     * Effect parameter value definitions, ranges, and defaults
+     * appear farther down in this file.
+     */
 
-
-/**
- * Effect object definitions to be used with alEffect functions.
- *
- * Effect parameter value definitions, ranges, and defaults
- * appear farther down in this file.
- */
-
-/* Reverb Parameters */
+    /* Reverb Parameters */
 #define AL_REVERB_DENSITY                                  0x0001
 #define AL_REVERB_DIFFUSION                                0x0002
 #define AL_REVERB_GAIN                                     0x0003
@@ -65,11 +59,11 @@ extern "C" {
 #define AL_REVERB_REFLECTIONS_DELAY                        0x0008
 #define AL_REVERB_LATE_REVERB_GAIN                         0x0009
 #define AL_REVERB_LATE_REVERB_DELAY                        0x000A
-#define AL_REVERB_AIR_ABSORPTION_GAINHF                    0x000B 
+#define AL_REVERB_AIR_ABSORPTION_GAINHF                    0x000B
 #define AL_REVERB_ROOM_ROLLOFF_FACTOR                      0x000C
 #define AL_REVERB_DECAY_HFLIMIT                            0x000D
 
-/* Chorus Parameters */
+    /* Chorus Parameters */
 #define AL_CHORUS_WAVEFORM                                 0x0001
 #define    AL_CHORUS_PHASE                                    0x0002
 #define AL_CHORUS_RATE                                     0x0003
@@ -77,21 +71,21 @@ extern "C" {
 #define AL_CHORUS_FEEDBACK                                 0x0005
 #define AL_CHORUS_DELAY                                    0x0006
 
-/* Distortion Parameters */
+    /* Distortion Parameters */
 #define AL_DISTORTION_EDGE                                 0x0001
 #define AL_DISTORTION_GAIN                                 0x0002
 #define AL_DISTORTION_LOWPASS_CUTOFF                       0x0003
 #define AL_DISTORTION_EQCENTER                             0x0004
 #define AL_DISTORTION_EQBANDWIDTH                          0x0005
 
-/* Echo Parameters */
+    /* Echo Parameters */
 #define AL_ECHO_DELAY                                      0x0001
 #define AL_ECHO_LRDELAY                                    0x0002
 #define AL_ECHO_DAMPING                                    0x0003
 #define AL_ECHO_FEEDBACK                                   0x0004
 #define AL_ECHO_SPREAD                                     0x0005
 
-/* Flanger Parameters */
+    /* Flanger Parameters */
 #define AL_FLANGER_WAVEFORM                                0x0001
 #define AL_FLANGER_PHASE                                   0x0002
 #define AL_FLANGER_RATE                                    0x0003
@@ -99,12 +93,12 @@ extern "C" {
 #define AL_FLANGER_FEEDBACK                                0x0005
 #define AL_FLANGER_DELAY                                   0x0006
 
-/* Frequencyshifter Parameters */
+    /* Frequencyshifter Parameters */
 #define AL_FREQUENCY_SHIFTER_FREQUENCY                     0x0001
 #define AL_FREQUENCY_SHIFTER_LEFT_DIRECTION                0x0002
 #define AL_FREQUENCY_SHIFTER_RIGHT_DIRECTION               0x0003
 
-/* Vocalmorpher Parameters */
+    /* Vocalmorpher Parameters */
 #define AL_VOCAL_MORPHER_PHONEMEA                          0x0001
 #define AL_VOCAL_MORPHER_PHONEMEA_COARSE_TUNING            0x0002
 #define AL_VOCAL_MORPHER_PHONEMEB                          0x0003
@@ -112,25 +106,25 @@ extern "C" {
 #define AL_VOCAL_MORPHER_WAVEFORM                          0x0005
 #define AL_VOCAL_MORPHER_RATE                              0x0006
 
-/* Pitchshifter Parameters */
+    /* Pitchshifter Parameters */
 #define AL_PITCH_SHIFTER_COARSE_TUNE                       0x0001
 #define AL_PITCH_SHIFTER_FINE_TUNE                         0x0002
 
-/* Ringmodulator Parameters */
+    /* Ringmodulator Parameters */
 #define AL_RING_MODULATOR_FREQUENCY                        0x0001
 #define AL_RING_MODULATOR_HIGHPASS_CUTOFF                  0x0002
 #define AL_RING_MODULATOR_WAVEFORM                         0x0003
 
-/* Autowah Parameters */
+    /* Autowah Parameters */
 #define AL_AUTOWAH_ATTACK_TIME                             0x0001
 #define AL_AUTOWAH_RELEASE_TIME                            0x0002
 #define AL_AUTOWAH_RESONANCE                               0x0003
 #define AL_AUTOWAH_PEAK_GAIN                               0x0004
 
-/* Compressor Parameters */
+    /* Compressor Parameters */
 #define AL_COMPRESSOR_ONOFF                                0x0001
 
-/* Equalizer Parameters */
+    /* Equalizer Parameters */
 #define AL_EQUALIZER_LOW_GAIN                              0x0001
 #define AL_EQUALIZER_LOW_CUTOFF                            0x0002
 #define AL_EQUALIZER_MID1_GAIN                             0x0003
@@ -142,12 +136,12 @@ extern "C" {
 #define AL_EQUALIZER_HIGH_GAIN                             0x0009
 #define AL_EQUALIZER_HIGH_CUTOFF                           0x000A
 
-/* Effect type */
+    /* Effect type */
 #define AL_EFFECT_FIRST_PARAMETER                          0x0000
 #define AL_EFFECT_LAST_PARAMETER                           0x8000
 #define AL_EFFECT_TYPE                                     0x8001
 
-/* Effect type definitions to be used with AL_EFFECT_TYPE. */
+    /* Effect type definitions to be used with AL_EFFECT_TYPE. */
 #define AL_EFFECT_NULL                                     0x0000  /* Can also be used as an Effect Object ID */
 #define AL_EFFECT_REVERB                                   0x0001
 #define AL_EFFECT_CHORUS                                   0x0002
@@ -162,148 +156,145 @@ extern "C" {
 #define AL_EFFECT_COMPRESSOR                               0x000B
 #define AL_EFFECT_EQUALIZER                                0x000C
 
-/**
- * Auxiliary Slot object definitions to be used with alAuxiliaryEffectSlot functions.
- */
+    /**
+     * Auxiliary Slot object definitions to be used with alAuxiliaryEffectSlot functions.
+     */
 #define AL_EFFECTSLOT_EFFECT                               0x0001
 #define AL_EFFECTSLOT_GAIN                                 0x0002
 #define AL_EFFECTSLOT_AUXILIARY_SEND_AUTO                  0x0003
 
-/**
- * Value to be used as an Auxiliary Slot ID to disable a source send..
- */
+    /**
+     * Value to be used as an Auxiliary Slot ID to disable a source send..
+     */
 #define AL_EFFECTSLOT_NULL                                 0x0000
 
 
+    /**
+     * Filter object definitions to be used with alFilter functions.
+     */
 
-/**
- * Filter object definitions to be used with alFilter functions.
- */
-
-/* Lowpass parameters. */
+    /* Lowpass parameters. */
 #define AL_LOWPASS_GAIN                                    0x0001
 #define AL_LOWPASS_GAINHF                                  0x0002
 
-/* Highpass Parameters */
+    /* Highpass Parameters */
 #define AL_HIGHPASS_GAIN                                   0x0001
 #define AL_HIGHPASS_GAINLF                                 0x0002
 
-/* Bandpass Parameters */
+    /* Bandpass Parameters */
 #define AL_BANDPASS_GAIN                                   0x0001
 #define AL_BANDPASS_GAINLF                                 0x0002
 #define AL_BANDPASS_GAINHF                                 0x0003
 
-/* Filter type */
+    /* Filter type */
 #define AL_FILTER_FIRST_PARAMETER                          0x0000
 #define AL_FILTER_LAST_PARAMETER                           0x8000
 #define AL_FILTER_TYPE                                     0x8001
 
-/* Filter type definitions to be used with AL_FILTER_TYPE. */
+    /* Filter type definitions to be used with AL_FILTER_TYPE. */
 #define AL_FILTER_NULL                                     0x0000  /* Can also be used as a Filter Object ID */
 #define    AL_FILTER_LOWPASS                                  0x0001
 #define AL_FILTER_HIGHPASS                                 0x0002
 #define AL_FILTER_BANDPASS                                 0x0003
 
 
-/**
- * Effect object functions.
- */
+    /**
+     * Effect object functions.
+     */
 
-/* Create Effect objects. */
-typedef void (__cdecl *LPALGENEFFECTS)( ALsizei n, ALuint* effects );
+    /* Create Effect objects. */
+    typedef void (__cdecl *LPALGENEFFECTS)(ALsizei n, ALuint* effects);
 
-/* Delete Effect objects. */
-typedef void (__cdecl *LPALDELETEEFFECTS)( ALsizei n, ALuint* effects );
+    /* Delete Effect objects. */
+    typedef void (__cdecl *LPALDELETEEFFECTS)(ALsizei n, ALuint* effects);
 
-/* Verify a handle is a valid Effect. */ 
-typedef ALboolean (__cdecl *LPALISEFFECT)( ALuint eid );
+    /* Verify a handle is a valid Effect. */
+    typedef ALboolean (__cdecl *LPALISEFFECT)(ALuint eid);
 
-/* Set an integer parameter for an Effect object. */
-typedef void (__cdecl *LPALEFFECTI)( ALuint eid, ALenum param, ALint value); 
-typedef void (__cdecl *LPALEFFECTIV)( ALuint eid, ALenum param, ALint* values ); 
+    /* Set an integer parameter for an Effect object. */
+    typedef void (__cdecl *LPALEFFECTI)(ALuint eid, ALenum param, ALint value);
+    typedef void (__cdecl *LPALEFFECTIV)(ALuint eid, ALenum param, ALint* values);
 
-/* Set a floating point parameter for an Effect object. */
-typedef void (__cdecl *LPALEFFECTF)( ALuint eid, ALenum param, ALfloat value); 
-typedef void (__cdecl *LPALEFFECTFV)( ALuint eid, ALenum param, ALfloat* values ); 
+    /* Set a floating point parameter for an Effect object. */
+    typedef void (__cdecl *LPALEFFECTF)(ALuint eid, ALenum param, ALfloat value);
+    typedef void (__cdecl *LPALEFFECTFV)(ALuint eid, ALenum param, ALfloat* values);
 
-/* Get an integer parameter for an Effect object. */
-typedef void (__cdecl *LPALGETEFFECTI)( ALuint eid, ALenum pname, ALint* value );
-typedef void (__cdecl *LPALGETEFFECTIV)( ALuint eid, ALenum pname, ALint* values );
+    /* Get an integer parameter for an Effect object. */
+    typedef void (__cdecl *LPALGETEFFECTI)(ALuint eid, ALenum pname, ALint* value);
+    typedef void (__cdecl *LPALGETEFFECTIV)(ALuint eid, ALenum pname, ALint* values);
 
-/* Get a floating point parameter for an Effect object. */
-typedef void (__cdecl *LPALGETEFFECTF)( ALuint eid, ALenum pname, ALfloat* value );
-typedef void (__cdecl *LPALGETEFFECTFV)( ALuint eid, ALenum pname, ALfloat* values );
-
-
-/**
- * Filter object functions
- */
-
-/* Create Filter objects. */
-typedef void (__cdecl *LPALGENFILTERS)( ALsizei n, ALuint* filters ); 
-
-/* Delete Filter objects. */
-typedef void (__cdecl *LPALDELETEFILTERS)( ALsizei n, ALuint* filters );
-
-/* Verify a handle is a valid Filter. */ 
-typedef ALboolean (__cdecl *LPALISFILTER)( ALuint fid );
-
-/* Set an integer parameter for a Filter object. */
-typedef void (__cdecl *LPALFILTERI)( ALuint fid, ALenum param, ALint value ); 
-typedef void (__cdecl *LPALFILTERIV)( ALuint fid, ALenum param, ALint* values ); 
-
-/* Set a floating point parameter for an Filter object. */
-typedef void (__cdecl *LPALFILTERF)( ALuint fid, ALenum param, ALfloat value); 
-typedef void (__cdecl *LPALFILTERFV)( ALuint fid, ALenum param, ALfloat* values ); 
-
-/* Get an integer parameter for a Filter object. */
-typedef void (__cdecl *LPALGETFILTERI)( ALuint fid, ALenum pname, ALint* value );
-typedef void (__cdecl *LPALGETFILTERIV)( ALuint fid, ALenum pname, ALint* values );
-
-/* Get a floating point parameter for a Filter object. */
-typedef void (__cdecl *LPALGETFILTERF)( ALuint fid, ALenum pname, ALfloat* value );
-typedef void (__cdecl *LPALGETFILTERFV)( ALuint fid, ALenum pname, ALfloat* values );
+    /* Get a floating point parameter for an Effect object. */
+    typedef void (__cdecl *LPALGETEFFECTF)(ALuint eid, ALenum pname, ALfloat* value);
+    typedef void (__cdecl *LPALGETEFFECTFV)(ALuint eid, ALenum pname, ALfloat* values);
 
 
-/**
- * Auxiliary Slot object functions
- */
+    /**
+     * Filter object functions
+     */
 
-/* Create Auxiliary Slot objects. */
-typedef void (__cdecl *LPALGENAUXILIARYEFFECTSLOTS)( ALsizei n, ALuint* slots ); 
+    /* Create Filter objects. */
+    typedef void (__cdecl *LPALGENFILTERS)(ALsizei n, ALuint* filters);
 
-/* Delete Auxiliary Slot objects. */
-typedef void (__cdecl *LPALDELETEAUXILIARYEFFECTSLOTS)( ALsizei n, ALuint* slots );
+    /* Delete Filter objects. */
+    typedef void (__cdecl *LPALDELETEFILTERS)(ALsizei n, ALuint* filters);
 
-/* Verify a handle is a valid Auxiliary Slot. */ 
-typedef ALboolean (__cdecl *LPALISAUXILIARYEFFECTSLOT)( ALuint slot ); 
+    /* Verify a handle is a valid Filter. */
+    typedef ALboolean (__cdecl *LPALISFILTER)(ALuint fid);
 
-/* Set an integer parameter for a Auxiliary Slot object. */
-typedef void (__cdecl *LPALAUXILIARYEFFECTSLOTI)( ALuint asid, ALenum param, ALint value ); 
-typedef void (__cdecl *LPALAUXILIARYEFFECTSLOTIV)( ALuint asid, ALenum param, ALint* values ); 
+    /* Set an integer parameter for a Filter object. */
+    typedef void (__cdecl *LPALFILTERI)(ALuint fid, ALenum param, ALint value);
+    typedef void (__cdecl *LPALFILTERIV)(ALuint fid, ALenum param, ALint* values);
 
-/* Set a floating point parameter for an Auxiliary Slot object. */
-typedef void (__cdecl *LPALAUXILIARYEFFECTSLOTF)( ALuint asid, ALenum param, ALfloat value ); 
-typedef void (__cdecl *LPALAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum param, ALfloat* values ); 
+    /* Set a floating point parameter for an Filter object. */
+    typedef void (__cdecl *LPALFILTERF)(ALuint fid, ALenum param, ALfloat value);
+    typedef void (__cdecl *LPALFILTERFV)(ALuint fid, ALenum param, ALfloat* values);
 
-/* Get an integer parameter for a Auxiliary Slot object. */
-typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTI)( ALuint asid, ALenum pname, ALint* value );
-typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTIV)( ALuint asid, ALenum pname, ALint* values );
+    /* Get an integer parameter for a Filter object. */
+    typedef void (__cdecl *LPALGETFILTERI)(ALuint fid, ALenum pname, ALint* value);
+    typedef void (__cdecl *LPALGETFILTERIV)(ALuint fid, ALenum pname, ALint* values);
 
-/* Get a floating point parameter for a Auxiliary Slot object. */
-typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTF)( ALuint asid, ALenum pname, ALfloat* value );
-typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum pname, ALfloat* values );
-
-
+    /* Get a floating point parameter for a Filter object. */
+    typedef void (__cdecl *LPALGETFILTERF)(ALuint fid, ALenum pname, ALfloat* value);
+    typedef void (__cdecl *LPALGETFILTERFV)(ALuint fid, ALenum pname, ALfloat* values);
 
 
-/**********************************************************
- * Filter ranges and defaults.
- */
+    /**
+     * Auxiliary Slot object functions
+     */
 
-/**
- * Lowpass filter
- */
+    /* Create Auxiliary Slot objects. */
+    typedef void (__cdecl *LPALGENAUXILIARYEFFECTSLOTS)(ALsizei n, ALuint* slots);
+
+    /* Delete Auxiliary Slot objects. */
+    typedef void (__cdecl *LPALDELETEAUXILIARYEFFECTSLOTS)(ALsizei n, ALuint* slots);
+
+    /* Verify a handle is a valid Auxiliary Slot. */
+    typedef ALboolean (__cdecl *LPALISAUXILIARYEFFECTSLOT)(ALuint slot);
+
+    /* Set an integer parameter for a Auxiliary Slot object. */
+    typedef void (__cdecl *LPALAUXILIARYEFFECTSLOTI)(ALuint asid, ALenum param, ALint value);
+    typedef void (__cdecl *LPALAUXILIARYEFFECTSLOTIV)(ALuint asid, ALenum param, ALint* values);
+
+    /* Set a floating point parameter for an Auxiliary Slot object. */
+    typedef void (__cdecl *LPALAUXILIARYEFFECTSLOTF)(ALuint asid, ALenum param, ALfloat value);
+    typedef void (__cdecl *LPALAUXILIARYEFFECTSLOTFV)(ALuint asid, ALenum param, ALfloat* values);
+
+    /* Get an integer parameter for a Auxiliary Slot object. */
+    typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTI)(ALuint asid, ALenum pname, ALint* value);
+    typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTIV)(ALuint asid, ALenum pname, ALint* values);
+
+    /* Get a floating point parameter for a Auxiliary Slot object. */
+    typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTF)(ALuint asid, ALenum pname, ALfloat* value);
+    typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)(ALuint asid, ALenum pname, ALfloat* values);
+
+
+    /**********************************************************
+     * Filter ranges and defaults.
+     */
+
+    /**
+     * Lowpass filter
+     */
 
 #define LOWPASS_MIN_GAIN                                   0.0f
 #define LOWPASS_MAX_GAIN                                   1.0f
@@ -313,9 +304,9 @@ typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum pname,
 #define LOWPASS_MAX_GAINHF                                 1.0f
 #define LOWPASS_DEFAULT_GAINHF                             1.0f
 
-/**
- * Highpass filter
- */
+    /**
+     * Highpass filter
+     */
 
 #define HIGHPASS_MIN_GAIN                                  0.0f
 #define HIGHPASS_MAX_GAIN                                  1.0f
@@ -325,9 +316,9 @@ typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum pname,
 #define HIGHPASS_MAX_GAINLF                                1.0f
 #define HIGHPASS_DEFAULT_GAINLF                            1.0f
 
-/**
- * Bandpass filter
- */
+    /**
+     * Bandpass filter
+     */
 
 #define BANDPASS_MIN_GAIN                                  0.0f
 #define BANDPASS_MAX_GAIN                                  1.0f
@@ -342,15 +333,13 @@ typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum pname,
 #define BANDPASS_DEFAULT_GAINLF                            1.0f
 
 
+    /**********************************************************
+    * Effect parameter structures, value definitions, ranges and defaults.
+    */
 
-
- /**********************************************************
- * Effect parameter structures, value definitions, ranges and defaults.
- */
-
-/**
- * AL reverb effect parameter ranges and defaults
- */
+    /**
+     * AL reverb effect parameter ranges and defaults
+     */
 #define AL_REVERB_MIN_DENSITY                              0.0f
 #define AL_REVERB_MAX_DENSITY                              1.0f
 #define AL_REVERB_DEFAULT_DENSITY                          1.0f
@@ -403,9 +392,9 @@ typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum pname,
 #define AL_REVERB_MAX_DECAY_HFLIMIT                        AL_TRUE
 #define AL_REVERB_DEFAULT_DECAY_HFLIMIT                    AL_TRUE
 
-/**
- * AL chorus effect parameter ranges and defaults
- */
+    /**
+     * AL chorus effect parameter ranges and defaults
+     */
 #define AL_CHORUS_MIN_WAVEFORM                             0
 #define AL_CHORUS_MAX_WAVEFORM                             1
 #define AL_CHORUS_DEFAULT_WAVEFORM                         1
@@ -433,9 +422,9 @@ typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum pname,
 #define AL_CHORUS_MAX_DELAY                                0.016f
 #define AL_CHORUS_DEFAULT_DELAY                            0.016f
 
-/**
- * AL distortion effect parameter ranges and defaults
- */
+    /**
+     * AL distortion effect parameter ranges and defaults
+     */
 #define AL_DISTORTION_MIN_EDGE                             0.0f
 #define AL_DISTORTION_MAX_EDGE                             1.0f
 #define AL_DISTORTION_DEFAULT_EDGE                         0.2f
@@ -456,9 +445,9 @@ typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum pname,
 #define AL_DISTORTION_MAX_EQBANDWIDTH                      24000.0f
 #define AL_DISTORTION_DEFAULT_EQBANDWIDTH                  3600.0f
 
-/**
- * AL echo effect parameter ranges and defaults
- */
+    /**
+     * AL echo effect parameter ranges and defaults
+     */
 #define AL_ECHO_MIN_DELAY                                  0.0f
 #define AL_ECHO_MAX_DELAY                                  0.207f
 #define AL_ECHO_DEFAULT_DELAY                              0.1f
@@ -479,9 +468,9 @@ typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum pname,
 #define AL_ECHO_MAX_SPREAD                                 1.0f
 #define AL_ECHO_DEFAULT_SPREAD                             (-1.0f)
 
-/**
- * AL flanger effect parameter ranges and defaults
- */
+    /**
+     * AL flanger effect parameter ranges and defaults
+     */
 #define AL_FLANGER_MIN_WAVEFORM                            0
 #define AL_FLANGER_MAX_WAVEFORM                            1
 #define AL_FLANGER_DEFAULT_WAVEFORM                        1
@@ -509,9 +498,9 @@ typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum pname,
 #define AL_FLANGER_MAX_DELAY                               0.004f
 #define AL_FLANGER_DEFAULT_DELAY                           0.002f
 
-/**
- * AL frequency shifter effect parameter ranges and defaults
- */
+    /**
+     * AL frequency shifter effect parameter ranges and defaults
+     */
 #define AL_FREQUENCY_SHIFTER_MIN_FREQUENCY                 0.0f
 #define AL_FREQUENCY_SHIFTER_MAX_FREQUENCY                 24000.0f
 #define AL_FREQUENCY_SHIFTER_DEFAULT_FREQUENCY             0.0f
@@ -528,9 +517,9 @@ typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum pname,
 #define AL_FREQUENCY_SHIFTER_DIRECTION_UP                  1
 #define AL_FREQUENCY_SHIFTER_DIRECTION_OFF                 2
 
-/**
- * AL vocal morpher effect parameter ranges and defaults
- */
+    /**
+     * AL vocal morpher effect parameter ranges and defaults
+     */
 #define AL_VOCAL_MORPHER_MIN_PHONEMEA                      0
 #define AL_VOCAL_MORPHER_MAX_PHONEMEA                      29
 #define AL_VOCAL_MORPHER_DEFAULT_PHONEMEA                  0
@@ -590,9 +579,9 @@ typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum pname,
 #define AL_VOCAL_MORPHER_MAX_RATE                          10.0f
 #define AL_VOCAL_MORPHER_DEFAULT_RATE                      1.41f
 
-/**
- * AL pitch shifter effect parameter ranges and defaults
- */
+    /**
+     * AL pitch shifter effect parameter ranges and defaults
+     */
 #define AL_PITCH_SHIFTER_MIN_COARSE_TUNE                   (-12)
 #define AL_PITCH_SHIFTER_MAX_COARSE_TUNE                   12
 #define AL_PITCH_SHIFTER_DEFAULT_COARSE_TUNE               12
@@ -601,9 +590,9 @@ typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum pname,
 #define AL_PITCH_SHIFTER_MAX_FINE_TUNE                     50
 #define AL_PITCH_SHIFTER_DEFAULT_FINE_TUNE                 0
 
-/**
- * AL ring modulator effect parameter ranges and defaults
- */
+    /**
+     * AL ring modulator effect parameter ranges and defaults
+     */
 #define AL_RING_MODULATOR_MIN_FREQUENCY                    0.0f
 #define AL_RING_MODULATOR_MAX_FREQUENCY                    8000.0f
 #define AL_RING_MODULATOR_DEFAULT_FREQUENCY                440.0f
@@ -620,9 +609,9 @@ typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum pname,
 #define AL_RING_MODULATOR_SAWTOOTH                         1
 #define AL_RING_MODULATOR_SQUARE                           2
 
-/**
- * AL autowah effect parameter ranges and defaults
- */
+    /**
+     * AL autowah effect parameter ranges and defaults
+     */
 #define AL_AUTOWAH_MIN_ATTACK_TIME                         0.0001f
 #define AL_AUTOWAH_MAX_ATTACK_TIME                         1.0f
 #define AL_AUTOWAH_DEFAULT_ATTACK_TIME                     0.06f
@@ -634,21 +623,21 @@ typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum pname,
 #define AL_AUTOWAH_MIN_RESONANCE                           2.0f
 #define AL_AUTOWAH_MAX_RESONANCE                           1000.0f
 #define AL_AUTOWAH_DEFAULT_RESONANCE                       1000.0f
-    
+
 #define AL_AUTOWAH_MIN_PEAK_GAIN                           0.00003f
 #define AL_AUTOWAH_MAX_PEAK_GAIN                           31621.0f
 #define AL_AUTOWAH_DEFAULT_PEAK_GAIN                       11.22f
 
-/**
- * AL compressor effect parameter ranges and defaults
- */
+    /**
+     * AL compressor effect parameter ranges and defaults
+     */
 #define AL_COMPRESSOR_MIN_ONOFF                            0
 #define AL_COMPRESSOR_MAX_ONOFF                            1
 #define AL_COMPRESSOR_DEFAULT_ONOFF                        1
 
-/**
- * AL equalizer effect parameter ranges and defaults
- */
+    /**
+     * AL equalizer effect parameter ranges and defaults
+     */
 #define AL_EQUALIZER_MIN_LOW_GAIN                          0.126f
 #define AL_EQUALIZER_MAX_LOW_GAIN                          7.943f
 #define AL_EQUALIZER_DEFAULT_LOW_GAIN                      1.0f
@@ -690,11 +679,9 @@ typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum pname,
 #define AL_EQUALIZER_DEFAULT_HIGH_CUTOFF                   6000.0f
 
 
-
-
-/**********************************************************
- * Source parameter value definitions, ranges and defaults.
- */
+    /**********************************************************
+     * Source parameter value definitions, ranges and defaults.
+     */
 #define AL_MIN_AIR_ABSORPTION_FACTOR                       0.0f
 #define AL_MAX_AIR_ABSORPTION_FACTOR                       10.0f
 #define AL_DEFAULT_AIR_ABSORPTION_FACTOR                   0.0f
@@ -720,18 +707,16 @@ typedef void (__cdecl *LPALGETAUXILIARYEFFECTSLOTFV)( ALuint asid, ALenum pname,
 #define AL_DEFAULT_AUXILIARY_SEND_FILTER_GAINHF_AUTO       AL_TRUE
 
 
-
-
-/**********************************************************
- * Listener parameter value definitions, ranges and defaults.
- */
+    /**********************************************************
+     * Listener parameter value definitions, ranges and defaults.
+     */
 #define AL_MIN_METERS_PER_UNIT                             FLT_MIN
 #define AL_MAX_METERS_PER_UNIT                             FLT_MAX
 #define AL_DEFAULT_METERS_PER_UNIT                         1.0f
 
 
 #ifdef __cplusplus
-}  /* extern "C" */
+} /* extern "C" */
 #endif
 
 #endif /* __efx_h_ */

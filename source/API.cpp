@@ -1,4 +1,23 @@
-﻿#include "API.h"
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2017-2018 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "API.h"
 #include "Player.h"
 #include "World.h"
 
@@ -11,26 +30,26 @@ APIPackage Mod::getPackage() {
     api.getChunk = World::getChunkPtr;
     api.getBlock = [](int x, int y, int z) { return World::getBlock(x, y, z); };
     api.setBlock = [](int x, int y, int z, Block blk) { World::setblock(x, y, z, blk); };
-    api.getCommand = [](const std::string& s) -> Command* {
-        for (size_t i = 0; i < commands.size(); i++)
-            if (commands[i].identifier == s) return &commands[i];
+    api.getCommand = [](const std::string& s) -> Command*
+        {
+        for (auto& command : commands)
+            if (command.identifier == s) return &command;
         return nullptr;
     };
     api.registerCommand = [](Command c) -> bool {
-        for (size_t i = 0; i < commands.size(); i++)
-            if (commands[i].identifier == c.identifier) return false;
+        for (auto& command : commands)
+            if (command.identifier == c.identifier) return false;
         commands.push_back(c);
         return true;
     };
-    api.getSharedData = [](const std::string& key) -> void* {
+    api.getSharedData = [](const std::string& key) -> void*
+        {
         std::map<std::string, void*>::iterator iter = sharedData.find(key);
         if (iter == sharedData.end()) return nullptr;
         return iter->second;
     };
-    api.setSharedData = [](const std::string& key, void* value) {
-        sharedData[key] = value;
-    };
-    api.getPlayerData = []()->PlayerData {
+    api.setSharedData = [](const std::string& key, void* value) { sharedData[key] = value; };
+    api.getPlayerData = []()-> PlayerData {
         PlayerData player;
         player.AirJumps = Player::AirJumps;
         player.BlockInHand = Player::BlockInHand;
@@ -59,7 +78,7 @@ APIPackage Mod::getPackage() {
         player.inventory = (item*)Player::inventory;
         player.inventoryAmount = (short*)Player::inventoryAmount;
         player.inWater = Player::inWater;
-        player.jump= Player::jump;
+        player.jump = Player::jump;
         player.lookupdown = Player::lookupdown;
         //player.name = Player::name;
         player.NearWall = Player::NearWall;
