@@ -44,7 +44,7 @@ namespace ChunkRenderer {
     --qiaozhanrong
     */
 
-    void RenderPrimitive(QuadPrimitive& p) {
+    void renderPrimitive(QuadPrimitive& p) {
         float col0 = static_cast<float>(p.col0) * 0.25f / World::BrightnessMax;
         float col1 = static_cast<float>(p.col1) * 0.25f / World::BrightnessMax;
         float col2 = static_cast<float>(p.col2) * 0.25f / World::BrightnessMax;
@@ -147,7 +147,7 @@ namespace ChunkRenderer {
         }
     }
 
-    void RenderPrimitive_Depth(QuadPrimitive_Depth& p) {
+    void RenderPrimitive_Depth(QuadPrimitiveDepth& p) {
         const int x = p.x, y = p.y, z = p.z, length = p.length;
         if (p.direction == 0) {
             Renderer::Vertex3d(x + 0.5, y - 0.5, z - 0.5);
@@ -196,7 +196,7 @@ namespace ChunkRenderer {
                 for (z = 0; z < 16; z++) {
                     const Block curr = c->getBlock(x, y, z);
                     if (curr == Blocks::AIR) continue;
-                    if (!BlockInfo(curr).isTranslucent()) renderblock(x, y, z, c);
+                    if (!getBlockInfo(curr).isTranslucent()) renderblock(x, y, z, c);
                 }
             }
         }
@@ -208,7 +208,7 @@ namespace ChunkRenderer {
                 for (z = 0; z < 16; z++) {
                     Block curr = c->getBlock(x, y, z);
                     if (curr == Blocks::AIR) continue;
-                    if (BlockInfo(curr).isTranslucent() && BlockInfo(curr).isSolid()) renderblock(x, y, z, c);
+                    if (getBlockInfo(curr).isTranslucent() && getBlockInfo(curr).isSolid()) renderblock(x, y, z, c);
                 }
             }
         }
@@ -220,7 +220,7 @@ namespace ChunkRenderer {
                 for (z = 0; z < 16; z++) {
                     Block curr = c->getBlock(x, y, z);
                     if (curr == Blocks::AIR) continue;
-                    if (!BlockInfo(curr).isSolid()) renderblock(x, y, z, c);
+                    if (!getBlockInfo(curr).isSolid()) renderblock(x, y, z, c);
                 }
             }
         }
@@ -390,20 +390,20 @@ namespace ChunkRenderer {
                                         Textures::getTextureIndex(bl, 1);
                             }
                             //Render
-                            const Blocks::SingleBlock& info = BlockInfo(bl);
-                            if (bl == Blocks::AIR || bl == neighbour && bl != Blocks::LEAF || BlockInfo(neighbour).
+                            const Blocks::SingleBlock& info = getBlockInfo(bl);
+                            if (bl == Blocks::AIR || (bl == neighbour && bl != Blocks::LEAF) || getBlockInfo(neighbour).
                                 isOpaque() ||
-                                steps == 0 && info.isTranslucent() ||
-                                steps == 1 && (!info.isTranslucent() || !info.isSolid()) ||
-                                steps == 2 && (!info.isTranslucent() || info.isSolid())) {
+                                (steps == 0 && info.isTranslucent()) ||
+                                (steps == 1 && (!info.isTranslucent() || !info.isSolid())) ||
+                                (steps == 2 && (!info.isTranslucent() || info.isSolid()))) {
                                 //Not valid block
                                 if (valid) {
-                                    if (BlockInfo(neighbour).isOpaque() && !cur.once) {
+                                    if (getBlockInfo(neighbour).isOpaque() && !cur.once) {
                                         if (cur_l_mx < cur.length) cur_l_mx = cur.length;
                                         cur_l_mx++;
                                     }
                                     else {
-                                        RenderPrimitive(cur);
+                                        renderPrimitive(cur);
                                         valid = false;
                                     }
                                 }
@@ -412,7 +412,7 @@ namespace ChunkRenderer {
                             if (valid) {
                                 if (col0 != col1 || col1 != col2 || col2 != col3 || cur.once || tex != cur.tex || col0
                                     != cur.col0) {
-                                    RenderPrimitive(cur);
+                                    renderPrimitive(cur);
                                     cur.x = x;
                                     cur.y = y;
                                     cur.z = z;
@@ -446,7 +446,7 @@ namespace ChunkRenderer {
                             }
                         }
                         if (valid) {
-                            RenderPrimitive(cur);
+                            renderPrimitive(cur);
                             valid = false;
                         }
                     }
@@ -458,7 +458,7 @@ namespace ChunkRenderer {
     void RenderDepthModel(World::Chunk* c) {
         int cx = c->cx, cy = c->cy, cz = c->cz;
         int x = 0, y = 0, z = 0;
-        QuadPrimitive_Depth cur;
+        QuadPrimitiveDepth cur;
         int cur_l_mx;
         Block bl, neighbour;
         bool valid = false;
@@ -483,11 +483,11 @@ namespace ChunkRenderer {
                             neighbour = World::getBlock(gx, gy, gz);
                         else neighbour = c->getBlock(xx, yy, zz);
                         //Render
-                        if (bl == Blocks::AIR || bl == Blocks::GLASS || bl == neighbour && bl != Blocks::LEAF ||
-                            BlockInfo(neighbour).isOpaque() || BlockInfo(bl).isTranslucent()) {
+                        if (bl == Blocks::AIR || bl == Blocks::GLASS || (bl == neighbour && bl != Blocks::LEAF) ||
+                            getBlockInfo(neighbour).isOpaque() || getBlockInfo(bl).isTranslucent()) {
                             //Not valid block
                             if (valid) {
-                                if (BlockInfo(neighbour).isOpaque()) {
+                                if (getBlockInfo(neighbour).isOpaque()) {
                                     if (cur_l_mx < cur.length) cur_l_mx = cur.length;
                                     cur_l_mx++;
                                 }

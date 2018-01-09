@@ -197,13 +197,13 @@ bool Player::putBlock(int x, int y, int z, Block blockname) {
     blockbox.xmax = x + 0.5;
     blockbox.ymax = y + 0.5;
     blockbox.zmax = z + 0.5;
-    if (((!Hit(playerbox, blockbox) || CrossWall || !BlockInfo(blockname)
+    if (((!Hit(playerbox, blockbox) || CrossWall || !getBlockInfo(blockname)
                 .
                 isSolid()
             )
             &&
             !
-            BlockInfo(World::getBlock(x, y, z)).
+            getBlockInfo(World::getBlock(x, y, z)).
             isSolid()
         )
     ) {

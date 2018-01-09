@@ -25,7 +25,7 @@
 #include "CWaves.h"
 #include <ks.h>
 #include <ksmedia.h>
-#include <errno.h>
+#include <cerrno>
 
 #pragma pack(push, 4)
 

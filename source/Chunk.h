@@ -44,7 +44,7 @@ namespace World {
         //2333 --qiaozhanrong
         Chunk(int cxi, int cyi, int czi, ChunkID idi);
         ~Chunk();
-        int cx, cy, cz;
+        int32_t cx, cy, cz;
         bool mIsEmpty, mIsUpdated, mIsRenderBuilt, mIsModified, mIsDetailGenerated;
         ChunkID id;
         vtxCount vertexes[4];
@@ -80,8 +80,8 @@ namespace World {
             TestFrustum = frus;
         }
 
-        Frustum::ChunkBox getRelativeAABB();
-        void calcVisible() { visible = TestFrustum.FrustumTest(getRelativeAABB()); }
+        Frustum::ChunkBox getRelativeAABB() const;
+        void calcVisible() { visible = TestFrustum.frustumTest(getRelativeAABB()); }
     private:
         Block mBlocks[4096];
         Brightness mBrightness[4096];
@@ -91,15 +91,11 @@ namespace World {
         bool LoadFromFile(); //返回true代表区块文件打开成功
         void SaveToFile();
         void destroyRender();
-        Hitbox::AABB getBaseAABB();
+        Hitbox::AABB getBaseAABB() const;
         void buildTerrain(bool initIfEmpty = true);
         void buildDetail();
         void build(bool initIfEmpty = true);
 
-        std::string getChunkPath() {
-            std::stringstream ss;
-            ss << "Worlds/" << worldname << "/chunks/chunk_" << cx << "_" << cy << "_" << cz;
-            return ss.str();
-        }
+        std::string getChunkPath() const;
     };
 }

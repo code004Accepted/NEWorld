@@ -19,7 +19,7 @@
 
 #include "Effect.h"
 #include "Definitions.h"
-#include <math.h>
+#include <cmath>
 
 
 namespace Effect {

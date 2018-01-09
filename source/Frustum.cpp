@@ -22,19 +22,19 @@
 #include <cmath>
 #include <algorithm>
 
-void Frustum::LoadIdentity() {
+void Frustum::loadIdentity() {
     std::fill_n(proj, 16, 0.0f);
     std::fill_n(modl, 16, 0.0f);
     modl[0] = modl[5] = modl[10] = modl[15] = 1.0f;
 }
 
-inline void Frustum::MultMatrix(float* a, float* b) {
+inline void Frustum::multMatrix(float* a, float* b) {
     float sum[16];
     MultMatrixTo(sum, a, b);
     std::copy_n(sum, 16, a);
 }
 
-void Frustum::SetPerspective(float FOV, float aspect, float Znear, float Zfar) {
+void Frustum::setPerspective(float FOV, float aspect, float Znear, float Zfar) {
     float ViewAngleH = FOV * (float)M_PI / 180.0f;
     float ViewAngleV = atan(tan(ViewAngleH / 2.0f) * aspect) * 2.0f;
     proj[0] = 1.0f / tan(ViewAngleV / 2);
@@ -44,14 +44,14 @@ void Frustum::SetPerspective(float FOV, float aspect, float Znear, float Zfar) {
     proj[14] = -2 * Zfar * Znear / (Zfar - Znear);
 }
 
-void Frustum::SetOrtho(float left, float right, float top, float bottom, float Znear, float Zfar) {
+void Frustum::setOrtho(float left, float right, float top, float bottom, float Znear, float Zfar) {
     proj[0] = 2 / (right - left);
     proj[5] = 2 / (bottom - top);
     proj[10] = 2 / (Znear - Zfar);
     proj[15] = 1.0f;
 }
 
-void Frustum::MultRotate(float angle, float x, float y, float z) {
+void Frustum::multRotate(float angle, float x, float y, float z) {
     float m[16], sum[16];
     std::fill_n(m, 16, 0.0f);
     float length = sqrtf(x * x + y * y + z * z);
@@ -125,7 +125,7 @@ void Frustum::update() {
     normalize(20);
 }
 
-bool Frustum::FrustumTest(const ChunkBox& aabb) {
+bool Frustum::frustumTest(const ChunkBox& aabb) {
     for (int i = 0; i < 24; i += 4) {
         if (frus[i] * aabb.xmin + frus[i + 1] * aabb.ymin + frus[i + 2] * aabb.zmin + frus[i + 3] <= 0.0f &&
             frus[i] * aabb.xmax + frus[i + 1] * aabb.ymin + frus[i + 2] * aabb.zmin + frus[i + 3] <= 0.0f &&

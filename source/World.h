@@ -35,12 +35,12 @@ class Frsutum;
 
 namespace World {
     // POD ONLY!
-    template <class Tk, class Td, size_t size, template<class> class Compare = std::less>
+    template <class Tk, class Td, size_t Size, template<class> class Compare = std::less>
     class OrderedList {
     public:
         OrderedList() noexcept : mSize(0), mComp() { }
 
-        using ArrayType = std::array<std::pair<Tk, Td>, size>;
+        using ArrayType = std::array<std::pair<Tk, Td>, Size>;
         using Iterator = typename ArrayType::iterator;
         using ConstIterator = typename ArrayType::const_iterator;
         Iterator begin() noexcept { return mList.begin(); }
@@ -57,9 +57,9 @@ namespace World {
                 else
                     first = middle + 1;
             }
-            if (first <= mSize && first < size) {
-                mSize = std::min(size, mSize + 1);
-                for (int j = size - 1; j > first; --j)
+            if (first <= mSize && first < Size) {
+                mSize = std::min(Size, mSize + 1);
+                for (int j = Size - 1; j > first; --j)
                     mList[j] = mList[j - 1];
                 mList[first] = std::pair<Tk, Td>(key, data);
             }
@@ -72,35 +72,34 @@ namespace World {
         Compare<Tk> mComp;
     };
 
+    inline Chunk* emptyChunkPtr = reinterpret_cast<Chunk*>(~0);
     extern std::string worldname;
     constexpr Brightness BrightnessMax = 15; //maximum brightness
     constexpr Brightness BrightnessMin = 2; //Mimimum brightness
     constexpr Brightness BrightnessDec = 1; //Brightness decrease
-    extern Brightness skylight; //Sky light level
-    extern Chunk* EmptyChunkPtr;
-    extern unsigned int EmptyBuffer;
+    inline Brightness skylight = 15; //Sky light level
     constexpr int maxChunkLoads = 64;
     constexpr int maxChunkUnloads = 64;
     constexpr int maxChunkRenders = 1;
 
     extern Chunk** chunks;
     extern int loadedChunks;
-    extern HeightMap HMap;
+    extern HeightMap hMap;
     extern CPARegionalCache cpArray;
 
-    extern int cloud[128][128];
-    extern int rebuiltChunks, rebuiltChunksCount;
-    extern int updatedChunks, updatedChunksCount;
-    extern int unloadedChunks, unloadedChunksCount;
-    extern OrderedList<int, Vec3i, maxChunkLoads> chunkLoadList;
-    extern OrderedList<int, Chunk*, maxChunkRenders> chunkBuildRenderList;
-    extern OrderedList<int, Chunk*, maxChunkUnloads, std::greater> chunkUnloadList;
+    inline int cloud[128][128];
+    inline int rebuiltChunks, rebuiltChunksCount;
+    inline int updatedChunks, updatedChunksCount;
+    inline int unloadedChunks, unloadedChunksCount;
+    inline OrderedList<int, Vec3i, maxChunkLoads> chunkLoadList;
+    inline OrderedList<int, Chunk*, maxChunkRenders> chunkBuildRenderList;
+    inline OrderedList<int, Chunk*, maxChunkUnloads, std::greater> chunkUnloadList;
     extern std::vector<unsigned int> vbuffersShouldDelete;
 
-    void Init();
+    void init();
 
-    Chunk* AddChunk(int x, int y, int z);
-    void DeleteChunk(int x, int y, int z);
+    Chunk* addChunk(int x, int y, int z);
+    void deleteChunk(int x, int y, int z);
 
     Chunk* getChunkPtr(int x, int y, int z);
 
@@ -149,7 +148,8 @@ namespace World {
 
     inline bool chunkInRange(int x, int y, int z, int px, int py, int pz, int dist) {
         //检测给出的chunk坐标是否在渲染范围内
-        return !(x < px - dist || x > px + dist - 1 || y < py - dist || y > py + dist - 1 || z < pz - dist || z > pz + dist - 1);
+        return !(x < px - dist || x > px + dist - 1 || y < py - dist || y > py + dist - 1 || z < pz - dist || z > pz +
+            dist - 1);
     }
 
     bool chunkUpdated(int x, int y, int z);

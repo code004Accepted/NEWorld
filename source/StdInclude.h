@@ -26,11 +26,11 @@
 #include <Windows.h>
 
 #include <cassert>
-#include <math.h>
+#include <cmath>
 #include <memory>
 #include <sstream>
 #include <string>
-#include <time.h>
+#include <ctime>
 #include <vector>
 
 //GLFW

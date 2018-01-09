@@ -6,7 +6,7 @@
 #define _CWAVES_H_
 
 #include <Windows.h>
-#include <stdio.h>
+#include <cstdio>
 
 #define MAX_NUM_WAVEID            1024
 

@@ -220,12 +220,10 @@ void ALDeviceList::FilterDevicesMaxVer(int major, int minor) {
  * Deselects device which don't support the given extension name
  */
 void ALDeviceList::FilterDevicesExtension(char* szExtName) {
-    bool bFound;
-
     for (auto& i : vDeviceInfo) {
-        bFound = false;
-        for (unsigned int j = 0; j < i.pvstrExtensions->size(); j++) {
-            if (!_stricmp(i.pvstrExtensions->at(j).c_str(), szExtName)) {
+        bool bFound = false;
+        for (auto& pvstrExtension : *i.pvstrExtensions) {
+            if (!_stricmp(pvstrExtension.c_str(), szExtName)) {
                 bFound = true;
                 break;
             }

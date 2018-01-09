@@ -50,33 +50,28 @@ namespace Blocks {
     const Block NONEMPTY = 1;
 
     class SingleBlock {
-    private:
-        std::string name;
-        float Hardness;
-        bool Solid;
-        bool Opaque;
-        bool Translucent;
-        bool Dark;
-        bool canexplode;
-
     public:
-        SingleBlock(std::string  blockName, bool solid, bool opaque, bool translucent, bool _canexplode,
-                    float _hardness) :
-            name(std::move(blockName)), Hardness(_hardness), Solid(solid), Opaque(opaque), Translucent(translucent),
-            canexplode(_canexplode) { };
+        SingleBlock(std::string blockName, bool solid, bool opaque, bool translucent, bool canExplode,
+                    float hardness) :
+            mUri(std::move(blockName)), mHardness(hardness), mSolid(solid), mOpaque(opaque), mTranslucent(translucent),
+            mIsDark(false), mCanExplode(canExplode) { };
 
         //获得方块名称
-        std::string getBlockName() const { return Globalization::GetStrbyKey(name); }
+        std::string getBlockName() const { return Globalization::GetStrbyKey(mUri); }
         //是否是固体
-        bool isSolid() const { return Solid; }
+        bool isSolid() const { return mSolid; }
         //是否不透明
-        bool isOpaque() const { return Opaque; }
+        bool isOpaque() const { return mOpaque; }
         //是否半透明
-        bool isTranslucent() const { return Translucent; }
+        bool isTranslucent() const { return mTranslucent; }
         //是否可以爆炸
-        bool canExplode() const { return canexplode; }
+        bool canExplode() const { return mCanExplode; }
         //获得硬度（数值越大硬度越小，最大100）
-        float getHardness() const { return Hardness; }
+        float getHardness() const { return mHardness; }
+    private:
+        std::string mUri;
+        float mHardness;
+        bool mSolid, mOpaque, mTranslucent, mIsDark, mCanExplode;
     };
 
     const SingleBlock blockData[BLOCK_DEF_END + 1] = {
@@ -104,4 +99,4 @@ namespace Blocks {
     };
 }
 
-#define BlockInfo(blockID) Blocks::blockData[blockID]
+inline auto getBlockInfo(Block blockId) noexcept { return Blocks::blockData[blockId]; }

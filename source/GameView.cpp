@@ -105,9 +105,7 @@ public:
 
     void saveGame() { Player::save(World::worldname); }
 
-    bool loadGame() {
-        return Player::load(World::worldname);
-    }
+    bool loadGame() { return Player::load(World::worldname); }
 
 
     bool isPressed(int key, bool setFalse = false) {
@@ -159,9 +157,9 @@ public:
                               Player::czt - viewdistance - 2);
 
         //HeightMap move
-        if (World::HMap.originX != (Player::cxt - viewdistance - 2) * 16 || World::HMap.originZ != (Player::czt -
+        if (World::hMap.originX != (Player::cxt - viewdistance - 2) * 16 || World::hMap.originZ != (Player::czt -
             viewdistance - 2) * 16) {
-            World::HMap.moveTo((Player::cxt - viewdistance - 2) * 16, (Player::czt - viewdistance - 2) * 16);
+            World::hMap.moveTo((Player::cxt - viewdistance - 2) * 16, (Player::czt - viewdistance - 2) * 16);
         }
 
         if (FirstUpdateThisFrame) {
@@ -169,15 +167,15 @@ public:
 
             //卸载区块(Unload chunks)
             for (auto&& [dist, cp] : World::chunkUnloadList)
-                World::DeleteChunk(cp->cx, cp->cy, cp->cz);
+                World::deleteChunk(cp->cx, cp->cy, cp->cz);
 
             //加载区块(Load chunks)
             for (auto&& [dist, pos] : World::chunkLoadList) {
-                auto c = World::AddChunk(pos.x, pos.y, pos.z);
+                auto c = World::addChunk(pos.x, pos.y, pos.z);
                 c->load(false);
                 if (c->mIsEmpty) {
-                    World::DeleteChunk(pos.x, pos.y, pos.z);
-                    World::cpArray.set(pos.x, pos.y, pos.z, World::EmptyChunkPtr);
+                    World::deleteChunk(pos.x, pos.y, pos.z);
+                    World::cpArray.set(pos.x, pos.y, pos.z, World::emptyChunkPtr);
                 }
             }
         }
@@ -252,7 +250,7 @@ public:
                     selectPrecision;
 
                 //碰到方块
-                if (BlockInfo(World::getBlock(RoundInt(lx), RoundInt(ly), RoundInt(lz))).isSolid()) {
+                if (getBlockInfo(World::getBlock(RoundInt(lx), RoundInt(ly), RoundInt(lz))).isSolid()) {
                     int x, y, z, xl, yl, zl;
                     x = RoundInt(lx);
                     y = RoundInt(ly);
@@ -274,7 +272,7 @@ public:
                     selby = World::getBlockPos(y);
                     selbz = World::getBlockPos(z);
 
-                    if (auto cp = World::getChunkPtr(selcx, selcy, selcz); cp && (cp != World::EmptyChunkPtr))
+                    if (auto cp = World::getChunkPtr(selcx, selcy, selcz); cp && (cp != World::emptyChunkPtr))
                         selb = cp->getBlock(selbx, selby, selbz);
 
                     selbr = World::getBrightness(xl, yl, zl);
@@ -292,13 +290,13 @@ public:
                             float Factor = 1.0;
                             if (Player::inventory[3][Player::indexInHand] == STICK)Factor = 4;
                             else
-                                Factor = 30.0 / (BlockInfo(Player::inventory[3][Player::indexInHand]).getHardness() +
+                                Factor = 30.0 / (getBlockInfo(Player::inventory[3][Player::indexInHand]).getHardness() +
                                     0.1);
                             if (Factor < 1.0)Factor = 1.0;
                             if (Factor > 1.7)Factor = 1.7;
-                            seldes += BlockInfo(selb).getHardness() * ((Player::gamemode == Player::Creative)
-                                                                           ? 10.0f
-                                                                           : 0.3f) * Factor;
+                            seldes += getBlockInfo(selb).getHardness() * ((Player::gamemode == Player::Creative)
+                                                                              ? 10.0f
+                                                                              : 0.3f) * Factor;
                             BlockClick = true;
                             BlockPos[0] = x;
                             BlockPos[1] = y;
@@ -470,7 +468,8 @@ public:
                 //起跳！
                 if (isPressed(GLFW_KEY_SPACE)) {
                     if (!Player::inWater) {
-                        if ((Player::OnGround || Player::AirJumps < maxAirJumps) && !Player::Flying && !Player:: CrossWall) {
+                        if ((Player::OnGround || Player::AirJumps < maxAirJumps) && !Player::Flying && !Player::
+                            CrossWall) {
                             if (!Player::OnGround) {
                                 Player::jump = 0.3;
                                 Player::AirJumps++;
@@ -796,11 +795,11 @@ public:
         if (!DebugShadow) glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_TEXTURE_2D);
 
-        Player::ViewFrustum.LoadIdentity();
-        Player::ViewFrustum.SetPerspective(FOVyNormal + FOVyExt, (float)windowwidth / windowheight, 0.05f,
+        Player::ViewFrustum.loadIdentity();
+        Player::ViewFrustum.setPerspective(FOVyNormal + FOVyExt, (float)windowwidth / windowheight, 0.05f,
                                            viewdistance * 16.0f);
-        Player::ViewFrustum.MultRotate((float)plookupdown, 1, 0, 0);
-        Player::ViewFrustum.MultRotate(360.0f - (float)pheading, 0, 1, 0);
+        Player::ViewFrustum.multRotate((float)plookupdown, 1, 0, 0);
+        Player::ViewFrustum.multRotate(360.0f - (float)pheading, 0, 1, 0);
         Player::ViewFrustum.update();
 
         glMatrixMode(GL_PROJECTION);
@@ -971,15 +970,9 @@ public:
             screenshotAnimTimer = curtime;
             time_t t = time(nullptr);
             char tmp[64];
-            tm* timeinfo;
-#ifdef NEWORLD_COMPILE_DISABLE_SECURE
-            timeinfo = localtime(&t);
-#else
-            timeinfo = new tm;
-            localtime_s(timeinfo, &t);
-#endif
-            strftime(tmp, sizeof(tmp), "%Y年%m月%d日%H时%M分%S秒", timeinfo);
-            delete timeinfo;
+            tm timeinfo{};
+            localtime_s(&timeinfo, &t);
+            strftime(tmp, sizeof(tmp), "%Y-%m-%d-%H:%M:%S", &timeinfo);
             std::stringstream ss;
             ss << "Screenshots/" << tmp << ".bmp";
             saveScreenshot(0, 0, windowwidth, windowheight, ss.str());
@@ -1068,7 +1061,7 @@ public:
                 glEnable(GL_TEXTURE_2D);
                 glDisable(GL_CULL_FACE);
                 std::stringstream ss;
-                ss << BlockInfo(selb).getBlockName() << " (ID " << (int)selb << ")";
+                ss << getBlockInfo(selb).getBlockName() << " (ID " << (int)selb << ")";
                 TextRenderer::renderString(windowuswidth / 2 + 50, windowusheight / 2 + 50 - 16, ss.str());
                 glDisable(GL_TEXTURE_2D);
                 glEnable(GL_CULL_FACE);
@@ -1499,7 +1492,8 @@ public:
             }
             if (Player::inventory[si][sj] != 0 && sf == 1) {
                 glColor4f(1.0, 1.0, 0.0, 1.0);
-                TextRenderer::renderString((int)mx, (int)my - 16, BlockInfo(Player::inventory[si][sj]).getBlockName());
+                TextRenderer::renderString((int)mx, (int)my - 16,
+                                           getBlockInfo(Player::inventory[si][sj]).getBlockName());
             }
 
             int xbase = 0, ybase = 0, spac = 0;
@@ -1737,7 +1731,7 @@ public:
         if (loadGame()) Player::init(Player::xpos, Player::ypos, Player::zpos);
         else Player::spawn();
         printf("[Console][Game]Init world...\n");
-        World::Init();
+        World::init();
         registerCommands();
         printf("[Console][Game]Loading Mods...\n");
 

@@ -103,9 +103,9 @@ namespace Menus {
             }
             if (deletebtn.clicked) {
                 //删除世界文件
-                system((std::string("rd /s/q \"Worlds\\") + chosenWorldName + "\"").c_str());
+                filesystem::remove_all("Worlds/" + chosenWorldName);
                 deletebtn.clicked = false;
-                World::worldname = "";
+                World::worldname.clear();
                 enterbtn.enabled = false;
                 deletebtn.enabled = false;
                 refresh = true;
@@ -125,7 +125,7 @@ namespace Menus {
                 for (auto&& x : filesystem::directory_iterator("Worlds/")) {
                     if (is_directory(x.path())) {
                         worldnames.push_back(x.path().filename().string());
-                        auto thumbName = x.path().string() + "/Thumbnail.bmp";
+                        const auto thumbName = x.path().string() + "/Thumbnail.bmp";
                         texSizeX.push_back(0);
                         texSizeY.push_back(0);
                         if (filesystem::exists(thumbName)) {

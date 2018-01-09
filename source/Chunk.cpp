@@ -45,7 +45,7 @@ namespace World {
             int l = MAXINT, hi = WorldGen::WaterLevel, h;
             for (int x = 0; x < 16; ++x) {
                 for (int z = 0; z < 16; ++z) {
-                    h = HMap.getHeight(cx * 16 + x, cz * 16 + z);
+                    h = hMap.getHeight(cx * 16 + x, cz * 16 + z);
                     if (h < l) l = h;
                     if (h > hi) hi = h;
                     H[x][z] = h;
@@ -192,6 +192,26 @@ namespace World {
         mIsModified = false;
     }
 
+    inline void hexString32(int32_t in, char* dst) noexcept {
+        constexpr const char chars[] = "0123456789abcdef";
+        dst[0] = chars[(in & 0xF0000000) >> 28];
+        dst[1] = chars[(in & 0xF000000) >> 24];
+        dst[2] = chars[(in & 0xF00000) >> 20];
+        dst[3] = chars[(in & 0xF0000) >> 16];
+        dst[4] = chars[(in & 0xF000) >> 12];
+        dst[5] = chars[(in & 0xF00) >> 8];
+        dst[6] = chars[(in & 0xF0) >> 4];
+        dst[7] = chars[(in & 0xF)];
+    }
+
+    std::string Chunk::getChunkPath() const {
+        char name[25] = { 0 };
+        hexString32(cx, name);
+        hexString32(cy, name + 8);
+        hexString32(cz, name + 16);
+        return "Worlds/" + worldname + "/chunks/" + name;
+    }
+
     void Chunk::load(bool initIfEmpty) {
         if (!LoadFromFile())
             build(initIfEmpty);
@@ -200,21 +220,23 @@ namespace World {
     }
 
     bool Chunk::LoadFromFile() {
-        std::ifstream file(getChunkPath(), std::ios::in | std::ios::binary);
-        bool openChunkFile = file.is_open();
-        file.read((char*)mBlocks, 4096 * sizeof(Block));
-        file.read((char*)mBrightness, 4096 * sizeof(Brightness));
-        file.read((char*)&mIsDetailGenerated, sizeof(bool));
-        file.close();
+        std::ifstream file(getChunkPath(), std::ios::binary);
+        const bool openChunkFile = file.is_open();
+        if (openChunkFile) {
+            file.read(reinterpret_cast<char*>(mBlocks), 4096 * sizeof(Block));
+            file.read(reinterpret_cast<char*>(mBrightness), 4096 * sizeof(Brightness));
+            file.read(reinterpret_cast<char*>(&mIsDetailGenerated), sizeof(bool));
+            file.close();
+        }
         return openChunkFile;
     }
 
     void Chunk::SaveToFile() {
         if (mIsModified) {
             std::ofstream file(getChunkPath(), std::ios::out | std::ios::binary);
-            file.write((char*)mBlocks, 4096 * sizeof(Block));
-            file.write((char*)mBrightness, 4096 * sizeof(Brightness));
-            file.write((char*)&mIsDetailGenerated, sizeof(bool));
+            file.write(reinterpret_cast<char*>(mBlocks), 4096 * sizeof(Block));
+            file.write(reinterpret_cast<char*>(mBrightness), 4096 * sizeof(Brightness));
+            file.write(reinterpret_cast<char*>(&mIsDetailGenerated), sizeof(bool));
             file.close();
         }
     }
@@ -246,16 +268,17 @@ namespace World {
     }
 
     void Chunk::destroyRender() {
-        if (!mIsRenderBuilt) return;
-        if (vbuffer[0] != 0) vbuffersShouldDelete.push_back(vbuffer[0]);
-        if (vbuffer[1] != 0) vbuffersShouldDelete.push_back(vbuffer[1]);
-        if (vbuffer[2] != 0) vbuffersShouldDelete.push_back(vbuffer[2]);
-        if (vbuffer[3] != 0) vbuffersShouldDelete.push_back(vbuffer[3]);
-        vbuffer[0] = vbuffer[1] = vbuffer[2] = vbuffer[3] = 0;
-        mIsRenderBuilt = false;
+        if (mIsRenderBuilt) {
+            if (vbuffer[0]) vbuffersShouldDelete.push_back(vbuffer[0]);
+            if (vbuffer[1]) vbuffersShouldDelete.push_back(vbuffer[1]);
+            if (vbuffer[2]) vbuffersShouldDelete.push_back(vbuffer[2]);
+            if (vbuffer[3]) vbuffersShouldDelete.push_back(vbuffer[3]);
+            vbuffer[0] = vbuffer[1] = vbuffer[2] = vbuffer[3] = 0;
+            mIsRenderBuilt = false;
+        }
     }
 
-    Hitbox::AABB Chunk::getBaseAABB() {
+    Hitbox::AABB Chunk::getBaseAABB() const {
         Hitbox::AABB ret;
         ret.xmin = cx * 16 - 0.5;
         ret.ymin = cy * 16 - 0.5;
@@ -266,14 +289,14 @@ namespace World {
         return ret;
     }
 
-    Frustum::ChunkBox Chunk::getRelativeAABB() {
+    Frustum::ChunkBox Chunk::getRelativeAABB() const {
         Frustum::ChunkBox ret;
-        ret.xmin = (float)(mAABB.xmin - relBaseX);
-        ret.xmax = (float)(mAABB.xmax - relBaseX);
-        ret.ymin = (float)(mAABB.ymin - loadAnim - relBaseY);
-        ret.ymax = (float)(mAABB.ymax - loadAnim - relBaseY);
-        ret.zmin = (float)(mAABB.zmin - relBaseZ);
-        ret.zmax = (float)(mAABB.zmax - relBaseZ);
+        ret.xmin = static_cast<float>(mAABB.xmin - relBaseX);
+        ret.xmax = static_cast<float>(mAABB.xmax - relBaseX);
+        ret.ymin = static_cast<float>(mAABB.ymin - loadAnim - relBaseY);
+        ret.ymax = static_cast<float>(mAABB.ymax - loadAnim - relBaseY);
+        ret.zmin = static_cast<float>(mAABB.zmin - relBaseZ);
+        ret.zmax = static_cast<float>(mAABB.zmax - relBaseZ);
         return ret;
     }
 }

@@ -49,14 +49,14 @@ namespace ChunkRenderer {
     };
 
     //深度模型的面 | Face in depth model
-    struct QuadPrimitive_Depth {
+    struct QuadPrimitiveDepth {
         int x, y, z, length, direction;
 
-        QuadPrimitive_Depth() : x(0), y(0), z(0), length(0), direction(0) { }
+        QuadPrimitiveDepth() : x(0), y(0), z(0), length(0), direction(0) { }
     };
 
-    void RenderPrimitive(QuadPrimitive& p);
-    void RenderPrimitive_Depth(QuadPrimitive_Depth& p);
+    void renderPrimitive(QuadPrimitive& p);
+    void RenderPrimitive_Depth(QuadPrimitiveDepth& p);
     void RenderChunk(World::Chunk* c);
     void MergeFaceRender(World::Chunk* c);
     void RenderDepthModel(World::Chunk* c);

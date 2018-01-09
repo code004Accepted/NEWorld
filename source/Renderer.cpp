@@ -246,10 +246,10 @@ namespace Renderer {
         float scale = 16.0f * sqrt(3.0f);
         float length = shadowdist * scale;
         Frustum frus;
-        frus.LoadIdentity();
-        frus.SetOrtho(-length, length, -length, length, -length, length);
-        frus.MultRotate(sunlightXrot, 1.0f, 0.0f, 0.0f);
-        frus.MultRotate(sunlightYrot, 0.0f, 1.0f, 0.0f);
+        frus.loadIdentity();
+        frus.setOrtho(-length, length, -length, length, -length, length);
+        frus.multRotate(sunlightXrot, 1.0f, 0.0f, 0.0f);
+        frus.multRotate(sunlightYrot, 0.0f, 1.0f, 0.0f);
 
         //Set uniform
         shader.setUniform("renderdist", viewdistance * 16.0f);

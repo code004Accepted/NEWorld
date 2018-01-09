@@ -113,13 +113,13 @@ namespace Textures {
         BITMAPINFOHEADER bih; //各种关于位图的参数
         BITMAPFILEHEADER bfh; //各种关于文件的参数
         //开始读取
-        bmpfile.read((char*)&bfh, sizeof(BITMAPFILEHEADER));
-        bmpfile.read((char*)&bih, sizeof(BITMAPINFOHEADER));
+        bmpfile.read(reinterpret_cast<char*>(&bfh), sizeof(BITMAPFILEHEADER));
+        bmpfile.read(reinterpret_cast<char*>(&bih), sizeof(BITMAPINFOHEADER));
         bitmap.sizeX = bih.biWidth;
         bitmap.sizeY = bih.biHeight;
         bitmap.buffer = std::unique_ptr<uint8_t[]>(new unsigned char[bitmap.sizeX * bitmap.sizeY * 3]);
         //¶ÁÈ¡Êý¾Ý
-        bmpfile.read((char*)bitmap.buffer.get(), bitmap.sizeX * bitmap.sizeY * 3);
+        bmpfile.read(reinterpret_cast<char*>(bitmap.buffer.get()), bitmap.sizeX * bitmap.sizeY * 3);
         bmpfile.close();
         //ºÏ²¢Óë×ª»»
         for (unsigned int i = 0; i < bitmap.sizeX * bitmap.sizeY; i++) {

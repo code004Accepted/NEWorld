@@ -133,8 +133,8 @@ namespace GUI {
         static Frustum frus;
         static double startTimer = timer();
         double elapsed = timer() - startTimer;
-        frus.LoadIdentity();
-        frus.SetPerspective(90.0f, (float)windowwidth / windowheight, 0.1f, 10.0f);
+        frus.loadIdentity();
+        frus.setPerspective(90.0f, (float)windowwidth / windowheight, 0.1f, 10.0f);
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
@@ -327,7 +327,7 @@ namespace GUI {
         if (parent->focusid == id) focused = true;
         else focused = false;
 
-        clicked = (parent->mb == 0 && parent->mbl == 1 && mouseon || parent->enterpl && !parent->enterp) &&
+        clicked = ((parent->mb == 0 && parent->mbl == 1 && mouseon) || (parent->enterpl && !parent->enterp)) &&
             focused;
         //clicked = lp&&!pressed
 
@@ -539,7 +539,7 @@ namespace GUI {
             mouseon = true, parent->MouseOnTextbox = true;
         else mouseon = false;
 
-        if ((parent->mb == 1 && mouseon || parent->enterp) && focused) pressed = true;
+        if (((parent->mb == 1 && mouseon) || parent->enterp) && focused) pressed = true;
         else pressed = false;
 
         if (parent->mb == 1 && parent->mbl == 0 && mouseon) parent->focusid = id; //焦点在此

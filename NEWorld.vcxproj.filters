@@ -246,9 +246,6 @@
     <ClCompile Include="source\World.cpp">
       <Filter>Source\Game\World</Filter>
     </ClCompile>
-    <ClCompile Include="source\Definitions.cpp">
-      <Filter>Source\Common</Filter>
-    </ClCompile>
     <ClCompile Include="source\Frustum.cpp">
       <Filter>Source\Renderer</Filter>
     </ClCompile>

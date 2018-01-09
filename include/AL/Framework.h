@@ -3,7 +3,7 @@
 
 // Get some classic includes
 #include<Windows.h>
-#include<stdio.h>
+#include<cstdio>
 #include<io.h>
 #include<fcntl.h>
 #include<conio.h>

@@ -25,7 +25,7 @@
 
 class Command {
 public:
-    Command(std::string  _identifier, std::function<bool(const std::vector<std::string>&)> _execute) :
+    Command(std::string _identifier, std::function<bool(const std::vector<std::string>&)> _execute) :
         identifier(std::move(_identifier)), execute(std::move(_execute)) { };
 
     std::string identifier;

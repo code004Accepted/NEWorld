@@ -50,7 +50,7 @@ union Vec<2, T> final {
     constexpr Vec(T _x, T _y) noexcept : x(_x), y(_y) { }
 
     template <typename U, std::enable_if_t<std::is_convertible<T, U>::value, int>  = 0>
-    constexpr Vec(const Vec<2, U>& rhs) noexcept : x(T(rhs.x)), y(T(rhs.y)) { }
+    explicit constexpr Vec(const Vec<2, U>& rhs) noexcept : x(T(rhs.x)), y(T(rhs.y)) { }
 
     constexpr Vec operator +(const Vec& r) const noexcept { return Vec(x + r.x, y + r.y); }
 
@@ -128,7 +128,7 @@ union Vec<3, T> final {
     constexpr Vec(const Vec<2, T>& ls, T arg) noexcept : less(ls), last(arg) { }
 
     template <typename U, std::enable_if_t<std::is_convertible<T, U>::value, int>  = 0>
-    constexpr Vec(const Vec<3, U>& rhs) noexcept : x(T(rhs.x)), y(T(rhs.y)), z(T(rhs.z)) { }
+    explicit constexpr Vec(const Vec<3, U>& rhs) noexcept : x(T(rhs.x)), y(T(rhs.y)), z(T(rhs.z)) { }
 
     constexpr Vec operator +(const Vec& r) const noexcept { return Vec(x + r.x, y + r.y, z + r.z); }
 
@@ -231,7 +231,7 @@ union Vec<4, T> final {
     constexpr Vec(T _x, T _y, T _z, T _t) noexcept : x(_x), y(_y), z(_z), t(_t) { }
 
     template <typename U, std::enable_if_t<std::is_convertible<T, U>::value, int>  = 0>
-    constexpr Vec(const Vec<3, U>& rhs) noexcept : x(T(rhs.x)), y(T(rhs.y)), z(T(rhs.z)), t(T(rhs.t)) { }
+    explicit constexpr Vec(const Vec<3, U>& rhs) noexcept : x(T(rhs.x)), y(T(rhs.y)), z(T(rhs.z)), t(T(rhs.t)) { }
 
     constexpr Vec(const Vec<3, T>& ls, T arg) noexcept : less(ls), last(arg) { }
 

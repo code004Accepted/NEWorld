@@ -24,7 +24,7 @@
 
 // Win32 version of the Creative Labs OpenAL 1.1 Framework for samples
 #include<Windows.h>
-#include<stdio.h>
+#include<cstdio>
 
 #include "Framework.h"
 #include "CWaves.h"

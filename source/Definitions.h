@@ -18,11 +18,7 @@
 */
 
 #pragma once
-//#define NEWORLD_DEBUG
-#ifndef NEWORLD_DEBUG
 #pragma comment(linker, "/SUBSYSTEM:\"WINDOWS\" /ENTRY:\"mainCRTStartup\"")
-#endif
-//#define NEWORLD_SECURE
 #include "StdInclude.h"
 #include "Typedefs.h"
 #include "FunctionsKit.h"
@@ -36,69 +32,76 @@ const int defaultwindowwidth = 852; //默认窗口宽度
 const int defaultwindowheight = 480; //默认窗口高度
 const int networkRequestFrequency = 3; //请求频率
 const int networkRequestmax = 20; //理想最大请求队列长度
-extern float FOVyNormal;
-extern float mousemove;
-extern int viewdistance;
-extern int cloudwidth;
-extern int selectPrecision;
-extern int selectDistance;
-extern float walkspeed;
-extern float runspeed;
-extern int maxAirJumps;
-extern bool SmoothLighting;
-extern bool NiceGrass;
-extern bool MergeFace;
-extern bool GUIScreenBlur;
-extern bool ppistretch;
-extern int linelength;
-extern int linedist;
-extern float skycolorR;
-extern float skycolorG;
-extern float skycolorB;
-extern float FOVyRunning;
-extern float FOVyExt;
-extern int Multisample;
-extern bool vsync;
-extern double stretch;
-extern int gametime;
-const int gameTimemax = 43200;
-//extern float daylight;
 
-extern int windowwidth;
-extern int windowheight;
-extern bool gamebegin, gameexit, bagOpened;
+inline float FOVyNormal = 60.0f; //视野角度
+inline float mousemove = 0.2f; //鼠标灵敏度
+inline int viewdistance = 8; //视野距离
+inline int cloudwidth = 10; //云的宽度
+inline int selectPrecision = 32; //选择方块的精度
+inline int selectDistance = 8; //选择方块的距离
+inline float walkspeed = 0.15f; //玩家前进速度
+inline float runspeed = 0.3f; //玩家跑步速度
+inline int maxAirJumps = 3 - 1; //空中N段连跳
+inline bool SmoothLighting = true; //平滑光照
+inline bool NiceGrass = true; //草地材质连接
+inline bool MergeFace = false; //合并面渲染
+inline bool GUIScreenBlur = false; //GUI背景模糊  Void:这个算法慢死了，我关掉了  qiaozhanrong:23333我也想关掉
+inline int linelength = 10; //跟F3的准星有关。。。
+inline int linedist = 30; //跟F3的准星有关。。。
+inline bool ppistretch = false; //试验功能，默认关闭
+inline float skycolorR = 0.7f; //天空颜色Red
+inline float skycolorG = 1.0f; //天空颜色Green
+inline float skycolorB = 1.0f; //天空颜色Blue
+inline float FOVyRunning = 8.0f;
+inline float FOVyExt;
+inline double stretch = 1.0f; //ppi缩放比例（供gui绘制使用）
+inline int Multisample = 0; //多重采样抗锯齿
+inline bool vsync = false; //垂直同步
+inline int gametime = 0; //游戏时间 0~2592000
+                  //float daylight;
 
-extern TextureID BlockTextures, BlockTextures3D;
-extern TextureID tex_select, tex_unselect, tex_title, tex_mainmenu[6];
-extern TextureID DestroyImage[11];
-extern TextureID DefaultSkin;
+inline int windowwidth; //窗口宽度
+inline int windowheight; //窗口宽度
+inline bool gamebegin, gameexit, bagOpened;
 
-extern bool multiplayer;
-extern std::string serverip;
-extern unsigned short port;
+//多人游戏
+inline bool multiplayer = false;
+inline std::string serverip;
+inline unsigned short port = 30001;
 
-extern Mutex_t Mutex;
-extern Thread_t updateThread;
-extern double lastupdate, updateTimer;
-extern double lastframe;
-extern bool updateThreadRun, updateThreadPaused;
+inline TextureID BlockTextures, BlockTextures3D;
+inline TextureID tex_select, tex_unselect, tex_title, tex_mainmenu[6];
+inline TextureID DestroyImage[11];
+inline TextureID DefaultSkin;
 
-extern bool mpclient, mpserver;
-extern bool shouldGetScreenshot;
-extern bool shouldGetThumbnail;
-extern bool FirstUpdateThisFrame;
-extern bool FirstFrameThisUpdate;
-extern double SpeedupAnimTimer;
-extern double TouchdownAnimTimer;
-extern double screenshotAnimTimer;
-extern double bagAnimTimer;
-extern double bagAnimDuration;
+//线程
+inline Mutex_t Mutex;
+inline Thread_t updateThread;
+inline double lastupdate, updateTimer;
+inline double lastframe;
+inline bool updateThreadRun, updateThreadPaused;
 
-extern int GLVersionMajor, GLVersionMinor, GLVersionRev;
-extern GLFWwindow* MainWindow;
-extern GLFWcursor* MouseCursor;
-extern double mx, my, mxl, myl;
-extern int mw, mb, mbp, mbl, mwl;
-extern double mxdelta, mydelta;
-extern std::string inputstr;
+inline bool shouldGetScreenshot;
+inline bool shouldGetThumbnail;
+inline bool FirstUpdateThisFrame;
+inline bool FirstFrameThisUpdate;
+inline double SpeedupAnimTimer;
+inline double TouchdownAnimTimer;
+inline double screenshotAnimTimer;
+inline double bagAnimTimer;
+inline double bagAnimDuration = 0.5;
+
+//OpenGL
+inline int GLVersionMajor, GLVersionMinor, GLVersionRev;
+//GLFW
+inline GLFWwindow* MainWindow;
+inline GLFWcursor* MouseCursor;
+
+//鼠标输入数据
+inline double mx, my, mxl, myl;
+inline int mw, mb, mbp, mbl, mwl;
+inline double mxdelta, mydelta;
+//键盘输入数据
+inline std::string inputstr;
+
 void AppCleanUp();
