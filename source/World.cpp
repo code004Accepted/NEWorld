@@ -1,21 +1,21 @@
-/*
-* NEWorld: A free game with similar rules to Minecraft.
-* Copyright (C) 2017-2018 NEWorld Team
-*
-* This file is part of NEWorld.
-* NEWorld is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* NEWorld is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
-*/
+// 
+// NEWorld: World.cpp
+// NEWorld: A Free Game with Similar Rules to Minecraft.
+// Copyright (C) 2015-2018 NEWorld Team
+// 
+// NEWorld is free software: you can redistribute it and/or modify it 
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or 
+// (at your option) any later version.
+// 
+// NEWorld is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General 
+// Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 #include "World.h"
 #include "Textures.h"
@@ -30,14 +30,22 @@ namespace World {
 
     Chunk** chunks;
     int loadedChunks, chunkArraySize;
+
     namespace ChunkPointerCache {
         namespace {
             thread_local Chunk* ptr = nullptr;
             thread_local ChunkID id = 0;
         }
+
         inline auto fetch(const ChunkID iid) noexcept { return (iid == id) ? ptr : nullptr; }
-        inline auto write(const ChunkID iid, Chunk* iptr) noexcept { id = iid; ptr = iptr; return iptr; }
+
+        inline auto write(const ChunkID iid, Chunk* iptr) noexcept {
+            id = iid;
+            ptr = iptr;
+            return iptr;
+        }
     }
+
     CPARegionalCache cpArray;
     HeightMap hMap;
     std::vector<unsigned int> vbuffersShouldDelete;
@@ -96,8 +104,8 @@ namespace World {
     Chunk* getChunkPtr(int x, int y, int z) {
         const auto cid = getChunkID(x, y, z);
         if (const auto ret = ChunkPointerCache::fetch(cid); ret) return ret;
-        if (const auto ret = cpArray.get(x, y, z);  ret) return ChunkPointerCache::write(cid, ret);
-        if (loadedChunks > 0) 
+        if (const auto ret = cpArray.get(x, y, z); ret) return ChunkPointerCache::write(cid, ret);
+        if (loadedChunks > 0)
             if (const auto chk = chunks[binarySearchChunks(loadedChunks, cid).second]; chk->id == cid) {
                 cpArray.set(x, y, z, chk);
                 return ChunkPointerCache::write(cid, chk);
@@ -109,21 +117,22 @@ namespace World {
         loadedChunks += cc;
         if (loadedChunks > chunkArraySize) {
             if (chunkArraySize < 1024) chunkArraySize = 1024;
-            do chunkArraySize <<= 1;  while (chunkArraySize < loadedChunks);
-            if (const auto cp = static_cast<Chunk**>(realloc(chunks, chunkArraySize * sizeof(Chunk*))); cp && loadedChunks != 0)
+            do chunkArraySize <<= 1;
+            while (chunkArraySize < loadedChunks);
+            if (const auto cp = static_cast<Chunk**>(realloc(chunks, chunkArraySize * sizeof(Chunk*))); cp &&
+                loadedChunks != 0)
                 chunks = cp;
-            else
-                if (loadedChunks) {
-                    destroyAllChunks();
-                    throw std::bad_alloc();
-                }
+            else if (loadedChunks) {
+                destroyAllChunks();
+                throw std::bad_alloc();
+            }
         }
     }
 
     void reduceChunkArray(int cc) { loadedChunks -= cc; }
 
     void renderblock(int x, int y, int z, Chunk* chunkptr) {
-        double colors, color1, color2, color3, color4, tcx, tcy, size;
+        double colors, color1, color2, color3, color4, tcx, tcy;
         int cx = chunkptr->cx, cy = chunkptr->cy, cz = chunkptr->cz;
         int gx = cx * 16 + x, gy = cy * 16 + y, gz = cz * 16 + z;
         Block blk[7] = {
@@ -146,7 +155,7 @@ namespace World {
             y > 0 ? chunkptr->getBrightness(x, y - 1, z) : getBrightness(gx, gy - 1, gz)
         };
 
-        size = 1 / 8.0f;
+        double size = 1 / 8.0f;
 
         if (NiceGrass && blk[0] == Blocks::GRASS && getBlock(gx, gy - 1, gz + 1, Blocks::ROCK, chunkptr) == Blocks::
             GRASS) {
@@ -565,9 +574,8 @@ namespace World {
             }
             Brightness oldbrightness = cptr->getBrightness(bx, by, bz);
             bool skylighted = true;
-            int yi, cyi;
-            yi = y + 1;
-            cyi = getChunkPos(yi);
+            int yi = y + 1;
+            int cyi = getChunkPos(yi);
             if (y < 0) skylighted = false;
             else {
                 while (chunkLoaded(cx, cyi + 1, cz) && skylighted) {
@@ -584,7 +592,7 @@ namespace World {
                 .
                 isOpaque()
             ) {
-                const std::array<Block, 7> blks= {
+                const std::array<Block, 7> blks = {
                     0,
                     getBlock(x, y, z + 1), //Front face
                     getBlock(x, y, z - 1), //Back face
@@ -605,7 +613,7 @@ namespace World {
                 const int maxbrightness = std::max_element(brts.begin(), brts.end()) - brts.begin();
                 Brightness br = brts[maxbrightness];
                 if (blks[maxbrightness] == Blocks::WATER) br = std::max(Brightness(br - 2), BrightnessMin);
-                if (skylighted && br < skylight) br = skylight; 
+                if (skylighted && br < skylight) br = skylight;
                 if (br < BrightnessMin) br = BrightnessMin;
                 //Set brightness
                 cptr->setbrightness(bx, by, bz, br);
@@ -741,24 +749,23 @@ namespace World {
     }
 
     void sortChunkBuildRenderList(int xpos, int ypos, int zpos) {
-        int cxp, cyp, czp, cx, cy, cz, p = 0;
-        int xd, yd, zd, distsqr;
+        int p = 0;
 
-        cxp = getChunkPos(xpos);
-        cyp = getChunkPos(ypos);
-        czp = getChunkPos(zpos);
+        int cxp = getChunkPos(xpos);
+        int cyp = getChunkPos(ypos);
+        int czp = getChunkPos(zpos);
 
         chunkBuildRenderList.clear();
         for (int ci = 0; ci < loadedChunks; ci++) {
             if (chunks[ci]->mIsUpdated) {
-                cx = chunks[ci]->cx;
-                cy = chunks[ci]->cy;
-                cz = chunks[ci]->cz;
+                int cx = chunks[ci]->cx;
+                int cy = chunks[ci]->cy;
+                int cz = chunks[ci]->cz;
                 if (chunkInRange(cx, cy, cz, cxp, cyp, czp, viewdistance)) {
-                    xd = cx * 16 + 7 - xpos;
-                    yd = cy * 16 + 7 - ypos;
-                    zd = cz * 16 + 7 - zpos;
-                    distsqr = xd * xd + yd * yd + zd * zd;
+                    int xd = cx * 16 + 7 - xpos;
+                    int yd = cy * 16 + 7 - ypos;
+                    int zd = cz * 16 + 7 - zpos;
+                    int distsqr = xd * xd + yd * yd + zd * zd;
                     chunkBuildRenderList.insert(distsqr, chunks[ci]);
                 }
             }
@@ -766,12 +773,12 @@ namespace World {
     }
 
     void sortChunkLoadUnloadList(int xpos, int ypos, int zpos) {
-        int cxp, cyp, czp, cx, cy, cz;
+        int cx, cy, cz;
         int xd, yd, zd, distsqr;
 
-        cxp = getChunkPos(xpos);
-        cyp = getChunkPos(ypos);
-        czp = getChunkPos(zpos);
+        int cxp = getChunkPos(xpos);
+        int cyp = getChunkPos(ypos);
+        int czp = getChunkPos(zpos);
 
         chunkUnloadList.clear();
         for (int ci = 0; ci < loadedChunks; ci++) {

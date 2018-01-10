@@ -1,21 +1,21 @@
-/*
-* NEWorld: A free game with similar rules to Minecraft.
-* Copyright (C) 2017-2018 NEWorld Team
-*
-* This file is part of NEWorld.
-* NEWorld is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* NEWorld is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
-*/
+// 
+// NEWorld: Definitions.h
+// NEWorld: A Free Game with Similar Rules to Minecraft.
+// Copyright (C) 2015-2018 NEWorld Team
+// 
+// NEWorld is free software: you can redistribute it and/or modify it 
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or 
+// (at your option) any later version.
+// 
+// NEWorld is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General 
+// Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 #pragma once
 #pragma comment(linker, "/SUBSYSTEM:\"WINDOWS\" /ENTRY:\"mainCRTStartup\"")
@@ -58,7 +58,8 @@ inline double stretch = 1.0f; //ppi缩放比例（供gui绘制使用）
 inline int Multisample = 0; //多重采样抗锯齿
 inline bool vsync = false; //垂直同步
 inline int gametime = 0; //游戏时间 0~2592000
-                  //float daylight;
+constexpr int gameTimemax = 2592000;
+//float daylight;
 
 inline int windowwidth; //窗口宽度
 inline int windowheight; //窗口宽度

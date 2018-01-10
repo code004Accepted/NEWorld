@@ -230,7 +230,6 @@
     <ClInclude Include="source\Command.h" />
     <ClInclude Include="source\Effect.h" />
     <ClInclude Include="source\ChunkRenderer.h" />
-    <ClInclude Include="source\FileSystem.h" />
     <ClInclude Include="source\FunctionsKit.h" />
     <ClInclude Include="source\GameView.h" />
     <ClInclude Include="source\HeightMap.h" />
@@ -251,7 +250,6 @@
     <ClInclude Include="source\Player.h" />
     <ClInclude Include="source\Renderer.h" />
     <ClInclude Include="source\resource.h" />
-    <ClInclude Include="source\RTDevice.h" />
     <ClInclude Include="source\Setup.h" />
     <ClInclude Include="source\Shader.h" />
     <ClInclude Include="source\ShadowMaps.h" />
@@ -301,7 +299,6 @@
     <ClCompile Include="source\Particles.cpp" />
     <ClCompile Include="source\Player.cpp" />
     <ClCompile Include="source\Renderer.cpp" />
-    <ClCompile Include="source\RTDevice.cpp" />
     <ClCompile Include="source\Setup.cpp" />
     <ClCompile Include="source\Shader.cpp" />
     <ClCompile Include="source\ShadowMaps.cpp" />

@@ -54,9 +54,6 @@
     <Filter Include="Source\Renderer\Shader">
       <UniqueIdentifier>{033d1b67-aa91-4782-ac09-87d8bffaafd4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Renderer\RTRTR">
-      <UniqueIdentifier>{e6556745-c575-4503-9736-25026f9aca3b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Game\VoxCore">
       <UniqueIdentifier>{e4c311b1-d209-4daa-91e9-700d793179f4}</UniqueIdentifier>
     </Filter>
@@ -216,9 +213,6 @@
     <ClInclude Include="source\AudioSystem.h">
       <Filter>Source\Game</Filter>
     </ClInclude>
-    <ClInclude Include="source\RTDevice.h">
-      <Filter>Source\Renderer\RTRTR</Filter>
-    </ClInclude>
     <ClInclude Include="source\Math\Vector.h">
       <Filter>Source\Common\Math</Filter>
     </ClInclude>
@@ -227,9 +221,6 @@
     </ClInclude>
     <ClInclude Include="source\Hitbox.h">
       <Filter>Source\Game\VoxCore\HitBox</Filter>
-    </ClInclude>
-    <ClInclude Include="source\FileSystem.h">
-      <Filter>Source\Common</Filter>
     </ClInclude>
     <ClInclude Include="source\Hitbox.h" />
   </ItemGroup>
@@ -332,9 +323,6 @@
     </ClCompile>
     <ClCompile Include="source\AudioSystem.cpp">
       <Filter>Source\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="source\RTDevice.cpp">
-      <Filter>Source\Renderer\RTRTR</Filter>
     </ClCompile>
     <ClCompile Include="source\Hitbox.cpp">
       <Filter>Source\Game\VoxCore\HitBox</Filter>

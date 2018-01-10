@@ -1,21 +1,21 @@
-/*
-* NEWorld: A free game with similar rules to Minecraft.
-* Copyright (C) 2017-2018 NEWorld Team
-*
-* This file is part of NEWorld.
-* NEWorld is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* NEWorld is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
-*/
+// 
+// NEWorld: World.h
+// NEWorld: A Free Game with Similar Rules to Minecraft.
+// Copyright (C) 2015-2018 NEWorld Team
+// 
+// NEWorld is free software: you can redistribute it and/or modify it 
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or 
+// (at your option) any later version.
+// 
+// NEWorld is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General 
+// Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 #pragma once
 #include "Definitions.h"
@@ -116,10 +116,10 @@ namespace World {
 
     void renderblock(int x, int y, int z, Chunk* chunkptr);
     void updateblock(int x, int y, int z, bool blockchanged, int depth = 0);
-    Block getBlock(int x, int y, int z, Block mask = Blocks::AIR, Chunk* cptr = nullptr);
-    Brightness getBrightness(int x, int y, int z, Chunk* cptr = nullptr);
-    void setblock(int x, int y, int z, Block Block, Chunk* cptr = nullptr);
-    void setbrightness(int x, int y, int z, Brightness Brightness, Chunk* cptr = nullptr);
+    Block getBlock(int x, int y, int z, Block mask = Blocks::AIR, Chunk* ci = nullptr);
+    Brightness getBrightness(int x, int y, int z, Chunk* ci = nullptr);
+    void setblock(int x, int y, int z, Block blockname, Chunk* cptr = nullptr);
+    void setbrightness(int x, int y, int z, Brightness brightness, Chunk* cptr = nullptr);
 
     inline void pickleaf() {
         if (rnd() < 0.2) {

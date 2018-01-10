@@ -1,21 +1,21 @@
-/*
-* NEWorld: A free game with similar rules to Minecraft.
-* Copyright (C) 2017-2018 NEWorld Team
-*
-* This file is part of NEWorld.
-* NEWorld is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* NEWorld is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
-*/
+// 
+// NEWorld: Renderer.cpp
+// NEWorld: A Free Game with Similar Rules to Minecraft.
+// Copyright (C) 2015-2018 NEWorld Team
+// 
+// NEWorld is free software: you can redistribute it and/or modify it 
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or 
+// (at your option) any later version.
+// 
+// NEWorld is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General 
+// Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 #include "Renderer.h"
 #include "Shader.h"
@@ -145,29 +145,29 @@ namespace Renderer {
         if (!AdvancedRender || ac == 0) {
             if (tc != 0) {
                 if (cc != 0) {
-                    glTexCoordPointer(tc, GL_FLOAT, cnt * sizeof(float), (float*)nullptr);
-                    glColorPointer(cc, GL_FLOAT, cnt * sizeof(float), (float*)(tc * sizeof(float)));
-                    glVertexPointer(3, GL_FLOAT, cnt * sizeof(float), (float*)((tc + cc) * sizeof(float)));
+                    glTexCoordPointer(tc, GL_FLOAT, cnt * sizeof(float), nullptr);
+                    glColorPointer(cc, GL_FLOAT, cnt * sizeof(float), reinterpret_cast<float*>(tc * sizeof(float)));
+                    glVertexPointer(3, GL_FLOAT, cnt * sizeof(float), reinterpret_cast<float*>((tc + cc) * sizeof(float)));
                 }
                 else {
-                    glTexCoordPointer(tc, GL_FLOAT, cnt * sizeof(float), (float*)nullptr);
-                    glVertexPointer(3, GL_FLOAT, cnt * sizeof(float), (float*)(tc * sizeof(float)));
+                    glTexCoordPointer(tc, GL_FLOAT, cnt * sizeof(float), nullptr);
+                    glVertexPointer(3, GL_FLOAT, cnt * sizeof(float), reinterpret_cast<float*>(tc * sizeof(float)));
                 }
             }
             else {
                 if (cc != 0) {
-                    glColorPointer(cc, GL_FLOAT, cnt * sizeof(float), (float*)nullptr);
-                    glVertexPointer(3, GL_FLOAT, cnt * sizeof(float), (float*)(cc * sizeof(float)));
+                    glColorPointer(cc, GL_FLOAT, cnt * sizeof(float), nullptr);
+                    glVertexPointer(3, GL_FLOAT, cnt * sizeof(float), reinterpret_cast<float*>(cc * sizeof(float)));
                 }
-                else glVertexPointer(3, GL_FLOAT, cnt * sizeof(float), (float*)nullptr);
+                else glVertexPointer(3, GL_FLOAT, cnt * sizeof(float), nullptr);
             }
         }
         else {
             cnt += ac;
-            glVertexAttribPointerARB(ShaderAttribLoc, ac, GL_FLOAT, GL_FALSE, cnt * sizeof(float), (float*)nullptr);
-            glTexCoordPointer(tc, GL_FLOAT, cnt * sizeof(float), (float*)(ac * sizeof(float)));
-            glColorPointer(cc, GL_FLOAT, cnt * sizeof(float), (float*)((ac + tc) * sizeof(float)));
-            glVertexPointer(3, GL_FLOAT, cnt * sizeof(float), (float*)((ac + tc + cc) * sizeof(float)));
+            glVertexAttribPointerARB(ShaderAttribLoc, ac, GL_FLOAT, GL_FALSE, cnt * sizeof(float), nullptr);
+            glTexCoordPointer(tc, GL_FLOAT, cnt * sizeof(float), reinterpret_cast<float*>(ac * sizeof(float)));
+            glColorPointer(cc, GL_FLOAT, cnt * sizeof(float), reinterpret_cast<float*>((ac + tc) * sizeof(float)));
+            glVertexPointer(3, GL_FLOAT, cnt * sizeof(float), reinterpret_cast<float*>((ac + tc + cc) * sizeof(float)));
         }
 
         //这个框是不是很装逼2333 --qiaozhanrong
@@ -190,10 +190,10 @@ namespace Renderer {
         sunlightYrot = 60.0f;
         shadowdist = std::min(maxShadowDist, viewdistance);
         shaders.reserve(4);
-        shaders.push_back(Shader("Shaders/Main.vsh", "Shaders/Main.fsh", true));
-        shaders.push_back(Shader("Shaders/Main.vsh", "Shaders/Main.fsh", true, defines));
-        shaders.push_back(Shader("Shaders/Shadow.vsh", "Shaders/Shadow.fsh", false));
-        shaders.push_back(Shader("Shaders/Depth.vsh", "Shaders/Depth.fsh", false, defines));
+        shaders.emplace_back("Shaders/Main.vsh", "Shaders/Main.fsh", true);
+        shaders.emplace_back("Shaders/Main.vsh", "Shaders/Main.fsh", true, defines);
+        shaders.emplace_back("Shaders/Shadow.vsh", "Shaders/Shadow.fsh", false);
+        shaders.emplace_back("Shaders/Depth.vsh", "Shaders/Depth.fsh", false, defines);
 
         glGenTextures(1, &DepthTexture);
         glBindTexture(GL_TEXTURE_2D, DepthTexture);
