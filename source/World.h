@@ -114,7 +114,6 @@ namespace World {
     std::vector<Hitbox::AABB> getHitboxes(const Hitbox::AABB& box);
     bool inWater(const Hitbox::AABB& box);
 
-    void renderblock(int x, int y, int z, Chunk* chunkptr);
     void updateblock(int x, int y, int z, bool blockchanged, int depth = 0);
     Block getBlock(int x, int y, int z, Block mask = Blocks::AIR, Chunk* ci = nullptr);
     Brightness getBrightness(int x, int y, int z, Chunk* ci = nullptr);

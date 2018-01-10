@@ -57,12 +57,6 @@ namespace Renderer {
     [回复]
     ====================================================
     */
-
-    int Vertexes, Texcoordc, Colorc, Attribc;
-    float* VertexArray = nullptr;
-    float* VA = nullptr;
-    float TexCoords[3], Colors[4], Attribs;
-    //unsigned int Buffers[3];
     bool AdvancedRender;
     int ShadowRes = 4096;
     int maxShadowDist = 4;
@@ -73,114 +67,7 @@ namespace Renderer {
     int index = 0, size = 0;
     unsigned int ShadowFBO, DepthTexture;
     unsigned int ShaderAttribLoc = 0;
-
-    void Init(int tc, int cc, int ac) {
-        Texcoordc = tc;
-        Colorc = cc;
-        Attribc = ac;
-        if (VertexArray == nullptr) VertexArray = new float[ArraySize];
-        index = 0;
-        VA = VertexArray;
-        Vertexes = 0;
-        size = (tc + cc + + ac + 3) * 4;
-    }
-
-    void Vertex3f(float x, float y, float z) {
-        if ((Vertexes + 1) * (Texcoordc + Colorc + 3) > ArraySize) return;
-        if (Attribc != 0) VertexArray[index++] = Attribs;
-        if (Texcoordc != 0) memcpy(VertexArray + index, TexCoords, Texcoordc * sizeof(float));
-        index += Texcoordc;
-        if (Colorc != 0) memcpy(VertexArray + index, Colors, Colorc * sizeof(float));
-        index += Colorc;
-        VertexArray[index++] = x;
-        VertexArray[index++] = y;
-        VertexArray[index++] = z;
-        Vertexes++;
-    }
-
-    void TexCoord2f(float x, float y) {
-        TexCoords[0] = x;
-        TexCoords[1] = y;
-    }
-
-    void TexCoord3f(float x, float y, float z) {
-        TexCoords[0] = x;
-        TexCoords[1] = y;
-        TexCoords[2] = z;
-    }
-
-    void Color3f(float r, float g, float b) {
-        Colors[0] = r;
-        Colors[1] = g;
-        Colors[2] = b;
-    }
-
-    void Color4f(float r, float g, float b, float a) {
-        Colors[0] = r;
-        Colors[1] = g;
-        Colors[2] = b;
-        Colors[3] = a;
-    }
-
-    void Attrib1f(float a) { Attribs = a; }
-
-    void Flush(VBOID& buffer, vtxCount& vtxs) {
-        //上次才知道原来Flush还有冲厕所的意思QAQ
-        //OpenGL有个函数glFlush()，翻译过来就是GL冲厕所() ←_←
-
-        vtxs = Vertexes;
-        if (Vertexes != 0) {
-            if (buffer == 0) glGenBuffersARB(1, &buffer);
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, buffer);
-            glBufferDataARB(GL_ARRAY_BUFFER_ARB,
-                            Vertexes * ((Texcoordc + Colorc + Attribc + 3) * sizeof(float)),
-                            VertexArray, GL_STATIC_DRAW_ARB);
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-        }
-    }
-
-    void renderbuffer(VBOID buffer, vtxCount vtxs, int tc, int cc, int ac) {
-        glBindBufferARB(GL_ARRAY_BUFFER_ARB, buffer);
-        int cnt = tc + cc + 3;
-        if (!AdvancedRender || ac == 0) {
-            if (tc != 0) {
-                if (cc != 0) {
-                    glTexCoordPointer(tc, GL_FLOAT, cnt * sizeof(float), nullptr);
-                    glColorPointer(cc, GL_FLOAT, cnt * sizeof(float), reinterpret_cast<float*>(tc * sizeof(float)));
-                    glVertexPointer(3, GL_FLOAT, cnt * sizeof(float), reinterpret_cast<float*>((tc + cc) * sizeof(float)));
-                }
-                else {
-                    glTexCoordPointer(tc, GL_FLOAT, cnt * sizeof(float), nullptr);
-                    glVertexPointer(3, GL_FLOAT, cnt * sizeof(float), reinterpret_cast<float*>(tc * sizeof(float)));
-                }
-            }
-            else {
-                if (cc != 0) {
-                    glColorPointer(cc, GL_FLOAT, cnt * sizeof(float), nullptr);
-                    glVertexPointer(3, GL_FLOAT, cnt * sizeof(float), reinterpret_cast<float*>(cc * sizeof(float)));
-                }
-                else glVertexPointer(3, GL_FLOAT, cnt * sizeof(float), nullptr);
-            }
-        }
-        else {
-            cnt += ac;
-            glVertexAttribPointerARB(ShaderAttribLoc, ac, GL_FLOAT, GL_FALSE, cnt * sizeof(float), nullptr);
-            glTexCoordPointer(tc, GL_FLOAT, cnt * sizeof(float), reinterpret_cast<float*>(ac * sizeof(float)));
-            glColorPointer(cc, GL_FLOAT, cnt * sizeof(float), reinterpret_cast<float*>((ac + tc) * sizeof(float)));
-            glVertexPointer(3, GL_FLOAT, cnt * sizeof(float), reinterpret_cast<float*>((ac + tc + cc) * sizeof(float)));
-        }
-
-        //这个框是不是很装逼2333 --qiaozhanrong
-        //====================================================================================================//
-        /**/ /**/
-        /**/ /**/
-        /**/
-        glDrawArrays(GL_QUADS, 0, vtxs); /**/
-        /**/ /**/
-        /**/ /**/
-        //====================================================================================================//
-    }
-
+    
     void initShaders() {
         ShaderAttribLoc = 1;
         std::set<std::string> defines;
@@ -285,4 +172,74 @@ namespace Renderer {
         Shader::unbind();
         glViewport(0, 0, windowwidth, windowheight);
     }
+
+
+    void VertexBuffer::update(const VertexArray& va) {
+        vertexes = va.getVertexCount();
+        format = va.getFormat();
+        if (vertexes == 0)
+            destroy();
+        else {
+            if (id == 0)
+                glGenBuffersARB(1, &id);
+            glBindBufferARB(GL_ARRAY_BUFFER_ARB, id);
+            glBufferDataARB(GL_ARRAY_BUFFER_ARB, va.getVertexCount() * sizeof(float) *
+                format.vertexAttributeCount,
+                va.getData(), GL_STATIC_DRAW_ARB);
+        }
+    }
+
+    VertexBuffer::VertexBuffer(const VertexArray& va)
+        :VertexBuffer() {
+        update(va);
+    }
+
+    void VertexBuffer::render() const {
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, id);
+        if (format.textureCount != 0) {
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glTexCoordPointer(
+                format.textureCount, GL_FLOAT,
+                format.vertexAttributeCount * sizeof(float),
+                nullptr
+            );
+        }
+        if (format.colorCount != 0) {
+            glEnableClientState(GL_COLOR_ARRAY);
+            glColorPointer(
+                format.colorCount, GL_FLOAT,
+                format.vertexAttributeCount * sizeof(float),
+                reinterpret_cast<float*>(format.textureCount * sizeof(float))
+            );
+        }
+        if (format.normalCount != 0) {
+            glEnableClientState(GL_NORMAL_ARRAY);
+            glNormalPointer(
+                /*format.normalCount,*/ GL_FLOAT,
+                format.vertexAttributeCount * sizeof(float),
+                reinterpret_cast<float*>((format.textureCount + format.colorCount) * sizeof(float))
+            );
+        }
+        if (format.coordinateCount != 0) {
+            glEnableClientState(GL_VERTEX_ARRAY);
+            glVertexPointer(
+                format.coordinateCount, GL_FLOAT,
+                format.vertexAttributeCount * sizeof(float),
+                reinterpret_cast<float*>((format.textureCount + format.colorCount + format.normalCount) * sizeof(float))
+            );
+        }
+
+        glDrawArrays(GL_QUADS, 0, vertexes);
+
+        if (format.textureCount)
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        if (format.colorCount)
+            glDisableClientState(GL_COLOR_ARRAY);
+        if (format.normalCount)
+            glDisableClientState(GL_NORMAL_ARRAY);
+        if (format.coordinateCount)
+            glDisableClientState(GL_VERTEX_ARRAY);
+
+    }
+
 }
