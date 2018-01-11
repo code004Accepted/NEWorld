@@ -91,7 +91,7 @@ namespace Renderer {
         void clear() noexcept {  mVertexes = 0; }
 
         void addPrimitive(size_t size, std::initializer_list<float> d) noexcept {
-            std::fill(d.begin(), d.end(), mData.get() + mVertexes * mFormat.vertexAttributeCount);
+            std::copy(d.begin(), d.end(), mData.get() + mVertexes * mFormat.vertexAttributeCount);
             mVertexes += size;
         }
 

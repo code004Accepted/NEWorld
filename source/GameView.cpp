@@ -526,9 +526,8 @@ public:
                     DebugMergeFace = !DebugMergeFace;
                     DebugMode = true;
                 }
-                if (isPressed(GLFW_KEY_F4 && Player::gamemode == Player::Creative))
-                    Player::CrossWall = !Player::
-                        CrossWall;
+                if (isPressed(GLFW_KEY_F4) && Player::gamemode == Player::Creative)
+                    Player::CrossWall = !Player::CrossWall;
                 if (isPressed(GLFW_KEY_F5)) GUIrenderswitch = !GUIrenderswitch;
                 if (isPressed(GLFW_KEY_F6)) Player::Glide = !Player::Glide;
                 if (isPressed(GLFW_KEY_F7)) Player::spawn();
@@ -1234,7 +1233,6 @@ public:
         //glFogf(GL_FOG_START, 100.0);
         //glFogf(GL_FOG_END, 300.0);
         static double ltimer;
-        static bool generated;
         static unsigned int cloudvb[128];
         static int vtxs[128];
         static float f;
@@ -1483,14 +1481,13 @@ public:
                                            getBlockInfo(Player::inventory[si][sj]).getBlockName());
             }
 
-            int xbase = 0, ybase = 0, spac = 0;
             float alpha = 0.5f + 0.5f * bagAnim;
             if (curtime - bagAnimTimer <= bagAnimDuration) {
-                xbase = (int)round(((windowwidth / stretch - 392) / 2) * bagAnim);
-                ybase = (int)round(
+                int xbase = (int)round(((windowwidth / stretch - 392) / 2) * bagAnim);
+                int ybase = (int)round(
                     (windowheight / stretch - 152 - 16 + 120 - (windowheight / stretch - 32)) * bagAnim + (windowheight
                         / stretch - 32));
-                spac = (int)round(8 * bagAnim);
+                int spac = (int)round(8 * bagAnim);
                 drawBagRow(3, -1, xbase, ybase, spac, alpha);
                 xbase = (int)round(
                     ((windowwidth / stretch - 392) / 2 - windowwidth / stretch) * bagAnim + windowwidth / stretch);
@@ -1567,7 +1564,7 @@ public:
 
 
     void registerCommands() {
-        commands.push_back(Command("/give", [](const std::vector<std::string>& command) {
+        commands.emplace_back("/give", [](const std::vector<std::string>& command) {
             if (command.size() != 3) return false;
             item itemid;
             conv(command[1], itemid);
@@ -1575,8 +1572,8 @@ public:
             conv(command[2], amount);
             Player::addItem(itemid, amount);
             return true;
-        }));
-        commands.push_back(Command("/tp", [](const std::vector<std::string>& command) {
+        });
+        commands.emplace_back("/tp", [](const std::vector<std::string>& command) {
             if (command.size() != 4) return false;
             double x;
             conv(command[1], x);
@@ -1588,13 +1585,13 @@ public:
             Player::ypos = y;
             Player::zpos = z;
             return true;
-        }));
-        commands.push_back(Command("/suicide", [](const std::vector<std::string>& command) {
+        });
+        commands.emplace_back("/suicide", [](const std::vector<std::string>& command) {
             if (command.size() != 1) return false;
             Player::spawn();
             return true;
-        }));
-        commands.push_back(Command("/setblock", [](const std::vector<std::string>& command) {
+        });
+        commands.emplace_back("/setblock", [](const std::vector<std::string>& command) {
             if (command.size() != 5) return false;
             int x;
             conv(command[1], x);
@@ -1606,8 +1603,8 @@ public:
             conv(command[4], b);
             World::setblock(x, y, z, b);
             return true;
-        }));
-        commands.push_back(Command("/tree", [](const std::vector<std::string>& command) {
+        });
+        commands.emplace_back("/tree", [](const std::vector<std::string>& command) {
             if (command.size() != 4) return false;
             int x;
             conv(command[1], x);
@@ -1617,8 +1614,8 @@ public:
             conv(command[3], z);
             World::buildtree(x, y, z);
             return true;
-        }));
-        commands.push_back(Command("/explode", [](const std::vector<std::string>& command) {
+        });
+        commands.emplace_back("/explode", [](const std::vector<std::string>& command) {
             if (command.size() != 5) return false;
             int x;
             conv(command[1], x);
@@ -1630,15 +1627,15 @@ public:
             conv(command[4], r);
             World::explode(x, y, z, r);
             return true;
-        }));
-        commands.push_back(Command("/gamemode", [](const std::vector<std::string>& command) {
+        });
+        commands.emplace_back("/gamemode", [](const std::vector<std::string>& command) {
             if (command.size() != 2) return false;
             int mode;
             conv(command[1], mode);
             Player::changeGameMode(mode);
             return true;
-        }));
-        commands.push_back(Command("/kit", [](const std::vector<std::string>& command) {
+        });
+        commands.emplace_back("/kit", [](const std::vector<std::string>& command) {
             if (command.size() != 1) return false;
             Player::inventory[0][0] = 1;
             Player::inventoryAmount[0][0] = 255;
@@ -1677,15 +1674,15 @@ public:
             Player::inventory[1][7] = 18;
             Player::inventoryAmount[1][7] = 255;
             return true;
-        }));
-        commands.push_back(Command("/time", [](const std::vector<std::string>& command) {
+        });
+        commands.emplace_back("/time", [](const std::vector<std::string>& command) {
             if (command.size() != 2) return false;
             int time;
             conv(command[1], time);
             if (time < 0 || time > gameTimemax) return false;
             gametime = time;
             return true;
-        }));
+        });
     }
 
     bool doCommand(const std::vector<std::string>& command) {
@@ -1708,7 +1705,7 @@ public:
         MutexLock(Mutex);
         updateThread = ThreadCreate(&updateThreadFunc, nullptr);
         if (multiplayer) {
-            fastSrand((unsigned int)time(nullptr));
+            fastSrand(static_cast<unsigned int>(time(nullptr)));
             Player::name = "";
             Player::onlineID = rand(); /*
             Network::init(serverip, port);*/
