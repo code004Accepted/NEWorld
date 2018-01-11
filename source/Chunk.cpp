@@ -26,20 +26,16 @@
 
 namespace ChunkRenderer {
     void RenderChunk(World::Chunk* c);
-    void MergeFaceRender(World::Chunk* c);
-    void RenderDepthModel(World::Chunk* c);
-}
-
-namespace Renderer {
-    extern bool AdvancedRender;
+    void mergeFaceRender(World::Chunk* c);
+    void renderDepthModel(World::Chunk* c);
 }
 
 namespace World {
     struct HMapManager {
-        int H[16][16];
-        int low, high;
+        int H[16][16]{0};
+        int low{}, high{};
 
-        HMapManager() { };
+        HMapManager() = default;;
 
         HMapManager(int cx, int cz) {
             int l = MAXINT, hi = WorldGen::WaterLevel, h;
@@ -60,7 +56,7 @@ namespace World {
 
     Chunk::Chunk(int cxi, int cyi, int czi, ChunkID idi) : cx(cxi), cy(cyi), cz(czi), mIsEmpty(false),
                                                            mIsUpdated(false), mIsRenderBuilt(false), mIsModified(false),
-                                                           mIsDetailGenerated(false), id(idi), vertexes{0}, vbuffer{0},
+                                                           mIsDetailGenerated(false), id(idi), 
                                                            loadAnim(0.0) { mAABB = getBaseAABB(); }
 
     Chunk::~Chunk() {
@@ -258,28 +254,27 @@ namespace World {
         }
 
         if (MergeFace)
-            ChunkRenderer::MergeFaceRender(this);
+            ChunkRenderer::mergeFaceRender(this);
         else
             ChunkRenderer::RenderChunk(this);
         if (Renderer::AdvancedRender)
-            ChunkRenderer::RenderDepthModel(this);
+            ChunkRenderer::renderDepthModel(this);
 
         mIsUpdated = false;
     }
 
     void Chunk::destroyRender() {
         if (mIsRenderBuilt) {
-            if (vbuffer[0]) vbuffersShouldDelete.push_back(vbuffer[0]);
-            if (vbuffer[1]) vbuffersShouldDelete.push_back(vbuffer[1]);
-            if (vbuffer[2]) vbuffersShouldDelete.push_back(vbuffer[2]);
-            if (vbuffer[3]) vbuffersShouldDelete.push_back(vbuffer[3]);
-            vbuffer[0] = vbuffer[1] = vbuffer[2] = vbuffer[3] = 0;
+            vbo[0].destroy();
+            vbo[1].destroy();
+            vbo[2].destroy();
+            vbo[3].destroy();
             mIsRenderBuilt = false;
         }
     }
 
     Hitbox::AABB Chunk::getBaseAABB() const {
-        Hitbox::AABB ret;
+        Hitbox::AABB ret{};
         ret.xmin = cx * 16 - 0.5;
         ret.ymin = cy * 16 - 0.5;
         ret.zmin = cz * 16 - 0.5;
@@ -290,7 +285,7 @@ namespace World {
     }
 
     Frustum::ChunkBox Chunk::getRelativeAABB() const {
-        Frustum::ChunkBox ret;
+        Frustum::ChunkBox ret{};
         ret.xmin = static_cast<float>(mAABB.xmin - relBaseX);
         ret.xmax = static_cast<float>(mAABB.xmax - relBaseX);
         ret.ymin = static_cast<float>(mAABB.ymin - loadAnim - relBaseY);

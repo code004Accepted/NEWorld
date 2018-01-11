@@ -25,15 +25,11 @@
 namespace WorldRenderer {
     struct RenderChunk {
         int cx, cy, cz;
-        vtxCount vertexes[4];
-        VBOID vbuffers[4];
+        World::Chunk* chk;
         double loadAnim;
 
         RenderChunk(World::Chunk* c, double TimeDelta) :
-            cx(c->cx), cy(c->cy), cz(c->cz), loadAnim(c->loadAnim * pow(0.6, TimeDelta)) {
-            memcpy(vbuffers, c->vbuffer, sizeof(vbuffers));
-            memcpy(vertexes, c->vertexes, sizeof(vertexes));
-        }
+            cx(c->cx), cy(c->cy), cz(c->cz), chk(c), loadAnim(c->loadAnim * pow(0.6, TimeDelta)) {}
     };
 
     extern std::vector<RenderChunk> RenderChunkList;

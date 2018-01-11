@@ -22,6 +22,7 @@
 #include "Hitbox.h"
 #include "Blocks.h"
 #include "Frustum.h"
+#include "Renderer.h"
 
 class Object;
 
@@ -47,10 +48,9 @@ namespace World {
         int32_t cx, cy, cz;
         bool mIsEmpty, mIsUpdated, mIsRenderBuilt, mIsModified, mIsDetailGenerated;
         ChunkID id;
-        vtxCount vertexes[4];
-        VBOID vbuffer[4];
+        Renderer::VertexBuffer vbo[4];
         double loadAnim;
-        bool visible;
+        bool visible{};
 
         void load(bool initIfEmpty = true);
         void buildRender();
@@ -83,9 +83,9 @@ namespace World {
         Frustum::ChunkBox getRelativeAABB() const;
         void calcVisible() { visible = TestFrustum.frustumTest(getRelativeAABB()); }
     private:
-        Block mBlocks[4096];
-        Brightness mBrightness[4096];
-        Hitbox::AABB mAABB;
+        Block mBlocks[4096]{};
+        Brightness mBrightness[4096]{};
+        Hitbox::AABB mAABB{};
         static double relBaseX, relBaseY, relBaseZ;
         static Frustum TestFrustum;
         bool LoadFromFile(); //返回true代表区块文件打开成功

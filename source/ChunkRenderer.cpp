@@ -24,9 +24,8 @@
 namespace ChunkRenderer {
     using namespace World;
     using namespace Renderer;
-    void renderblock(int x, int y, int z, Chunk* chunkptr);
 
-    VertexArray va(262144, VertexFormat(2, 3, 0, 3));
+    VertexArray va(262144, VertexFormat(3, 3, 0, 3, 1));
 
     /*
     合并面的顶点顺序（以0到3标出）：
@@ -48,167 +47,128 @@ namespace ChunkRenderer {
     --qiaozhanrong
     */
 
-    void renderPrimitive(QuadPrimitive& p) {
-        float col0 = static_cast<float>(p.col0) * 0.25f / World::BrightnessMax;
-        float col1 = static_cast<float>(p.col1) * 0.25f / World::BrightnessMax;
-        float col2 = static_cast<float>(p.col2) * 0.25f / World::BrightnessMax;
-        float col3 = static_cast<float>(p.col3) * 0.25f / World::BrightnessMax;
-        float x = p.x, y = p.y, z = p.z, length = p.length;
-        float texBase = (p.tex + 0.5) / 64.0;
-        if (p.direction == 0) {
+    void renderPrimitive(const QuadPrimitive& p) {
+        auto col0 = static_cast<float>(p.col0) * 0.25f / BrightnessMax;
+        auto col1 = static_cast<float>(p.col1) * 0.25f / BrightnessMax;
+        auto col2 = static_cast<float>(p.col2) * 0.25f / BrightnessMax;
+        auto col3 = static_cast<float>(p.col3) * 0.25f / BrightnessMax;
+        const float x = p.x, y = p.y, z = p.z, length = p.length;
+        const float texBase = (p.tex + 0.5) / 64.0;
+        switch (p.direction) {
+        case 0:
             col0 *= 0.7f, col1 *= 0.7f, col2 *= 0.7f, col3 *= 0.7f;
             va.addPrimitive(4, {
-                0.0, 0.0, texBase, col0, col0, col0, x + 0.5f, y - 0.5f, z - 0.5f,
-                0.0, 1.0, texBase, col1, col1, col1, x + 0.5f, y + 0.5f, z - 0.5f,
-                length + 1.0f, 1.0, texBase, col2, col2, col2, x + 0.5f, y + 0.5f, z + length + 0.5f,
-                length + 1.0f, 0.0, texBase, col3, col3, col3, x + 0.5f, y - 0.5f, z + length + 0.5f
+                0.0, 0.0, texBase, col0, col0, col0, x + 0.5f, y - 0.5f, z - 0.5f, 0.0f,
+                0.0, 1.0, texBase, col1, col1, col1, x + 0.5f, y + 0.5f, z - 0.5f, 0.0f,
+                length + 1.0f, 1.0, texBase, col2, col2, col2, x + 0.5f, y + 0.5f, z + length + 0.5f, 0.0f,
+                length + 1.0f, 0.0, texBase, col3, col3, col3, x + 0.5f, y - 0.5f, z + length + 0.5f, 0.0f
             });
-        }
-        else if (p.direction == 1) {
+            break;
+        case 1:
             col0 *= 0.7f, col1 *= 0.7f, col2 *= 0.7f, col3 *= 0.7f;
             va.addPrimitive(4, {
-                0.0, 1.0, texBase, col0, col0, col0, x - 0.5f, y + 0.5f, z - 0.5f,
-                0.0, 0.0, texBase, col1, col1, col1, x - 0.5f, y - 0.5f, z - 0.5f,
-                length + 1.0f, 0.0, texBase, col2, col2, col2, x - 0.5f, y - 0.5f, z + length + 0.5f,
-                length + 1.0f, 1.0, texBase, col3, col3, col3, x - 0.5f, y + 0.5f, z + length + 0.5f,
+                0.0, 1.0, texBase, col0, col0, col0, x - 0.5f, y + 0.5f, z - 0.5f, 1.0f,
+                0.0, 0.0, texBase, col1, col1, col1, x - 0.5f, y - 0.5f, z - 0.5f, 1.0f,
+                length + 1.0f, 0.0, texBase, col2, col2, col2, x - 0.5f, y - 0.5f, z + length + 0.5f, 1.0f,
+                length + 1.0f, 1.0, texBase, col3, col3, col3, x - 0.5f, y + 0.5f, z + length + 0.5f, 1.0f
             });
-        }
-        else if (p.direction == 2) {
+            break;
+        case 2:
             va.addPrimitive(4, {
-                0.0, 0.0, texBase, col0, col0, col0, x + 0.5f, y + 0.5f, z - 0.5f,
-                0.0, 1.0, texBase, col1, col1, col1, x - 0.5f, y + 0.5f, z - 0.5f,
-                length + 1.0f, 1.0, texBase, col2, col2, col2, x - 0.5f, y + 0.5f, z + length + 0.5f,
-                length + 1.0f, 0.0, texBase, col3, col3, col3, x + 0.5f, y + 0.5f, z + length + 0.5f,
+                0.0, 0.0, texBase, col0, col0, col0, x + 0.5f, y + 0.5f, z - 0.5f, 2.0f,
+                0.0, 1.0, texBase, col1, col1, col1, x - 0.5f, y + 0.5f, z - 0.5f, 2.0f,
+                length + 1.0f, 1.0, texBase, col2, col2, col2, x - 0.5f, y + 0.5f, z + length + 0.5f, 2.0f,
+                length + 1.0f, 0.0, texBase, col3, col3, col3, x + 0.5f, y + 0.5f, z + length + 0.5f, 2.0f
             });
-        }
-        else if (p.direction == 3) {
+            break;
+        case 3:
             va.addPrimitive(4, {
-                0.0, 0.0, texBase, col0, col0, col0, x - 0.5f, y - 0.5f, z - 0.5f,
-                0.0, 1.0, texBase, col1, col1, col1, x + 0.5f, y - 0.5f, z - 0.5f,
-                length + 1.0f, 1.0, texBase, col2, col2, col2, x + 0.5f, y - 0.5f, z + length + 0.5f,
-                length + 1.0f, 0.0, texBase, col3, col3, col3, x - 0.5f, y - 0.5f, z + length + 0.5f,
+                0.0, 0.0, texBase, col0, col0, col0, x - 0.5f, y - 0.5f, z - 0.5f, 3.0f,
+                0.0, 1.0, texBase, col1, col1, col1, x + 0.5f, y - 0.5f, z - 0.5f, 3.0f,
+                length + 1.0f, 1.0, texBase, col2, col2, col2, x + 0.5f, y - 0.5f, z + length + 0.5f, 3.0f,
+                length + 1.0f, 0.0, texBase, col3, col3, col3, x - 0.5f, y - 0.5f, z + length + 0.5f, 3.0f
             });
-        }
-        else if (p.direction == 4) {
+            break;
+        case 4:
             col0 *= 0.5f, col1 *= 0.5f, col2 *= 0.5f, col3 *= 0.5f;
             va.addPrimitive(4, {
-                0.0, 1.0, texBase, col0, col0, col0, x - 0.5f, y + 0.5f, z + 0.5f,
-                0.0, 0.0, texBase, col1, col1, col1, x - 0.5f, y - 0.5f, z + 0.5f,
-                length + 1.0f, 0.0, texBase, col2, col2, col2, x + length + 0.5f, y - 0.5f, z + 0.5f,
-                length + 1.0f, 1.0, texBase, col3, col3, col3, x + length + 0.5f, y + 0.5f, z + 0.5f,
+                0.0, 1.0, texBase, col0, col0, col0, x - 0.5f, y + 0.5f, z + 0.5f, 4.0f,
+                0.0, 0.0, texBase, col1, col1, col1, x - 0.5f, y - 0.5f, z + 0.5f, 4.0f,
+                length + 1.0f, 0.0, texBase, col2, col2, col2, x + length + 0.5f, y - 0.5f, z + 0.5f, 4.0f,
+                length + 1.0f, 1.0, texBase, col3, col3, col3, x + length + 0.5f, y + 0.5f, z + 0.5f, 4.0f
             });
-        }
-        else if (p.direction == 5) {
+            break;
+        case 5:
             col0 *= 0.5f, col1 *= 0.5f, col2 *= 0.5f, col3 *= 0.5f;
             va.addPrimitive(4, {
-                0.0, 0.0, texBase, col0, col0, col0, x - 0.5f, y - 0.5f, z - 0.5f,
-                0.0, 1.0, texBase, col1, col1, col1, x - 0.5f, y + 0.5f, z - 0.5f,
-                length + 1.0f, 1.0, texBase, col2, col2, col2, x + length + 0.5f, y + 0.5f, z - 0.5f,
-                length + 1.0f, 0.0, texBase, col3, col3, col3, x + length + 0.5f, y - 0.5f, z - 0.5f,
+                0.0, 0.0, texBase, col0, col0, col0, x - 0.5f, y - 0.5f, z - 0.5f, 5.0f,
+                0.0, 1.0, texBase, col1, col1, col1, x - 0.5f, y + 0.5f, z - 0.5f, 5.0f,
+                length + 1.0f, 1.0, texBase, col2, col2, col2, x + length + 0.5f, y + 0.5f, z - 0.5f, 5.0f,
+                length + 1.0f, 0.0, texBase, col3, col3, col3, x + length + 0.5f, y - 0.5f, z - 0.5f, 5.0f
             });
-        }
+        default: ;
+        };
     }
 
-    void RenderPrimitive_Depth(QuadPrimitiveDepth& p) {
-        const int x = p.x, y = p.y, z = p.z, length = p.length;
-        if (p.direction == 0) {
-            Renderer::Vertex3d(x + 0.5, y - 0.5, z - 0.5);
-            Renderer::Vertex3d(x + 0.5, y + 0.5, z - 0.5);
-            Renderer::Vertex3d(x + 0.5, y + 0.5, z + length + 0.5);
-            Renderer::Vertex3d(x + 0.5, y - 0.5, z + length + 0.5);
-        }
-        else if (p.direction == 1) {
-            Renderer::Vertex3d(x - 0.5, y + 0.5, z - 0.5);
-            Renderer::Vertex3d(x - 0.5, y - 0.5, z - 0.5);
-            Renderer::Vertex3d(x - 0.5, y - 0.5, z + length + 0.5);
-            Renderer::Vertex3d(x - 0.5, y + 0.5, z + length + 0.5);
-        }
-        else if (p.direction == 2) {
-            Renderer::Vertex3d(x + 0.5, y + 0.5, z - 0.5);
-            Renderer::Vertex3d(x - 0.5, y + 0.5, z - 0.5);
-            Renderer::Vertex3d(x - 0.5, y + 0.5, z + length + 0.5);
-            Renderer::Vertex3d(x + 0.5, y + 0.5, z + length + 0.5);
-        }
-        else if (p.direction == 3) {
-            Renderer::Vertex3d(x - 0.5, y - 0.5, z - 0.5);
-            Renderer::Vertex3d(x + 0.5, y - 0.5, z - 0.5);
-            Renderer::Vertex3d(x + 0.5, y - 0.5, z + length + 0.5);
-            Renderer::Vertex3d(x - 0.5, y - 0.5, z + length + 0.5);
-        }
-        else if (p.direction == 4) {
-            Renderer::Vertex3d(x - 0.5, y + 0.5, z + 0.5);
-            Renderer::Vertex3d(x - 0.5, y - 0.5, z + 0.5);
-            Renderer::Vertex3d(x + length + 0.5, y - 0.5, z + 0.5);
-            Renderer::Vertex3d(x + length + 0.5, y + 0.5, z + 0.5);
-        }
-        else if (p.direction == 5) {
-            Renderer::Vertex3d(x - 0.5, y - 0.5, z - 0.5);
-            Renderer::Vertex3d(x - 0.5, y + 0.5, z - 0.5);
-            Renderer::Vertex3d(x + length + 0.5, y + 0.5, z - 0.5);
-            Renderer::Vertex3d(x + length + 0.5, y - 0.5, z - 0.5);
-        }
-    }
-
-    void RenderChunk(World::Chunk* c) {
-        int x, y, z;
-        if (Renderer::AdvancedRender) Renderer::Init(2, 3, 1);
-        else Renderer::Init(2, 3);
-        for (x = 0; x < 16; x++) {
-            for (y = 0; y < 16; y++) {
-                for (z = 0; z < 16; z++) {
-                    const Block curr = c->getBlock(x, y, z);
-                    if (curr == Blocks::AIR) continue;
-                    if (!getBlockInfo(curr).isTranslucent()) renderblock(x, y, z, c);
-                }
-            }
-        }
-        Renderer::Flush(c->vbuffer[0], c->vertexes[0]);
-        if (Renderer::AdvancedRender) Renderer::Init(2, 3, 1);
-        else Renderer::Init(2, 3);
-        for (x = 0; x < 16; x++) {
-            for (y = 0; y < 16; y++) {
-                for (z = 0; z < 16; z++) {
-                    Block curr = c->getBlock(x, y, z);
-                    if (curr == Blocks::AIR) continue;
-                    if (getBlockInfo(curr).isTranslucent() && getBlockInfo(curr).isSolid()) renderblock(x, y, z, c);
-                }
-            }
-        }
-        Renderer::Flush(c->vbuffer[1], c->vertexes[1]);
-        if (Renderer::AdvancedRender) Renderer::Init(2, 3, 1);
-        else Renderer::Init(2, 3);
-        for (x = 0; x < 16; x++) {
-            for (y = 0; y < 16; y++) {
-                for (z = 0; z < 16; z++) {
-                    Block curr = c->getBlock(x, y, z);
-                    if (curr == Blocks::AIR) continue;
-                    if (!getBlockInfo(curr).isSolid()) renderblock(x, y, z, c);
-                }
-            }
-        }
-        Renderer::Flush(c->vbuffer[2], c->vertexes[2]);
+    void renderPrimitiveDepth(const QuadPrimitiveDepth& p) {
+        const auto x = p.x, y = p.y, z = p.z, length = p.length;
+        switch (p.direction) {
+        case 0:
+            va.addPrimitive(4, {
+                x + 0.5f, y - 0.5f, z - 0.5f, x + 0.5f, y + 0.5f, z - 0.5f,
+                x + 0.5f, y + 0.5f, z + length + 0.5f, x + 0.5f, y - 0.5f, z + length + 0.5f
+            });
+            break;
+        case 1:
+            va.addPrimitive(4, {
+                x - 0.5f, y + 0.5f, z - 0.5f, x - 0.5f, y - 0.5f, z - 0.5f,
+                x - 0.5f, y - 0.5f, z + length + 0.5f, x - 0.5f, y + 0.5f, z + length + 0.5f
+            });
+            break;
+        case 2:
+            va.addPrimitive(4, {
+                x + 0.5f, y + 0.5f, z - 0.5f, x - 0.5f, y + 0.5f, z - 0.5f,
+                x - 0.5f, y + 0.5f, z + length + 0.5f, x + 0.5f, y + 0.5f, z + length + 0.5f
+            });
+            break;
+        case 3:
+            va.addPrimitive(4, {
+                x - 0.5f, y - 0.5f, z - 0.5f, x + 0.5f, y - 0.5f, z - 0.5f,
+                x + 0.5f, y - 0.5f, z + length + 0.5f, x - 0.5f, y - 0.5f, z + length + 0.5f
+            });
+            break;
+        case 4:
+            va.addPrimitive(4, {
+                x - 0.5f, y + 0.5f, z + 0.5f, x - 0.5f, y - 0.5f, z + 0.5f,
+                x + length + 0.5f, y - 0.5f, z + 0.5f, x + length + 0.5f, y + 0.5f, z + 0.5f
+            });
+            break;
+        case 5:
+            va.addPrimitive(4, {
+                x - 0.5f, y - 0.5f, z - 0.5f, x - 0.5f, y + 0.5f, z - 0.5f,
+                x + length + 0.5f, y + 0.5f, z - 0.5f, x + length + 0.5f, y - 0.5f, z - 0.5f
+            });
+        default: ;
+        };
     }
 
     //合并面大法好！！！
-    void MergeFaceRender(World::Chunk* c) {
+    void mergeFaceRender(Chunk* c) {
         //话说我注释一会中文一会英文是不是有点奇怪。。。
         // -- qiaozhanrong
-
+        constexpr VertexFormat fmt(3, 3, 0, 3, 1);
         int cx = c->cx, cy = c->cy, cz = c->cz;
         int gx = 0, gy = 0, gz = 0;
-        int x = 0, y = 0, z = 0, cur_l_mx, br;
+        int x = 0, y = 0, z = 0, br;
         int col0 = 0, col1 = 0, col2 = 0, col3 = 0;
-        QuadPrimitive cur;
         Block bl, neighbour;
         uint8_t face = 0;
-        TextureID tex;
         bool valid = false;
         for (int steps = 0; steps < 3; steps++) {
-            cur = QuadPrimitive();
-            cur_l_mx = bl = neighbour = 0;
+            QuadPrimitive cur {};
+            int curLMx = bl = neighbour = 0;
             //Linear merge
-            if (Renderer::AdvancedRender) Renderer::Init(3, 3, 1);
-            else Renderer::Init(3, 3);
+            va.setFormat(fmt);
             for (int d = 0; d < 6; d++) {
                 cur.direction = d;
                 if (d == 2) face = 1;
@@ -335,7 +295,7 @@ namespace ChunkRenderer {
                             }
                             //Get block ID
                             bl = c->getBlock(x, y, z);
-                            tex = Textures::getTextureIndex(bl, face);
+                            TextureID tex = Textures::getTextureIndex(bl, face);
                             neighbour = getBlock(gx + delta[d][0], gy + delta[d][1], gz + delta[d][2], Blocks::ROCK, c);
                             if (NiceGrass && bl == Blocks::GRASS) {
                                 if (d == 0 && getBlock(gx + 1, gy - 1, gz, Blocks::ROCK, c) == Blocks::GRASS)
@@ -361,8 +321,8 @@ namespace ChunkRenderer {
                                 //Not valid block
                                 if (valid) {
                                     if (getBlockInfo(neighbour).isOpaque() && !cur.once) {
-                                        if (cur_l_mx < cur.length) cur_l_mx = cur.length;
-                                        cur_l_mx++;
+                                        if (curLMx < cur.length) curLMx = cur.length;
+                                        curLMx++;
                                     }
                                     else {
                                         renderPrimitive(cur);
@@ -378,7 +338,7 @@ namespace ChunkRenderer {
                                     cur.x = x;
                                     cur.y = y;
                                     cur.z = z;
-                                    cur.length = cur_l_mx = 0;
+                                    cur.length = curLMx = 0;
                                     cur.tex = tex;
                                     cur.col0 = col0;
                                     cur.col1 = col1;
@@ -388,7 +348,7 @@ namespace ChunkRenderer {
                                     else cur.once = false;
                                 }
                                 else {
-                                    if (cur_l_mx > cur.length) cur.length = cur_l_mx;
+                                    if (curLMx > cur.length) cur.length = curLMx;
                                     cur.length++;
                                 }
                             }
@@ -397,7 +357,7 @@ namespace ChunkRenderer {
                                 cur.x = x;
                                 cur.y = y;
                                 cur.z = z;
-                                cur.length = cur_l_mx = 0;
+                                cur.length = curLMx = 0;
                                 cur.tex = tex;
                                 cur.col0 = col0;
                                 cur.col1 = col1;
@@ -413,20 +373,20 @@ namespace ChunkRenderer {
                         }
                     }
             }
-            Renderer::Flush(c->vbuffer[steps], c->vertexes[steps]);
+            c->vbo[steps].update(va);
         }
     }
 
-    void RenderDepthModel(World::Chunk* c) {
+    void renderDepthModel(Chunk* c) {
+        constexpr VertexFormat fmt(0, 0, 0, 3);
         int cx = c->cx, cy = c->cy, cz = c->cz;
         int x = 0, y = 0, z = 0;
         QuadPrimitiveDepth cur;
-        int cur_l_mx;
         Block bl, neighbour;
         bool valid = false;
-        cur_l_mx = bl = neighbour = 0;
+        int cur_l_mx = bl = neighbour = 0;
         //Linear merge for depth model
-        Renderer::Init(0, 0);
+        va.setFormat(fmt);
         for (int d = 0; d < 6; d++) {
             cur.direction = d;
             for (int i = 0; i < 16; i++)
@@ -442,7 +402,7 @@ namespace ChunkRenderer {
                         int xx = x + delta[d][0], yy = y + delta[d][1], zz = z + delta[d][2];
                         int gx = cx * 16 + xx, gy = cy * 16 + yy, gz = cz * 16 + zz;
                         if (xx < 0 || xx >= 16 || yy < 0 || yy >= 16 || zz < 0 || zz >= 16)
-                            neighbour = World::getBlock(gx, gy, gz);
+                            neighbour = getBlock(gx, gy, gz);
                         else neighbour = c->getBlock(xx, yy, zz);
                         //Render
                         if (bl == Blocks::AIR || bl == Blocks::GLASS || (bl == neighbour && bl != Blocks::LEAF) ||
@@ -454,7 +414,7 @@ namespace ChunkRenderer {
                                     cur_l_mx++;
                                 }
                                 else {
-                                    RenderPrimitive_Depth(cur);
+                                    renderPrimitiveDepth(cur);
                                     valid = false;
                                 }
                             }
@@ -473,17 +433,17 @@ namespace ChunkRenderer {
                         }
                     }
                     if (valid) {
-                        RenderPrimitive_Depth(cur);
+                        renderPrimitiveDepth(cur);
                         valid = false;
                     }
                 }
         }
-        Renderer::Flush(c->vbuffer[3], c->vertexes[3]);
+        c->vbo[3].update(va);
     }
 
 
     void renderblock(int x, int y, int z, Chunk* chunkptr) {
-        double colors, color1, color2, color3, color4, tcx, tcy;
+        float colors, color1, color2, color3, color4, tcx, tcy;
         int cx = chunkptr->cx, cy = chunkptr->cy, cz = chunkptr->cz;
         int gx = cx * 16 + x, gy = cy * 16 + y, gz = cz * 16 + z;
         Block blk[7] = {
@@ -506,7 +466,7 @@ namespace ChunkRenderer {
             y > 0 ? chunkptr->getBrightness(x, y - 1, z) : getBrightness(gx, gy - 1, gz)
         };
 
-        double size = 1 / 8.0f;
+        constexpr auto size = 1 / 8.0f;
 
         if (NiceGrass && blk[0] == Blocks::GRASS && getBlock(gx, gy - 1, gz + 1, Blocks::ROCK, chunkptr) == Blocks::
             GRASS) {
@@ -549,26 +509,19 @@ namespace ChunkRenderer {
             color2 /= BrightnessMax;
             color3 /= BrightnessMax;
             color4 /= BrightnessMax;
-            if (blk[0] != Blocks::GLOWSTONE && !Renderer::AdvancedRender) {
+            if (blk[0] != Blocks::GLOWSTONE && !AdvancedRender) {
                 color1 *= 0.5;
                 color2 *= 0.5;
                 color3 *= 0.5;
                 color4 *= 0.5;
             }
 
-            if (Renderer::AdvancedRender) Renderer::Attrib1f(0.0f);
-            Renderer::Color3d(color1, color1, color1);
-            Renderer::TexCoord2d(tcx, tcy);
-            Renderer::Vertex3d(-0.5 + x, -0.5 + y, 0.5 + z);
-            Renderer::Color3d(color2, color2, color2);
-            Renderer::TexCoord2d(tcx + size, tcy);
-            Renderer::Vertex3d(0.5 + x, -0.5 + y, 0.5 + z);
-            Renderer::Color3d(color3, color3, color3);
-            Renderer::TexCoord2d(tcx + size, tcy + size);
-            Renderer::Vertex3d(0.5 + x, 0.5 + y, 0.5 + z);
-            Renderer::Color3d(color4, color4, color4);
-            Renderer::TexCoord2d(tcx, tcy + size);
-            Renderer::Vertex3d(-0.5 + x, 0.5 + y, 0.5 + z);
+            va.addPrimitive(4, {
+                tcx, tcy, color1, color1, color1, -0.5f+ x, -0.5f+ y, 0.5f+ z, 0.0f,
+                tcx + size, tcy, color2, color2, color2, 0.5f+ x, -0.5f+ y, 0.5f+ z, 0.0f,
+                tcx + size, tcy + size, color3, color3, color3, 0.5f+ x, 0.5f+ y, 0.5f+ z, 0.0f,
+                tcx, tcy + size, color4, color4, color4, -0.5f+ x, 0.5f+ y, 0.5f+ z, 0.0f
+            });
         }
 
         if (NiceGrass && blk[0] == Blocks::GRASS && getBlock(gx, gy - 1, gz - 1, Blocks::ROCK, chunkptr) == Blocks::
@@ -609,26 +562,19 @@ namespace ChunkRenderer {
             color2 /= BrightnessMax;
             color3 /= BrightnessMax;
             color4 /= BrightnessMax;
-            if (blk[0] != Blocks::GLOWSTONE && !Renderer::AdvancedRender) {
+            if (blk[0] != Blocks::GLOWSTONE && !AdvancedRender) {
                 color1 *= 0.5;
                 color2 *= 0.5;
                 color3 *= 0.5;
                 color4 *= 0.5;
             }
 
-            if (Renderer::AdvancedRender) Renderer::Attrib1f(1.0f);
-            Renderer::Color3d(color1, color1, color1);
-            Renderer::TexCoord2d(tcx + size, tcy);
-            Renderer::Vertex3d(-0.5 + x, -0.5 + y, -0.5 + z);
-            Renderer::Color3d(color2, color2, color2);
-            Renderer::TexCoord2d(tcx + size, tcy + size);
-            Renderer::Vertex3d(-0.5 + x, 0.5 + y, -0.5 + z);
-            Renderer::Color3d(color3, color3, color3);
-            Renderer::TexCoord2d(tcx, tcy + size);
-            Renderer::Vertex3d(0.5 + x, 0.5 + y, -0.5 + z);
-            Renderer::Color3d(color4, color4, color4);
-            Renderer::TexCoord2d(tcx, tcy);
-            Renderer::Vertex3d(0.5 + x, -0.5 + y, -0.5 + z);
+            va.addPrimitive(4, {
+                tcx + size, tcy, color1, color1, color1, -0.5f+ x, -0.5f+ y, -0.5f+ z, 1.0f,
+                tcx + size, tcy + size, color2, color2, color2, -0.5f+ x, 0.5f+ y, -0.5f+ z, 1.0f,
+                tcx, tcy + size, color3, color3, color3, 0.5f+ x, 0.5f+ y, -0.5f+ z, 1.0f,
+                tcx, tcy, color4, color4, color4, 0.5f+ x, -0.5f+ y, -0.5f+ z, 1.0f
+            });
         }
 
         if (NiceGrass && blk[0] == Blocks::GRASS && getBlock(gx + 1, gy - 1, gz, Blocks::ROCK, chunkptr) == Blocks::
@@ -673,26 +619,19 @@ namespace ChunkRenderer {
             color2 /= BrightnessMax;
             color3 /= BrightnessMax;
             color4 /= BrightnessMax;
-            if (blk[0] != Blocks::GLOWSTONE && !Renderer::AdvancedRender) {
+            if (blk[0] != Blocks::GLOWSTONE && !AdvancedRender) {
                 color1 *= 0.7;
                 color2 *= 0.7;
                 color3 *= 0.7;
                 color4 *= 0.7;
             }
 
-            if (Renderer::AdvancedRender) Renderer::Attrib1f(2.0f);
-            Renderer::Color3d(color1, color1, color1);
-            Renderer::TexCoord2d(tcx + size, tcy);
-            Renderer::Vertex3d(0.5 + x, -0.5 + y, -0.5 + z);
-            Renderer::Color3d(color2, color2, color2);
-            Renderer::TexCoord2d(tcx + size, tcy + size);
-            Renderer::Vertex3d(0.5 + x, 0.5 + y, -0.5 + z);
-            Renderer::Color3d(color3, color3, color3);
-            Renderer::TexCoord2d(tcx, tcy + size);
-            Renderer::Vertex3d(0.5 + x, 0.5 + y, 0.5 + z);
-            Renderer::Color3d(color4, color4, color4);
-            Renderer::TexCoord2d(tcx, tcy);
-            Renderer::Vertex3d(0.5 + x, -0.5 + y, 0.5 + z);
+            va.addPrimitive(4, {
+                tcx + size, tcy, color1, color1, color1, 0.5f+ x, -0.5f+ y, -0.5f+ z, 2.0f,
+                tcx + size, tcy + size, color2, color2, color2, 0.5f+ x, 0.5f+ y, -0.5f+ z, 2.0f,
+                tcx, tcy + size, color3, color3, color3, 0.5f+ x, 0.5f+ y, 0.5f+ z, 2.0f,
+                tcx, tcy, color4, color4, color4, 0.5f+ x, -0.5f+ y, 0.5f+ z, 2.0f
+            });
         }
 
         if (NiceGrass && blk[0] == Blocks::GRASS && getBlock(gx - 1, gy - 1, gz, Blocks::ROCK, chunkptr) == Blocks::
@@ -736,26 +675,19 @@ namespace ChunkRenderer {
             color2 /= BrightnessMax;
             color3 /= BrightnessMax;
             color4 /= BrightnessMax;
-            if (blk[0] != Blocks::GLOWSTONE && !Renderer::AdvancedRender) {
+            if (blk[0] != Blocks::GLOWSTONE && !AdvancedRender) {
                 color1 *= 0.7;
                 color2 *= 0.7;
                 color3 *= 0.7;
                 color4 *= 0.7;
             }
 
-            if (Renderer::AdvancedRender) Renderer::Attrib1f(3.0f);
-            Renderer::Color3d(color1, color1, color1);
-            Renderer::TexCoord2d(tcx, tcy);
-            Renderer::Vertex3d(-0.5 + x, -0.5 + y, -0.5 + z);
-            Renderer::Color3d(color2, color2, color2);
-            Renderer::TexCoord2d(tcx + size, tcy);
-            Renderer::Vertex3d(-0.5 + x, -0.5 + y, 0.5 + z);
-            Renderer::Color3d(color3, color3, color3);
-            Renderer::TexCoord2d(tcx + size, tcy + size);
-            Renderer::Vertex3d(-0.5 + x, 0.5 + y, 0.5 + z);
-            Renderer::Color3d(color4, color4, color4);
-            Renderer::TexCoord2d(tcx, tcy + size);
-            Renderer::Vertex3d(-0.5 + x, 0.5 + y, -0.5 + z);
+            va.addPrimitive(4, {
+                tcx, tcy, color1, color1, color1, -0.5f+ x, -0.5f+ y, -0.5f+ z, 3.0f,
+                tcx + size, tcy, color2, color2, color2, -0.5f+ x, -0.5f+ y, 0.5f+ z, 3.0f,
+                tcx + size, tcy + size, color3, color3, color3, -0.5f+ x, 0.5f+ y, 0.5f+ z, 3.0f,
+                tcx, tcy + size, color4, color4, color4, -0.5f+ x, 0.5f+ y, -0.5f+ z, 3.0f
+            });
         }
 
         tcx = Textures::getTexcoordX(blk[0], 1);
@@ -793,19 +725,12 @@ namespace ChunkRenderer {
             color3 /= BrightnessMax;
             color4 /= BrightnessMax;
 
-            if (Renderer::AdvancedRender) Renderer::Attrib1f(4.0f);
-            Renderer::Color3d(color1, color1, color1);
-            Renderer::TexCoord2d(tcx + size, tcy + size);
-            Renderer::Vertex3d(-0.5 + x, 0.5 + y, -0.5 + z);
-            Renderer::Color3d(color2, color2, color2);
-            Renderer::TexCoord2d(tcx + size, tcy + size);
-            Renderer::Vertex3d(-0.5 + x, 0.5 + y, 0.5 + z);
-            Renderer::Color3d(color3, color3, color3);
-            Renderer::TexCoord2d(tcx + size, tcy + size);
-            Renderer::Vertex3d(0.5 + x, 0.5 + y, 0.5 + z);
-            Renderer::Color3d(color4, color4, color4);
-            Renderer::TexCoord2d(tcx + size, tcy + size);
-            Renderer::Vertex3d(0.5 + x, 0.5 + y, -0.5 + z);
+            va.addPrimitive(4, {
+                tcx + size, tcy + size, color1, color1, color1, -0.5f+ x, 0.5f+ y, -0.5f+ z, 4.0f,
+                tcx + size, tcy + size, color2, color2, color2, -0.5f+ x, 0.5f+ y, 0.5f+ z, 4.0f,
+                tcx + size, tcy + size, color3, color3, color3, 0.5f+ x, 0.5f+ y, 0.5f+ z, 4.0f,
+                tcx + size, tcy + size, color4, color4, color4, 0.5f+ x, 0.5f+ y, -0.5f+ z, 4.0f
+            });
         }
 
         tcx = Textures::getTexcoordX(blk[0], 3);
@@ -843,19 +768,49 @@ namespace ChunkRenderer {
             color3 /= BrightnessMax;
             color4 /= BrightnessMax;
 
-            if (Renderer::AdvancedRender) Renderer::Attrib1f(5.0f);
-            Renderer::Color3d(color1, color1, color1);
-            Renderer::TexCoord2d(tcx + size, tcy + size);
-            Renderer::Vertex3d(-0.5 + x, -0.5 + y, -0.5 + z);
-            Renderer::Color3d(color2, color2, color2);
-            Renderer::TexCoord2d(tcx + size, tcy + size);
-            Renderer::Vertex3d(0.5 + x, -0.5 + y, -0.5 + z);
-            Renderer::Color3d(color3, color3, color3);
-            Renderer::TexCoord2d(tcx + size, tcy + size);
-            Renderer::Vertex3d(0.5 + x, -0.5 + y, 0.5 + z);
-            Renderer::Color3d(color4, color4, color4);
-            Renderer::TexCoord2d(tcx + size, tcy);
-            Renderer::Vertex3d(-0.5 + x, -0.5 + y, 0.5 + z);
+            va.addPrimitive(4, {
+                tcx + size, tcy + size, color1, color1, color1, -0.5f+ x, -0.5f+ y, -0.5f+ z, 5.0f,
+                tcx + size, tcy + size, color2, color2, color2, 0.5f+ x, -0.5f+ y, -0.5f+ z, 5.0f,
+                tcx + size, tcy + size, color3, color3, color3, 0.5f+ x, -0.5f+ y, 0.5f+ z, 5.0f,
+                tcx + size, tcy, color4, color4, color4, -0.5f+ x, -0.5f+ y, 0.5f+ z, 5.0f
+            });
         }
+    }
+
+
+    void RenderChunk(Chunk* c) {
+        int x, y, z;
+        constexpr auto fmt = VertexFormat(2, 3, 0, 3, 1);
+        va.setFormat(fmt);
+        for (x = 0; x < 16; x++) {
+            for (y = 0; y < 16; y++) {
+                for (z = 0; z < 16; z++) {
+                    const Block curr = c->getBlock(x, y, z);
+                    if (curr == Blocks::AIR) continue;
+                    if (!getBlockInfo(curr).isTranslucent()) renderblock(x, y, z, c);
+                }
+            }
+        }
+        c->vbo[0].update(va);
+        for (x = 0; x < 16; x++) {
+            for (y = 0; y < 16; y++) {
+                for (z = 0; z < 16; z++) {
+                    Block curr = c->getBlock(x, y, z);
+                    if (curr == Blocks::AIR) continue;
+                    if (getBlockInfo(curr).isTranslucent() && getBlockInfo(curr).isSolid()) renderblock(x, y, z, c);
+                }
+            }
+        }
+        c->vbo[1].update(va);
+        for (x = 0; x < 16; x++) {
+            for (y = 0; y < 16; y++) {
+                for (z = 0; z < 16; z++) {
+                    Block curr = c->getBlock(x, y, z);
+                    if (curr == Blocks::AIR) continue;
+                    if (!getBlockInfo(curr).isSolid()) renderblock(x, y, z, c);
+                }
+            }
+        }
+        c->vbo[2].update(va);
     }
 }

@@ -20,6 +20,7 @@
 #include "Renderer.h"
 #include "Shader.h"
 #include <algorithm>
+#include "World.h"
 
 namespace Renderer {
     /*
@@ -67,7 +68,7 @@ namespace Renderer {
     int index = 0, size = 0;
     unsigned int ShadowFBO, DepthTexture;
     unsigned int ShaderAttribLoc = 0;
-    
+
     void initShaders() {
         ShaderAttribLoc = 1;
         std::set<std::string> defines;
@@ -184,15 +185,13 @@ namespace Renderer {
                 glGenBuffersARB(1, &id);
             glBindBufferARB(GL_ARRAY_BUFFER_ARB, id);
             glBufferDataARB(GL_ARRAY_BUFFER_ARB, va.getVertexCount() * sizeof(float) *
-                format.vertexAttributeCount,
-                va.getData(), GL_STATIC_DRAW_ARB);
+                            format.vertexAttributeCount,
+                            va.getData(), GL_STATIC_DRAW_ARB);
         }
     }
 
     VertexBuffer::VertexBuffer(const VertexArray& va)
-        :VertexBuffer() {
-        update(va);
-    }
+        : VertexBuffer() { update(va); }
 
     void VertexBuffer::render() const {
         glBindBufferARB(GL_ARRAY_BUFFER_ARB, id);
@@ -216,8 +215,9 @@ namespace Renderer {
             glEnableClientState(GL_NORMAL_ARRAY);
             glNormalPointer(
                 /*format.normalCount,*/ GL_FLOAT,
-                format.vertexAttributeCount * sizeof(float),
-                reinterpret_cast<float*>((format.textureCount + format.colorCount) * sizeof(float))
+                                        format.vertexAttributeCount * sizeof(float),
+                                        reinterpret_cast<float*>((format.textureCount + format.colorCount) * sizeof(
+                                            float))
             );
         }
         if (format.coordinateCount != 0) {
@@ -240,6 +240,14 @@ namespace Renderer {
         if (format.coordinateCount)
             glDisableClientState(GL_VERTEX_ARRAY);
 
+    }
+
+
+    void VertexBuffer::destroy() {
+        if (id) {
+            World::vbuffersShouldDelete.push_back(id);
+            vertexes = id = 0;
+        }
     }
 
 }

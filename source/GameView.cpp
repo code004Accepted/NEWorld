@@ -811,7 +811,7 @@ public:
         glRotated(360.0 - pheading, 0, 1, 0);
 
         World::calcVisible(xpos, ypos, zpos, Player::ViewFrustum);
-        renderedChunk = WorldRenderer::ListRenderChunks(Player::cxt, Player::cyt, Player::czt, viewdistance, curtime);
+        WorldRenderer::ListRenderChunks(Player::cxt, Player::cyt, Player::czt, viewdistance, curtime);
 
         MutexUnlock(Mutex);
 
@@ -828,18 +828,12 @@ public:
         }
 
         glDisable(GL_BLEND);
-        glEnableClientState(GL_COLOR_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glEnableClientState(GL_VERTEX_ARRAY);
 
         if (Renderer::AdvancedRender) Renderer::EnableShaders();
         if (!DebugShadow) WorldRenderer::RenderChunks(xpos, ypos, zpos, 0);
         if (Renderer::AdvancedRender) Renderer::DisableShaders();
 
         glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-        glDisableClientState(GL_COLOR_ARRAY);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        glDisableClientState(GL_VERTEX_ARRAY);
 
         if (MergeFace) {
             glDisable(GL_TEXTURE_3D);
@@ -877,10 +871,6 @@ public:
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_CULL_FACE);
 
-        glEnableClientState(GL_COLOR_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glEnableClientState(GL_VERTEX_ARRAY);
-
         if (Renderer::AdvancedRender) Renderer::EnableShaders();
 
         if (MergeFace) {
@@ -901,9 +891,6 @@ public:
         if (Renderer::AdvancedRender) Renderer::DisableShaders();
 
         glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-        glDisableClientState(GL_COLOR_ARRAY);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        glDisableClientState(GL_VERTEX_ARRAY);
 
         if (MergeFace) {
             glDisable(GL_TEXTURE_3D);
@@ -1261,7 +1248,7 @@ public:
             l %= 128;
         }
 
-        if (!generated) {
+        /*if (!generated) {
             generated = true;
             for (int i = 0; i != 128; i++) { for (int j = 0; j != 128; j++) { World::cloud[i][j] = int(rnd() * 2); } }
             glGenBuffersARB(128, cloudvb);
@@ -1287,7 +1274,7 @@ public:
             glTranslated(-64.0 * cloudwidth - px, 0.0, cloudwidth * ((l + i) % 128 + f) - 64.0 * cloudwidth - pz);
             Renderer::renderbuffer(cloudvb[i], vtxs[i], 0, 0);
             glPopMatrix();
-        }
+        }*/
         //setupNormalFog();
     }
 

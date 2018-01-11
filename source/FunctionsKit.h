@@ -80,7 +80,6 @@ inline double timer() {
     auto duri = std::chrono::steady_clock::now().time_since_epoch();
     return static_cast<double>(duri.count()) / decltype(duri)::period::den;
 }
-#ifdef NEWORLD_USE_WINAPI
 inline unsigned int MByteToWChar(wchar_t* dst, const char* src, unsigned int n) {
     int res = MultiByteToWideChar(CP_UTF8, 0, src, n, dst, n);
     return res;
@@ -89,9 +88,6 @@ inline unsigned int MByteToWChar(wchar_t* dst, const char* src, unsigned int n) 
 inline unsigned int WCharToMByte(char* dst, const wchar_t* src, unsigned int n) {
     return WideCharToMultiByte(CP_UTF8, 0, src, n, dst, n * 2, nullptr, nullptr);
 }
-#else
-inline unsigned int MByteToWChar(wchar_t* dst, const char* src, unsigned int n) { size_t res; mbstowcs_s(&res, dst, n, src, _TRUNCATE); return res; }
-#endif
 inline Mutex_t MutexCreate() { return new std::mutex; }
 inline void MutexDestroy(Mutex_t _hMutex) { delete _hMutex; }
 inline void MutexLock(Mutex_t _hMutex) { _hMutex->lock(); }

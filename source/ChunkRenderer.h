@@ -55,9 +55,9 @@ namespace ChunkRenderer {
         QuadPrimitiveDepth() : x(0), y(0), z(0), length(0), direction(0) { }
     };
 
-    void renderPrimitive(QuadPrimitive& p);
-    void RenderPrimitive_Depth(QuadPrimitiveDepth& p);
+    void renderPrimitive(const QuadPrimitive& p);
+    void renderPrimitiveDepth(const QuadPrimitiveDepth& p);
     void RenderChunk(World::Chunk* c);
-    void MergeFaceRender(World::Chunk* c);
-    void RenderDepthModel(World::Chunk* c);
+    void mergeFaceRender(World::Chunk* c);
+    void renderDepthModel(World::Chunk* c);
 }
