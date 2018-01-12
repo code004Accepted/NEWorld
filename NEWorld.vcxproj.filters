@@ -399,6 +399,5 @@
     <None Include="Shaders\Shadow.vsh">
       <Filter>Source\Renderer\Shader</Filter>
     </None>
-    <None Include="NEWorld.licenseheader" />
   </ItemGroup>
 </Project>

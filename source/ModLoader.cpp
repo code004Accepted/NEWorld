@@ -19,8 +19,6 @@
 
 #include "ModLoader.h"
 #include <Windows.h>
-#include <fstream>
-#include <io.h>
 #include <functional>
 #include <iostream>
 #include "API.h"
@@ -57,8 +55,8 @@ void Mod::ModLoader::loadMods() {
 //加载单个Mod，loadMods会调用该函数
 Mod::ModLoader::ModLoadStatus Mod::ModLoader::loadSingleMod(const std::string& modPath) {
     ModCall call = loadMod(modPath);
-    ModInfo (*getModInfo)() = (ModInfo(*)())getFunction(call, "getModInfo");
-    bool (*init)(APIPackage) = (bool(*)(APIPackage))getFunction(call, "init");
+    ModInfo (*getModInfo)() = reinterpret_cast<ModInfo(*)()>(getFunction(call, "getModInfo"));
+    bool (*init)(APIPackage) = reinterpret_cast<bool(*)(APIPackage)>(getFunction(call, "init"));
     ModInfo info = getModInfo(); //获得Mod信息
     std::cout << "[Console][Game]Loading Mod " << info.name << "[" << info.version << "]" << std::endl;
     if (strcmp(info.dependence, "") != 0) {
@@ -87,7 +85,7 @@ void Mod::ModLoader::unloadMods() {
 Mod::ModLoader::ModCall Mod::ModLoader::loadMod(const std::string& filename) { return LoadLibrary(filename.c_str()); }
 
 Mod::ModLoader::FuncPtr Mod::ModLoader::getFunction(ModCall call, const std::string& functionName) {
-    return GetProcAddress((HMODULE)call, functionName.c_str());
+    return reinterpret_cast<FuncPtr>(GetProcAddress(static_cast<HMODULE>(call), functionName.c_str()));
 }
 
-void Mod::ModLoader::unloadMod(ModCall call) { FreeLibrary((HMODULE)call); }
+void Mod::ModLoader::unloadMod(ModCall call) { FreeLibrary(static_cast<HMODULE>(call)); }

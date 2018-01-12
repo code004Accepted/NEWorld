@@ -111,16 +111,16 @@ namespace TextRenderer {
         chars[uc].ypos = slot->bitmap_top;
     }
 
-    void MBToWC(const char* lpcszStr, wchar_t*& lpwszStr, int dwSize) {
-        lpwszStr = static_cast<wchar_t*>(malloc(dwSize));
+    void MBToWC(const char* lpcszStr, char16_t*& lpwszStr, int dwSize) {
+        lpwszStr = static_cast<char16_t*>(malloc(dwSize));
         memset(lpwszStr, 0, dwSize);
-        const int iSize = (MByteToWChar(lpwszStr, lpcszStr, strlen(lpcszStr)) + 1) * sizeof(wchar_t);
-        lpwszStr = static_cast<wchar_t*>(realloc(lpwszStr, iSize));
+        const int iSize = (MByteToWChar(lpwszStr, lpcszStr, strlen(lpcszStr)) + 1) * sizeof(char16_t);
+        lpwszStr = static_cast<char16_t*>(realloc(lpwszStr, iSize));
     }
 
     int getStrWidth(const std::string& s) {
         auto res = 0;
-        wchar_t* wstr = nullptr;
+        char16_t* wstr = nullptr;
         MBToWC(s.c_str(), wstr, s.length() + 128);
         for (unsigned int k = 0; k < wstrlen(wstr); k++) {
             const int uc = wstr[k];
@@ -136,7 +136,7 @@ namespace TextRenderer {
     void renderString(int x, int y, const std::string& glstring) {
         int span = 0;
         double wid = pow(2, ceil(log2(32 * stretch)));
-        wchar_t* wstr = nullptr;
+        char16_t* wstr = nullptr;
         MBToWC(glstring.c_str(), wstr, glstring.length() + 128);
 
         glEnable(GL_TEXTURE_2D);

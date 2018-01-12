@@ -18,12 +18,7 @@
 // 
 
 #pragma once
-#define NEWORLD_USE_WINAPI
 #define _USE_MATH_DEFINES
-
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
 
 #include <cassert>
 #include <cmath>

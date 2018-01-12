@@ -38,18 +38,20 @@ namespace World {
     }
 
     void HeightMap::move(int xd, int zd) {
-        int* arrTemp = new int[size2];
-        for (int x = 0; x < size; x++) {
-            for (int z = 0; z < size; z++) {
-                if (x + xd >= 0 && z + zd >= 0 && x + xd < size && z + zd < size)
-                    arrTemp[x * size + z] = array[(x + xd) * size + (z + zd)];
-                else arrTemp[x * size + z] = -1;
+        if (xd || zd) {
+            int* arrTemp = new int[size2];
+            for (int x = 0; x < size; x++) {
+                for (int z = 0; z < size; z++) {
+                    if (x + xd >= 0 && z + zd >= 0 && x + xd < size && z + zd < size)
+                        arrTemp[x * size + z] = array[(x + xd) * size + (z + zd)];
+                    else arrTemp[x * size + z] = -1;
+                }
             }
+            delete[] array;
+            array = arrTemp;
+            originX += xd;
+            originZ += zd;
         }
-        delete[] array;
-        array = arrTemp;
-        originX += xd;
-        originZ += zd;
     }
 
     void HeightMap::moveTo(int x, int z) { move(x - originX, z - originZ); }

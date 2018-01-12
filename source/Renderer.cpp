@@ -65,7 +65,7 @@ namespace Renderer {
     float sunlightXrot, sunlightYrot;
     std::vector<Shader> shaders;
     int ActiveShader;
-    int index = 0, size = 0;
+    int index = 0;
     unsigned int ShadowFBO, DepthTexture;
     unsigned int ShaderAttribLoc = 0;
 

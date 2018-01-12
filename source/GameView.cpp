@@ -87,14 +87,14 @@ public:
             updateTimer = timer();
             if (updateTimer - lastupdate >= 5.0) lastupdate = updateTimer;
 
-            while ((updateTimer - lastupdate) >= 1.0 / 30.0 && upsc < 60) {
+            while (updateTimer - lastupdate >= 1.0 / 30.0 && upsc < 60) {
                 lastupdate += 1.0 / 30.0;
                 upsc++;
                 updategame();
                 FirstUpdateThisFrame = false;
             }
 
-            if ((timer() - uctime) >= 1.0) {
+            if (timer() - uctime >= 1.0) {
                 uctime = timer();
                 ups = upsc;
                 upsc = 0;
@@ -137,7 +137,7 @@ public:
         Player::BlockInHand = Player::inventory[3][Player::indexInHand];
         //生命值相关
         if (Player::health > 0 || Player::gamemode == Player::Creative) {
-            if (Player::ypos < -100) Player::health -= ((-100) - Player::ypos) / 100;
+            if (Player::ypos < -100) Player::health -= (-100 - Player::ypos) / 100;
             if (Player::health < Player::healthmax) Player::health += Player::healSpeed;
             if (Player::health > Player::healthmax) Player::health = Player::healthmax;
         }
@@ -157,13 +157,10 @@ public:
                               Player::czt - viewdistance - 2);
 
         //HeightMap move
-        if (World::hMap.originX != (Player::cxt - viewdistance - 2) * 16 || World::hMap.originZ != (Player::czt -
-            viewdistance - 2) * 16) {
-            World::hMap.moveTo((Player::cxt - viewdistance - 2) * 16, (Player::czt - viewdistance - 2) * 16);
-        }
+        World::hMap.moveTo((Player::cxt - viewdistance - 2) * 16, (Player::czt - viewdistance - 2) * 16);
 
         if (FirstUpdateThisFrame) {
-            World::sortChunkLoadUnloadList(RoundInt(Player::xpos), RoundInt(Player::ypos), RoundInt(Player::zpos));
+            World::sortChunkLoadUnloadList(lround(Player::xpos), lround(Player::ypos), lround(Player::zpos));
 
             //卸载区块(Unload chunks)
             for (auto&& [dist, cp] : World::chunkUnloadList)
@@ -189,16 +186,15 @@ public:
 
         //随机状态更新
         for (int i = 0; i < World::loadedChunks; i++) {
-            int x, y, z, gx, gy, gz;
             int cx = World::chunks[i]->cx;
             int cy = World::chunks[i]->cy;
             int cz = World::chunks[i]->cz;
-            x = int(rnd() * 16);
-            gx = x + cx * 16;
-            y = int(rnd() * 16);
-            gy = y + cy * 16;
-            z = int(rnd() * 16);
-            gz = z + cz * 16;
+            int x = int(rnd() * 16);
+            int gx = x + cx * 16;
+            int y = int(rnd() * 16);
+            int gy = y + cy * 16;
+            int z = int(rnd() * 16);
+            int gz = z + cz * 16;
             if (World::chunks[i]->getBlock(x, y, z) == Blocks::DIRT &&
                 World::getBlock(gx, gy + 1, gz, Blocks::NONEMPTY) == Blocks::AIR && (
                     World::getBlock(gx + 1, gy, gz, Blocks::AIR) == Blocks::GRASS ||
@@ -226,11 +222,9 @@ public:
             }
         }
 
-        //判断选中的方块
-        double lx, ly, lz, lxl, lyl, lzl;
-        lx = Player::xpos;
-        ly = Player::ypos + Player::height + Player::heightExt;
-        lz = Player::zpos;
+        double lx = Player::xpos;
+        double ly = Player::ypos + Player::height + Player::heightExt;
+        double lz = Player::zpos;
 
         sel = false;
         selx = sely = selz = selbx = selby = selbz = selcx = selcy = selcz = selb = selbr = 0;
@@ -238,9 +232,9 @@ public:
         if (!bagOpened) {
             //从玩家位置发射一条线段
             for (int i = 0; i < selectPrecision * selectDistance; i++) {
-                lxl = lx;
-                lyl = ly;
-                lzl = lz;
+                double lxl = lx;
+                double lyl = ly;
+                double lzl = lz;
 
                 //线段延伸
                 lx += sin(M_PI / 180 * (Player::heading - 180)) * sin(M_PI / 180 * (Player::lookupdown + 90)) / (double)
@@ -250,14 +244,13 @@ public:
                     selectPrecision;
 
                 //碰到方块
-                if (getBlockInfo(World::getBlock(RoundInt(lx), RoundInt(ly), RoundInt(lz))).isSolid()) {
-                    int x, y, z, xl, yl, zl;
-                    x = RoundInt(lx);
-                    y = RoundInt(ly);
-                    z = RoundInt(lz);
-                    xl = RoundInt(lxl);
-                    yl = RoundInt(lyl);
-                    zl = RoundInt(lzl);
+                if (getBlockInfo(World::getBlock(lround(lx), lround(ly), lround(lz))).isSolid()) {
+                    int x = lround(lx);
+                    int y = lround(ly);
+                    int z = lround(lz);
+                    int xl = lround(lxl);
+                    int yl = lround(lyl);
+                    int zl = lround(lzl);
 
                     selx = x;
                     sely = y;
@@ -272,7 +265,7 @@ public:
                     selby = World::getBlockPos(y);
                     selbz = World::getBlockPos(z);
 
-                    if (auto cp = World::getChunkPtr(selcx, selcy, selcz); cp && (cp != World::emptyChunkPtr))
+                    if (auto cp = World::getChunkPtr(selcx, selcy, selcz); cp && cp != World::emptyChunkPtr)
                         selb = cp->getBlock(selbx, selby, selbz);
 
                     selbr = World::getBrightness(xl, yl, zl);
@@ -294,7 +287,7 @@ public:
                                     0.1);
                             if (Factor < 1.0)Factor = 1.0;
                             if (Factor > 1.7)Factor = 1.7;
-                            seldes += getBlockInfo(selb).getHardness() * ((Player::gamemode == Player::Creative)
+                            seldes += getBlockInfo(selb).getHardness() * (Player::gamemode == Player::Creative
                                                                               ? 10.0f
                                                                               : 0.3f) * Factor;
                             BlockClick = true;
@@ -319,7 +312,7 @@ public:
                             BlockPos[2] = z;
                         }
                     }
-                    if (((mb == 2 && !static_cast<bool>(mbp)) || (!chatmode && isPressed(GLFW_KEY_TAB)))) {
+                    if ((mb == 2 && !static_cast<bool>(mbp)) || (!chatmode && isPressed(GLFW_KEY_TAB))) {
                         //鼠标右键
                         if (Player::inventoryAmount[3][Player::indexInHand] > 0 && isBlock(
                             Player::inventory[3][Player::indexInHand])) {
@@ -351,16 +344,16 @@ public:
                 }
             }
 
-            if (selx != oldselx || sely != oldsely || selz != oldselz || (mb == 0 && glfwGetKey(
-                MainWindow, GLFW_KEY_ENTER) != GLFW_PRESS))
+            if (selx != oldselx || sely != oldsely || selz != oldselz || mb == 0 && glfwGetKey(
+                MainWindow, GLFW_KEY_ENTER) != GLFW_PRESS)
                 seldes = 0.0;
             oldselx = selx;
             oldsely = sely;
             oldselz = selz;
 
-            Player::intxpos = RoundInt(Player::xpos);
-            Player::intypos = RoundInt(Player::ypos);
-            Player::intzpos = RoundInt(Player::zpos);
+            Player::intxpos = lround(Player::xpos);
+            Player::intypos = lround(Player::ypos);
+            Player::intzpos = lround(Player::zpos);
 
             //更新方向
             Player::heading += Player::xlookspeed;
@@ -641,8 +634,8 @@ public:
         PlayerPos[1] = Player::ypos;
         PlayerPos[2] = Player::zpos;
         bool Fall = Player::OnGround
-            && (!Player::inWater)
-            && (Player::jump == 0);
+            && !Player::inWater
+            && Player::jump == 0;
         //更新声速
         AudioSystem::SpeedOfSound = Player::inWater ? AudioSystem::Water_SpeedOfSound : AudioSystem::Air_SpeedOfSound;
         //更新环境
@@ -659,16 +652,16 @@ public:
         FirstFrameThisUpdate = true;
         Particles::updateall();
 
-        Player::intxpos = RoundInt(Player::xpos);
-        Player::intypos = RoundInt(Player::ypos);
-        Player::intzpos = RoundInt(Player::zpos);
+        Player::intxpos = lround(Player::xpos);
+        Player::intypos = lround(Player::ypos);
+        Player::intzpos = lround(Player::zpos);
         Player::updatePosition();
         Player::xposold = Player::xpos;
         Player::yposold = Player::ypos;
         Player::zposold = Player::zpos;
-        Player::intxposold = RoundInt(Player::xpos);
-        Player::intyposold = RoundInt(Player::ypos);
-        Player::intzposold = RoundInt(Player::zpos);
+        Player::intxposold = lround(Player::xpos);
+        Player::intyposold = lround(Player::ypos);
+        Player::intzposold = lround(Player::zpos);
     }
 
     void debugText(const std::string& s, bool init) {
@@ -685,7 +678,6 @@ public:
         //画场景
         double curtime = timer();
         double TimeDelta;
-        double xpos, ypos, zpos;
         int renderedChunk = 0;
 
         //检测帧速率
@@ -733,10 +725,10 @@ public:
             }
         }
 
-        xpos = Player::xpos - Player::xd + (curtime - lastupdate) * 30.0 * Player::xd;
-        ypos = Player::ypos + Player::height + Player::heightExt - Player::yd + (curtime - lastupdate) * 30.0 * Player::
+        double xpos = Player::xpos - Player::xd + (curtime - lastupdate) * 30.0 * Player::xd;
+        double ypos = Player::ypos + Player::height + Player::heightExt - Player::yd + (curtime - lastupdate) * 30.0 * Player::
             yd;
-        zpos = Player::zpos - Player::zd + (curtime - lastupdate) * 30.0 * Player::zd;
+        double zpos = Player::zpos - Player::zd + (curtime - lastupdate) * 30.0 * Player::zd;
 
         if (!bagOpened) {
             //转头！你治好了我多年的颈椎病！
@@ -764,7 +756,7 @@ public:
         Player::czt = World::getChunkPos((int)Player::zpos);
 
         //更新区块VBO
-        World::sortChunkBuildRenderList(RoundInt(Player::xpos), RoundInt(Player::ypos), RoundInt(Player::zpos));
+        World::sortChunkBuildRenderList(lround(Player::xpos), lround(Player::ypos), lround(Player::zpos));
         for (auto&& [dist, cp] : World::chunkBuildRenderList)
             cp->buildRender();
 
@@ -917,7 +909,7 @@ public:
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        if (World::getBlock(RoundInt(xpos), RoundInt(ypos), RoundInt(zpos)) == Blocks::WATER) {
+        if (World::getBlock(lround(xpos), lround(ypos), lround(zpos)) == Blocks::WATER) {
             glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
             glBindTexture(GL_TEXTURE_2D, BlockTextures);
             double tcX = Textures::getTexcoordX(Blocks::WATER, 1);
@@ -958,7 +950,7 @@ public:
             char tmp[64];
             tm timeinfo{};
             localtime_s(&timeinfo, &t);
-            strftime(tmp, sizeof(tmp), "%Y-%m-%d-%H:%M:%S", &timeinfo);
+            strftime(tmp, sizeof tmp, "%Y-%m-%d-%H:%M:%S", &timeinfo);
             std::stringstream ss;
             ss << "Screenshots/" << tmp << ".bmp";
             saveScreenshot(0, 0, windowwidth, windowheight, ss.str());
@@ -986,41 +978,41 @@ public:
         glColor3f(0.2f, 0.2f, 0.2f);
         glBegin(GL_LINES);
         // Left Face
-        glVertex3f((0.5f + eps) + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
-        glVertex3f((0.5f + eps) + x, (0.5f + eps) + y, -(0.5f + eps) + z);
-        glVertex3f((0.5f + eps) + x, (0.5f + eps) + y, -(0.5f + eps) + z);
-        glVertex3f((0.5f + eps) + x, (0.5f + eps) + y, (0.5f + eps) + z);
-        glVertex3f((0.5f + eps) + x, (0.5f + eps) + y, (0.5f + eps) + z);
-        glVertex3f((0.5f + eps) + x, -(0.5f + eps) + y, (0.5f + eps) + z);
-        glVertex3f((0.5f + eps) + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
-        glVertex3f((0.5f + eps) + x, -(0.5f + eps) + y, (0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, 0.5f + eps + y, -(0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, 0.5f + eps + y, -(0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, 0.5f + eps + y, 0.5f + eps + z);
+        glVertex3f(0.5f + eps + x, 0.5f + eps + y, 0.5f + eps + z);
+        glVertex3f(0.5f + eps + x, -(0.5f + eps) + y, 0.5f + eps + z);
+        glVertex3f(0.5f + eps + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, -(0.5f + eps) + y, 0.5f + eps + z);
         // Front Face
-        glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, (0.5f + eps) + z);
-        glVertex3f((0.5f + eps) + x, -(0.5f + eps) + y, (0.5f + eps) + z);
-        glVertex3f((0.5f + eps) + x, -(0.5f + eps) + y, (0.5f + eps) + z);
-        glVertex3f((0.5f + eps) + x, (0.5f + eps) + y, (0.5f + eps) + z);
-        glVertex3f((0.5f + eps) + x, (0.5f + eps) + y, (0.5f + eps) + z);
-        glVertex3f(-(0.5f + eps) + x, (0.5f + eps) + y, (0.5f + eps) + z);
-        glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, (0.5f + eps) + z);
-        glVertex3f(-(0.5f + eps) + x, (0.5f + eps) + y, (0.5f + eps) + z);
+        glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, 0.5f + eps + z);
+        glVertex3f(0.5f + eps + x, -(0.5f + eps) + y, 0.5f + eps + z);
+        glVertex3f(0.5f + eps + x, -(0.5f + eps) + y, 0.5f + eps + z);
+        glVertex3f(0.5f + eps + x, 0.5f + eps + y, 0.5f + eps + z);
+        glVertex3f(0.5f + eps + x, 0.5f + eps + y, 0.5f + eps + z);
+        glVertex3f(-(0.5f + eps) + x, 0.5f + eps + y, 0.5f + eps + z);
+        glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, 0.5f + eps + z);
+        glVertex3f(-(0.5f + eps) + x, 0.5f + eps + y, 0.5f + eps + z);
         // Right Face
         glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
-        glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, (0.5f + eps) + z);
-        glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, (0.5f + eps) + z);
-        glVertex3f(-(0.5f + eps) + x, (0.5f + eps) + y, (0.5f + eps) + z);
-        glVertex3f(-(0.5f + eps) + x, (0.5f + eps) + y, (0.5f + eps) + z);
-        glVertex3f(-(0.5f + eps) + x, (0.5f + eps) + y, -(0.5f + eps) + z);
+        glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, 0.5f + eps + z);
+        glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, 0.5f + eps + z);
+        glVertex3f(-(0.5f + eps) + x, 0.5f + eps + y, 0.5f + eps + z);
+        glVertex3f(-(0.5f + eps) + x, 0.5f + eps + y, 0.5f + eps + z);
+        glVertex3f(-(0.5f + eps) + x, 0.5f + eps + y, -(0.5f + eps) + z);
         glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
-        glVertex3f(-(0.5f + eps) + x, (0.5f + eps) + y, -(0.5f + eps) + z);
+        glVertex3f(-(0.5f + eps) + x, 0.5f + eps + y, -(0.5f + eps) + z);
         // Back Face
         glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
-        glVertex3f(-(0.5f + eps) + x, (0.5f + eps) + y, -(0.5f + eps) + z);
-        glVertex3f(-(0.5f + eps) + x, (0.5f + eps) + y, -(0.5f + eps) + z);
-        glVertex3f((0.5f + eps) + x, (0.5f + eps) + y, -(0.5f + eps) + z);
-        glVertex3f((0.5f + eps) + x, (0.5f + eps) + y, -(0.5f + eps) + z);
-        glVertex3f((0.5f + eps) + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
+        glVertex3f(-(0.5f + eps) + x, 0.5f + eps + y, -(0.5f + eps) + z);
+        glVertex3f(-(0.5f + eps) + x, 0.5f + eps + y, -(0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, 0.5f + eps + y, -(0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, 0.5f + eps + y, -(0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
         glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
-        glVertex3f((0.5f + eps) + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
         glEnd();
         glDisable(GL_LINE_SMOOTH);
     }
@@ -1285,58 +1277,58 @@ public:
 
         glBegin(GL_QUADS);
         glTexCoord2f(0.0f, 0.0f);
-        glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, (0.5f + eps) + z);
+        glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, 0.5f + eps + z);
         glTexCoord2f(1.0f, 0.0f);
-        glVertex3f((0.5f + eps) + x, -(0.5f + eps) + y, (0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, -(0.5f + eps) + y, 0.5f + eps + z);
         glTexCoord2f(1.0f, 1.0f);
-        glVertex3f((0.5f + eps) + x, (0.5f + eps) + y, (0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, 0.5f + eps + y, 0.5f + eps + z);
         glTexCoord2f(0.0f, 1.0f);
-        glVertex3f(-(0.5f + eps) + x, (0.5f + eps) + y, (0.5f + eps) + z);
+        glVertex3f(-(0.5f + eps) + x, 0.5f + eps + y, 0.5f + eps + z);
 
         glTexCoord2f(1.0f, 0.0f);
         glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
         glTexCoord2f(1.0f, 1.0f);
-        glVertex3f(-(0.5f + eps) + x, (0.5f + eps) + y, -(0.5f + eps) + z);
+        glVertex3f(-(0.5f + eps) + x, 0.5f + eps + y, -(0.5f + eps) + z);
         glTexCoord2f(0.0f, 1.0f);
-        glVertex3f((0.5f + eps) + x, (0.5f + eps) + y, -(0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, 0.5f + eps + y, -(0.5f + eps) + z);
         glTexCoord2f(0.0f, 0.0f);
-        glVertex3f((0.5f + eps) + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
 
         glTexCoord2f(1.0f, 0.0f);
-        glVertex3f((0.5f + eps) + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
         glTexCoord2f(1.0f, 1.0f);
-        glVertex3f((0.5f + eps) + x, (0.5f + eps) + y, -(0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, 0.5f + eps + y, -(0.5f + eps) + z);
         glTexCoord2f(0.0f, 1.0f);
-        glVertex3f((0.5f + eps) + x, (0.5f + eps) + y, (0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, 0.5f + eps + y, 0.5f + eps + z);
         glTexCoord2f(0.0f, 0.0f);
-        glVertex3f((0.5f + eps) + x, -(0.5f + eps) + y, (0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, -(0.5f + eps) + y, 0.5f + eps + z);
 
         glTexCoord2f(0.0f, 0.0f);
         glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
         glTexCoord2f(1.0f, 0.0f);
-        glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, (0.5f + eps) + z);
+        glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, 0.5f + eps + z);
         glTexCoord2f(1.0f, 1.0f);
-        glVertex3f(-(0.5f + eps) + x, (0.5f + eps) + y, (0.5f + eps) + z);
+        glVertex3f(-(0.5f + eps) + x, 0.5f + eps + y, 0.5f + eps + z);
         glTexCoord2f(0.0f, 1.0f);
-        glVertex3f(-(0.5f + eps) + x, (0.5f + eps) + y, -(0.5f + eps) + z);
+        glVertex3f(-(0.5f + eps) + x, 0.5f + eps + y, -(0.5f + eps) + z);
 
         glTexCoord2f(0.0f, 1.0f);
-        glVertex3f(-(0.5f + eps) + x, (0.5f + eps) + y, -(0.5f + eps) + z);
+        glVertex3f(-(0.5f + eps) + x, 0.5f + eps + y, -(0.5f + eps) + z);
         glTexCoord2f(0.0f, 0.0f);
-        glVertex3f(-(0.5f + eps) + x, (0.5f + eps) + y, (0.5f + eps) + z);
+        glVertex3f(-(0.5f + eps) + x, 0.5f + eps + y, 0.5f + eps + z);
         glTexCoord2f(1.0f, 0.0f);
-        glVertex3f((0.5f + eps) + x, (0.5f + eps) + y, (0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, 0.5f + eps + y, 0.5f + eps + z);
         glTexCoord2f(1.0f, 1.0f);
-        glVertex3f((0.5f + eps) + x, (0.5f + eps) + y, -(0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, 0.5f + eps + y, -(0.5f + eps) + z);
 
         glTexCoord2f(1.0f, 1.0f);
         glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
         glTexCoord2f(0.0f, 1.0f);
-        glVertex3f((0.5f + eps) + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, -(0.5f + eps) + y, -(0.5f + eps) + z);
         glTexCoord2f(0.0f, 0.0f);
-        glVertex3f((0.5f + eps) + x, -(0.5f + eps) + y, (0.5f + eps) + z);
+        glVertex3f(0.5f + eps + x, -(0.5f + eps) + y, 0.5f + eps + z);
         glTexCoord2f(1.0f, 0.0f);
-        glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, (0.5f + eps) + z);
+        glVertex3f(-(0.5f + eps) + x, -(0.5f + eps) + y, 0.5f + eps + z);
         glEnd();
     }
 
@@ -1453,7 +1445,7 @@ public:
                             if (Player::inventory[i][j] == Blocks::AIR) Player::inventoryAmount[i][j] = 0;
                         }
                     }
-                    drawBagRow(i, (csi == i ? csj : -1), (windowwidth / stretch - 392) / 2,
+                    drawBagRow(i, csi == i ? csj : -1, (windowwidth / stretch - 392) / 2,
                                windowheight / stretch - 152 - 16 + i * 40, 8, 1.0f);
                 }
             }
@@ -1483,7 +1475,7 @@ public:
 
             float alpha = 0.5f + 0.5f * bagAnim;
             if (curtime - bagAnimTimer <= bagAnimDuration) {
-                int xbase = (int)round(((windowwidth / stretch - 392) / 2) * bagAnim);
+                int xbase = (int)round((windowwidth / stretch - 392) / 2 * bagAnim);
                 int ybase = (int)round(
                     (windowheight / stretch - 152 - 16 + 120 - (windowheight / stretch - 32)) * bagAnim + (windowheight
                         / stretch - 32));
@@ -1521,18 +1513,18 @@ public:
                 glEnable(GL_TEXTURE_2D);
                 int xbase = 0, ybase = 0, spac = 0;
                 float alpha = 1.0f - 0.5f * bagAnim;
-                xbase = (int)round(((windowwidth / stretch - 392) / 2) - ((windowwidth / stretch - 392) / 2) * bagAnim);
+                xbase = (int)round((windowwidth / stretch - 392) / 2 - (windowwidth / stretch - 392) / 2 * bagAnim);
                 ybase = (int)round(
-                    (windowheight / stretch - 152 - 16 + 120 - (windowheight / stretch - 32)) - (windowheight / stretch
+                    windowheight / stretch - 152 - 16 + 120 - (windowheight / stretch - 32) - (windowheight / stretch
                         - 152 - 16 + 120 - (windowheight - 32)) * bagAnim + (windowheight / stretch - 32));
                 spac = (int)round(8 - 8 * bagAnim);
                 glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                 drawBagRow(3, Player::indexInHand, xbase, ybase, spac, alpha);
                 xbase = (int)round(
-                    ((windowwidth / stretch - 392) / 2 - windowwidth / stretch) - ((windowwidth / stretch - 392) / 2 -
+                    (windowwidth / stretch - 392) / 2 - windowwidth / stretch - ((windowwidth / stretch - 392) / 2 -
                         windowwidth / stretch) * bagAnim + windowwidth / stretch);
                 ybase = (int)round(
-                    (windowheight / stretch - 152 - 16 - (windowheight / stretch - 32)) - (windowheight / stretch - 152
+                    windowheight / stretch - 152 - 16 - (windowheight / stretch - 32) - (windowheight / stretch - 152
                         - 16 - (windowheight / stretch - 32)) * bagAnim + (windowheight / stretch - 32));
                 for (int i = 0; i < 3; i++) {
                     glColor4f(1.0f, 1.0f, 1.0f, 1.0f - bagAnim);
@@ -1742,7 +1734,7 @@ public:
         MutexUnlock(Mutex);
         MutexLock(Mutex);
 
-        if ((timer() - uctime) >= 1.0) {
+        if (timer() - uctime >= 1.0) {
             uctime = timer();
             ups = upsc;
             upsc = 0;
@@ -1784,7 +1776,7 @@ public:
 };
 
 GameDView* Game = nullptr;
-void GameView() { PushPage(Game = (new GameDView)); }
+void GameView() { PushPage(Game = new GameDView); }
 
 ThreadFunc updateThreadFunc(void*) {
     Game->GameThreadloop();

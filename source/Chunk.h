@@ -55,21 +55,21 @@ namespace World {
         void load(bool initIfEmpty = true);
         void buildRender();
 
-        Block getBlock(int x, int y, int z) { return mBlocks[(x << 8) ^ (y << 4) ^ z]; }
+        Block getBlock(int x, int y, int z) { return mBlocks[x << 8 ^ y << 4 ^ z]; }
 
-        Brightness getBrightness(int x, int y, int z) { return mBrightness[(x << 8) ^ (y << 4) ^ z]; }
+        Brightness getBrightness(int x, int y, int z) { return mBrightness[x << 8 ^ y << 4 ^ z]; }
 
         void setblock(int x, int y, int z, Block iblock) {
             if (iblock == Blocks::TNT) {
                 explode(cx * 16 + x, cy * 16 + y, cz * 16 + z, 8, this);
                 return;
             }
-            mBlocks[(x << 8) ^ (y << 4) ^ z] = iblock;
+            mBlocks[x << 8 ^ y << 4 ^ z] = iblock;
             mIsModified = true;
         }
 
         void setbrightness(int x, int y, int z, Brightness ibrightness) {
-            mBrightness[(x << 8) ^ (y << 4) ^ z] = ibrightness;
+            mBrightness[x << 8 ^ y << 4 ^ z] = ibrightness;
             mIsModified = true;
         }
 
@@ -90,7 +90,6 @@ namespace World {
         static Frustum TestFrustum;
         bool LoadFromFile(); //返回true代表区块文件打开成功
         void SaveToFile();
-        void destroyRender();
         Hitbox::AABB getBaseAABB() const;
         void buildTerrain(bool initIfEmpty = true);
         void buildDetail();

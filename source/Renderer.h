@@ -18,8 +18,6 @@
 // 
 
 #pragma once
-#include "Definitions.h"
-#include "Frustum.h"
 #include "Shader.h"
 
 namespace Renderer {
@@ -33,10 +31,6 @@ namespace Renderer {
         DepthShader
     };
 
-    const int ArraySize = 2621440;
-    extern float* VA;
-    extern int size;
-    extern int Vertexes;
     extern bool AdvancedRender;
     extern int ShadowRes;
     extern int maxShadowDist;

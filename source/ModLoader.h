@@ -36,7 +36,7 @@ namespace Mod {
         static ModLoadStatus loadSingleMod(const std::string& modPath);
 
         typedef void* ModCall;
-        typedef FARPROC FuncPtr;
+        using FuncPtr = void (*)();
         static ModCall loadMod(const std::string& filename);
         static FuncPtr getFunction(ModCall call, const std::string& functionName);
         static void unloadMod(ModCall call);

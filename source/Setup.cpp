@@ -168,12 +168,12 @@ void MouseButtonFunc(GLFWwindow*, int button, int action, int) {
 
 void CharInputFunc(GLFWwindow*, unsigned int c) {
     if (c >= 128) {
-        wchar_t pwszUnicode[2] = {c, 0};
+        char16_t pwszUnicode[2] = {c, 0};
         char pszMultiByte[6] = {0};
         WCharToMByte(pszMultiByte, pwszUnicode, 6);
         inputstr += pszMultiByte;
     }
-    else inputstr += (char)c;
+    else inputstr += static_cast<char>(c);
 }
 
 void MouseScrollFunc(GLFWwindow*, double, double yoffset) { mw += (int)yoffset; }

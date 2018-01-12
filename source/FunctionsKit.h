@@ -21,6 +21,7 @@
 #include "StdInclude.h"
 #include "Typedefs.h"
 #include <chrono>
+#include <cuchar>
 extern double stretch;
 
 //常用函数
@@ -39,14 +40,13 @@ inline void UIVertex(int x, int y) { glVertex2i(static_cast<int>(x * stretch), s
 extern unsigned int g_seed;
 
 inline int fastRand() {
-    g_seed = (214013 * g_seed + 2531011);
-    return (g_seed >> 16) & 0x7FFF;
+    g_seed = 214013 * g_seed + 2531011;
+    return g_seed >> 16 & 0x7FFF;
 }
 
 inline void fastSrand(int seed) { g_seed = seed; }
 
-inline double rnd() { return (double)fastRand() / (RAND_MAX + 1); }
-inline int RoundInt(double d) { return int(floor(d + 0.5)); }
+inline double rnd() { return static_cast<double>(fastRand()) / (RAND_MAX + 1); }
 
 inline std::string itos(int i) {
     std::stringstream ss;
@@ -80,14 +80,10 @@ inline double timer() {
     auto duri = std::chrono::steady_clock::now().time_since_epoch();
     return static_cast<double>(duri.count()) / decltype(duri)::period::den;
 }
-inline unsigned int MByteToWChar(wchar_t* dst, const char* src, unsigned int n) {
-    int res = MultiByteToWideChar(CP_UTF8, 0, src, n, dst, n);
-    return res;
-}
 
-inline unsigned int WCharToMByte(char* dst, const wchar_t* src, unsigned int n) {
-    return WideCharToMultiByte(CP_UTF8, 0, src, n, dst, n * 2, nullptr, nullptr);
-}
+unsigned int MByteToWChar(char16_t* dst, const char* src, unsigned int n);
+unsigned int WCharToMByte(char* dst, const char16_t* src, unsigned int n);
+
 inline Mutex_t MutexCreate() { return new std::mutex; }
 inline void MutexDestroy(Mutex_t _hMutex) { delete _hMutex; }
 inline void MutexLock(Mutex_t _hMutex) { _hMutex->lock(); }
@@ -95,7 +91,7 @@ inline void MutexUnlock(Mutex_t _hMutex) { _hMutex->unlock(); }
 inline Thread_t ThreadCreate(ThreadFunc_t func, void* param) { return new std::thread(func, param); }
 inline void ThreadWait(Thread_t _hThread) { _hThread->join(); }
 inline void ThreadDestroy(Thread_t _hThread) { delete _hThread; }
-inline unsigned int wstrlen(const wchar_t* wstr) { return wcslen(wstr); }
+inline unsigned int wstrlen(const char16_t* wstr) { unsigned int i = 0; for (0; wstr[i] != 0; ++i); return i; }
 
 inline int Distancen(int ix, int iy, int iz, int x, int y, int z) //计算距离的平方
 {

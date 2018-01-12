@@ -25,26 +25,26 @@
 #include <fstream>
 
 namespace ChunkRenderer {
-    void RenderChunk(World::Chunk* c);
+    void renderChunk(World::Chunk* c);
     void mergeFaceRender(World::Chunk* c);
     void renderDepthModel(World::Chunk* c);
 }
 
 namespace World {
     struct HMapManager {
-        int H[16][16]{0};
+        int h[16][16]{0};
         int low{}, high{};
 
         HMapManager() = default;;
 
         HMapManager(int cx, int cz) {
-            int l = MAXINT, hi = WorldGen::WaterLevel, h;
+            int l = 0xEFFFFFFF, hi = WorldGen::WaterLevel;
             for (int x = 0; x < 16; ++x) {
                 for (int z = 0; z < 16; ++z) {
-                    h = hMap.getHeight(cx * 16 + x, cz * 16 + z);
-                    if (h < l) l = h;
-                    if (h > hi) hi = h;
-                    H[x][z] = h;
+                    auto he = hMap.getHeight(cx * 16 + x, cz * 16 + z);
+                    if (he < l) l = he;
+                    if (he > hi) hi = he;
+                    h[x][z] = he;
                 }
             }
             low = (l - 21) / 16, high = (hi + 16) / 16;
@@ -62,7 +62,6 @@ namespace World {
     Chunk::~Chunk() {
         unloadedChunksCount++;
         SaveToFile();
-        destroyRender();
         mIsUpdated = false;
         unloadedChunks++;
     }
@@ -102,8 +101,7 @@ namespace World {
             if (cy == 0)
                 for (int x = 0; x < 16; x++)
                     for (int z = 0; z < 16; z++)
-                        mBlocks[x * 256 + z] = Blocks::
-                            BEDROCK;
+                        mBlocks[x * 256 + z] = Blocks::BEDROCK;
             mIsEmpty = false;
             return;
         }
@@ -123,7 +121,7 @@ namespace World {
         for (x = 0; x < 16; ++x) {
             for (z = 0; z < 16; ++z) {
                 int base = (x << 8) + z;
-                h = cur.H[x][z] - (cy << 4);
+                h = cur.h[x][z] - (cy << 4);
                 if (h >= 0 || wh >= 0) mIsEmpty = false;
                 if (h > sh && h > wh + 1) {
                     //Grass layer
@@ -256,21 +254,11 @@ namespace World {
         if (MergeFace)
             ChunkRenderer::mergeFaceRender(this);
         else
-            ChunkRenderer::RenderChunk(this);
+            ChunkRenderer::renderChunk(this);
         if (Renderer::AdvancedRender)
             ChunkRenderer::renderDepthModel(this);
 
         mIsUpdated = false;
-    }
-
-    void Chunk::destroyRender() {
-        if (mIsRenderBuilt) {
-            vbo[0].destroy();
-            vbo[1].destroy();
-            vbo[2].destroy();
-            vbo[3].destroy();
-            mIsRenderBuilt = false;
-        }
     }
 
     Hitbox::AABB Chunk::getBaseAABB() const {
