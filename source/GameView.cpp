@@ -159,23 +159,8 @@ public:
         //HeightMap move
         World::hMap.moveTo((Player::cxt - viewdistance - 2) * 16, (Player::czt - viewdistance - 2) * 16);
 
-        if (FirstUpdateThisFrame) {
-            World::sortChunkLoadUnloadList(lround(Player::xpos), lround(Player::ypos), lround(Player::zpos));
-
-            //卸载区块(Unload chunks)
-            for (auto&& [dist, cp] : World::chunkUnloadList)
-                World::deleteChunk(cp->cx, cp->cy, cp->cz);
-
-            //加载区块(Load chunks)
-            for (auto&& [dist, pos] : World::chunkLoadList) {
-                auto c = World::addChunk(pos.x, pos.y, pos.z);
-                c->load(false);
-                if (c->mIsEmpty) {
-                    World::deleteChunk(pos.x, pos.y, pos.z);
-                    World::cpArray.set(pos.x, pos.y, pos.z, World::emptyChunkPtr);
-                }
-            }
-        }
+        if (FirstUpdateThisFrame)
+            World::updateChunkLoading();
 
         //加载动画
         for (int i = 0; i < World::loadedChunks; i++) {
@@ -184,43 +169,7 @@ public:
             else cp->loadAnim *= 0.6f;
         }
 
-        //随机状态更新
-        for (int i = 0; i < World::loadedChunks; i++) {
-            int cx = World::chunks[i]->cx;
-            int cy = World::chunks[i]->cy;
-            int cz = World::chunks[i]->cz;
-            int x = int(rnd() * 16);
-            int gx = x + cx * 16;
-            int y = int(rnd() * 16);
-            int gy = y + cy * 16;
-            int z = int(rnd() * 16);
-            int gz = z + cz * 16;
-            if (World::chunks[i]->getBlock(x, y, z) == Blocks::DIRT &&
-                World::getBlock(gx, gy + 1, gz, Blocks::NONEMPTY) == Blocks::AIR && (
-                    World::getBlock(gx + 1, gy, gz, Blocks::AIR) == Blocks::GRASS ||
-                    World::getBlock(gx - 1, gy, gz, Blocks::AIR) == Blocks::GRASS ||
-                    World::getBlock(gx, gy, gz + 1, Blocks::AIR) == Blocks::GRASS ||
-                    World::getBlock(gx, gy, gz - 1, Blocks::AIR) == Blocks::GRASS ||
-                    World::getBlock(gx + 1, gy + 1, gz, Blocks::AIR) == Blocks::GRASS ||
-                    World::getBlock(gx - 1, gy + 1, gz, Blocks::AIR) == Blocks::GRASS ||
-                    World::getBlock(gx, gy + 1, gz + 1, Blocks::AIR) == Blocks::GRASS ||
-                    World::getBlock(gx, gy + 1, gz - 1, Blocks::AIR) == Blocks::GRASS ||
-                    World::getBlock(gx + 1, gy - 1, gz, Blocks::AIR) == Blocks::GRASS ||
-                    World::getBlock(gx - 1, gy - 1, gz, Blocks::AIR) == Blocks::GRASS ||
-                    World::getBlock(gx, gy - 1, gz + 1, Blocks::AIR) == Blocks::GRASS ||
-                    World::getBlock(gx, gy - 1, gz - 1, Blocks::AIR) == Blocks::GRASS)) {
-                //长草
-                World::chunks[i]->setblock(x, y, z, Blocks::GRASS);
-                World::updateblock(x + cx * 16, y + cy * 16 + 1, z + cz * 16, true);
-                World::setChunkUpdated(cx, cy, cz, true);
-            }
-            if (World::chunks[i]->getBlock(x, y, z) == Blocks::GRASS && World::getBlock(gx, gy + 1, gz, Blocks::AIR) !=
-                Blocks::AIR) {
-                //草被覆盖
-                World::chunks[i]->setblock(x, y, z, Blocks::DIRT);
-                World::updateblock(x + cx * 16, y + cy * 16 + 1, z + cz * 16, true);
-            }
-        }
+        World::randomChunkUpdation();
 
         double lx = Player::xpos;
         double ly = Player::ypos + Player::height + Player::heightExt;
@@ -972,7 +921,7 @@ public:
 
     void drawBorder(int x, int y, int z) {
         //绘制选择边框
-        static float eps = 0.002f; //实际上这个边框应该比方块大一些，否则很难看
+        constexpr float eps = 0.002f; //实际上这个边框应该比方块大一些，否则很难看
         glEnable(GL_LINE_SMOOTH);
         glLineWidth(1);
         glColor3f(0.2f, 0.2f, 0.2f);

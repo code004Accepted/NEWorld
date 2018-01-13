@@ -161,4 +161,7 @@ namespace World {
 
     void buildtree(int x, int y, int z);
     void explode(int x, int y, int z, int r, Chunk* c = nullptr);
+
+    void randomChunkUpdation() noexcept;
+    void updateChunkLoading() noexcept;
 }

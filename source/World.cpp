@@ -536,4 +536,62 @@ namespace World {
             }
         }
     }
+
+    void randomChunkUpdation() noexcept {
+        //随机状态更新
+        for (int i = 0; i < World::loadedChunks; i++) {
+            int cx = World::chunks[i]->cx;
+            int cy = World::chunks[i]->cy;
+            int cz = World::chunks[i]->cz;
+            int x = int(rnd() * 16);
+            int gx = x + cx * 16;
+            int y = int(rnd() * 16);
+            int gy = y + cy * 16;
+            int z = int(rnd() * 16);
+            int gz = z + cz * 16;
+            if (World::chunks[i]->getBlock(x, y, z) == Blocks::DIRT &&
+                World::getBlock(gx, gy + 1, gz, Blocks::NONEMPTY) == Blocks::AIR && (
+                    World::getBlock(gx + 1, gy, gz, Blocks::AIR) == Blocks::GRASS ||
+                    World::getBlock(gx - 1, gy, gz, Blocks::AIR) == Blocks::GRASS ||
+                    World::getBlock(gx, gy, gz + 1, Blocks::AIR) == Blocks::GRASS ||
+                    World::getBlock(gx, gy, gz - 1, Blocks::AIR) == Blocks::GRASS ||
+                    World::getBlock(gx + 1, gy + 1, gz, Blocks::AIR) == Blocks::GRASS ||
+                    World::getBlock(gx - 1, gy + 1, gz, Blocks::AIR) == Blocks::GRASS ||
+                    World::getBlock(gx, gy + 1, gz + 1, Blocks::AIR) == Blocks::GRASS ||
+                    World::getBlock(gx, gy + 1, gz - 1, Blocks::AIR) == Blocks::GRASS ||
+                    World::getBlock(gx + 1, gy - 1, gz, Blocks::AIR) == Blocks::GRASS ||
+                    World::getBlock(gx - 1, gy - 1, gz, Blocks::AIR) == Blocks::GRASS ||
+                    World::getBlock(gx, gy - 1, gz + 1, Blocks::AIR) == Blocks::GRASS ||
+                    World::getBlock(gx, gy - 1, gz - 1, Blocks::AIR) == Blocks::GRASS)) {
+                //长草
+                World::chunks[i]->setblock(x, y, z, Blocks::GRASS);
+                World::updateblock(x + cx * 16, y + cy * 16 + 1, z + cz * 16, true);
+                World::setChunkUpdated(cx, cy, cz, true);
+            }
+            if (World::chunks[i]->getBlock(x, y, z) == Blocks::GRASS && World::getBlock(gx, gy + 1, gz, Blocks::AIR) !=
+                Blocks::AIR) {
+                //草被覆盖
+                World::chunks[i]->setblock(x, y, z, Blocks::DIRT);
+                World::updateblock(x + cx * 16, y + cy * 16 + 1, z + cz * 16, true);
+            }
+        }
+    }
+
+    void updateChunkLoading() noexcept {
+        World::sortChunkLoadUnloadList(lround(Player::xpos), lround(Player::ypos), lround(Player::zpos));
+
+        //卸载区块(Unload chunks)
+        for (auto&&[dist, cp] : World::chunkUnloadList)
+            World::deleteChunk(cp->cx, cp->cy, cp->cz);
+
+        //加载区块(Load chunks)
+        for (auto&&[dist, pos] : World::chunkLoadList) {
+            auto c = World::addChunk(pos.x, pos.y, pos.z);
+            c->load(false);
+            if (c->mIsEmpty) {
+                World::deleteChunk(pos.x, pos.y, pos.z);
+                World::cpArray.set(pos.x, pos.y, pos.z, World::emptyChunkPtr);
+            }
+        }
+    }
 }
