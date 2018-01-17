@@ -1,3 +1,5 @@
 # NEWorld
 
-Developing in branch `renew`.
+NEWorld Code Clean-up Project
+
+Cleaning Up legacy code!
